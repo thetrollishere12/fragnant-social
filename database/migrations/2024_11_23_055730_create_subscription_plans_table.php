@@ -37,13 +37,26 @@ return new class extends Migration
             $table->string('stripe_plan_id')->nullable();
             $table->string('paypal_plan_id')->nullable();
             
+
             $table->longText('benefits')->nullable()->default('[]');
+
+
+            $table->longText('plan_metadata')->nullable()->default('[]');
+
+            $table->longText('attributes')->nullable()->default('[]');
+
             
-            $table->integer('time_limit_amount')->nullable();
+
 
             $table->integer('trial_period_days')->nullable();
+
+
             $table->longText('exclusive_to_user_id')->nullable()->default('[]');
-                
+            
+
+            $table->boolean('public')->default(0);
+
+
             $table->timestamps();
         });
     }

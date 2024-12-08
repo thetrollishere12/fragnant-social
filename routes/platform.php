@@ -20,6 +20,14 @@ use App\Orchid\Screens\User\UserProfileScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
+
+use App\Orchid\Screens\Subscription\SubscriptionPlanScreen;
+
+use App\Orchid\Screens\Webpage\WebpageEditScreen;
+use App\Orchid\Screens\Webpage\WebpageListScreen;
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Dashboard Routes
@@ -102,3 +110,20 @@ Route::screen('/examples/charts', ExampleChartsScreen::class)->name('platform.ex
 Route::screen('/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
 
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
+
+
+// Subscription
+
+Route::screen('subscription-plans', SubscriptionPlanScreen::class)
+    ->name('platform.subscription.index');
+
+
+// Webpage Title and Description
+
+
+Route::screen('webpage/title-description/create', WebpageEditScreen::class)->name('platform.webpage.create');
+
+Route::screen('webpage/title-description/{webpage?}/edit', WebpageEditScreen::class)->name('platform.webpage.edit');
+
+Route::screen('webpage/title-descriptions', WebpageListScreen::class)
+    ->name('platform.webpage.list');

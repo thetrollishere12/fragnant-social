@@ -20,6 +20,8 @@ use App\Jobs\ProcessMedia;
 
 use App\Events\MediaProcessed;
 
+use App\Events\TestReverbEvent;
+
 class Index extends Component
 {
     use WireUiActions;
@@ -52,31 +54,47 @@ class Index extends Component
         $this->userMedia = UserMedia::where('user_id', Auth::id())->get();
     }
 
+
+
     public function updatedImage()
-{
+    {
 
-    set_time_limit(0);
 
-    if (!$this->image) {
-        return;
+        set_time_limit(0);
+
+        if (!$this->image) {
+            return;
+        }
+
+        foreach ($this->image as $uploadedFile) {
+            // Save the file temporarily in storage
+            $tempPath = $uploadedFile->store('temp', 'local');
+
+            // Insert media information into the database
+            $originalName = $uploadedFile->getClientOriginalName();
+
+            $userMedia = UserMedia::create([
+                'storage' => 'local',
+                'folder' => 'temp',
+                'filename' => $originalName,
+                'size' => Storage::disk('local')->size($tempPath),
+                'user_id' => Auth::id(),
+                'type' => 'pending', // Mark as pending
+            ]);
+
+            // Dispatch the processing job
+            ProcessMedia::dispatch($tempPath, $userMedia->id);
+            
+        }
+
+        $this->notification([
+            'title' => 'Media Uploaded!',
+            'description' => 'Your media has been uploaded and is being processed in the background.',
+            'icon' => 'success',
+        ]);
+
+
     }
-
-    foreach ($this->image as $uploadedFile) {
-        // Save the file temporarily in storage
-        $tempPath = $uploadedFile->store('temp', 'local');
-
-        // Dispatch the job with the file path
-        ProcessMedia::dispatch($tempPath, Auth::id());
-    }
-
-    $this->notification([
-        'title' => 'Media Uploaded!',
-        'description' => 'Your media has been uploaded and is being processed in the background.',
-        'icon' => 'success',
-    ]);
-
-
-}
 
 // #[On('echo-private:user.*.MediaProcessed')]
 // public function onMediaProcessed($event, $channel)

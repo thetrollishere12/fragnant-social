@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\UserMedia;
 use App\Observers\UserMediaObserver;
 
+use Laravel\Cashier\Cashier;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-         UserMedia::observe(UserMediaObserver::class);
+        UserMedia::observe(UserMediaObserver::class);
+        Cashier::calculateTaxes();
     }
 }

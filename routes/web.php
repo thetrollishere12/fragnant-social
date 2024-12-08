@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\GoogleLoginController;
-
+use App\Http\Controllers\SubscriptionController;
 
 
 use Intervention\Image\ImageManager;
@@ -48,9 +48,60 @@ Route::get('/image-test', function () {
 });
 
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::middleware([
+    'setPageAttributes'
+])->group(function () {
+
+
+
+
+    Route::get('/', function () {
+        return view('welcome');
+    });
+
+
+
+
+    // API/API Subscription
+
+    Route::get('subscription-pricing',[SubscriptionController::class, 'pricing'])->name('subscription-story-pricing');
+
+
+
+
+            Route::post('subscription-upgrade',[SubscriptionController::class, 'upgrade']);
+
+
+            // Stripe
+
+            Route::post('stripe-payment-subscription',[SubscriptionController::class, 'stripe_payment_subscription']);
+
+            // Route::post('stripe-payment-subscription-custom','SubscriptionController@stripe_payment_subscription_custom');
+
+            // Paypal
+
+            Route::post('paypal-payment-subscription',[SubscriptionController::class, 'paypal_payment_subscription']);
+
+
+
+
+
+
+    // Contact
+
+    Route::get('contact','ContactController@contact')->name('contact');
+
+    Route::post('send-contact','ContactController@send_contact');
+
+
+
+
+
+
 });
+
+
 
 Route::middleware([
     'auth:sanctum',

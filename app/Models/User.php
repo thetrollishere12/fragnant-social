@@ -2,13 +2,33 @@
 
 namespace App\Models;
 
-use Orchid\Filters\Types\Like;
-use Orchid\Filters\Types\Where;
-use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+// use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\HasTeams;
+use Laravel\Sanctum\HasApiTokens;
+use Laravel\Cashier\Billable;
 
-class User extends Authenticatable
+
+
+use Orchid\Metrics\Chartable;
+
+use Orchid\Filters\Filterable;
+
+class User extends Authenticatable implements MustVerifyEmail
 {
+    use Chartable;
+    use HasApiTokens;
+    use HasFactory;
+    use HasProfilePhoto;
+    use HasTeams;
+    use TwoFactorAuthenticatable;
+    use Notifiable, Billable;
+    use Filterable;
     /**
      * The attributes that are mass assignable.
      *
@@ -18,6 +38,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'permissions',
+        'google_id',
+        'fb_id',
     ];
 
     /**
@@ -29,6 +52,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'permissions',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
     ];
 
     /**

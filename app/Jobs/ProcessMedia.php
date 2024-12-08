@@ -13,94 +13,45 @@ use App\Models\MediaThumbnail;
 use App\Helper\FFmpegHelper;
 use Log;
 
-
-use App\Events\MediaProcessed;
-
-
-
 class ProcessMedia implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $tempPath;
-    protected $userId;
+    protected $mediaId;
 
-    /**
-     * Create a new job instance.
-     *
-     * @param string $tempPath
-     * @param int $userId
-     */
-    public function __construct($tempPath, $userId)
+    public function __construct($tempPath, $mediaId)
     {
         $this->tempPath = $tempPath;
-        $this->userId = $userId;
+        $this->mediaId = $mediaId;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
+        $media = UserMedia::find($this->mediaId);
+
+        if (!$media) {
+            Log::error("Media not found for ID: {$this->mediaId}");
+            return;
+        }
+
         $storage = 'public';
         $filePath = 'media';
         $thumbnailFolder = 'thumbnails';
 
-        // Move the file to final destination
         $originalName = basename($this->tempPath);
         $fileName = 'MD-' . \Str::uuid() . '.' . pathinfo($originalName, PATHINFO_EXTENSION);
 
+        // Move the file to the final destination
         $finalPath = Storage::disk($storage)->putFileAs(
             $filePath,
             Storage::disk('local')->path($this->tempPath),
             $fileName
         );
 
-        // Determine file type
         $mimeType = Storage::disk($storage)->mimeType($filePath . '/' . $fileName);
 
-    
-
-        // Clean up the temporary file
-        Storage::disk('local')->delete($this->tempPath);
-
-
-
-
-
-
-        // if ($type === 'video') {
-
-        //     $inputPath = $filePath . '/' . basename($path);
-        //     $compressedName = 'C-' . basename($path);
-        //     $compressedOutputPath = $filePath . '/' . $compressedName;
-
-        //     FFmpegHelper::compressVideo($inputPath, $compressedOutputPath, 1000);
-        //     Storage::disk($storage)->delete($inputPath);
-
-        //     $fileName = $compressedName;
-
-        // } elseif ($type === 'image') {
-
-        //     $inputPath = $filePath . '/' . basename($path);
-        //     $compressedName = 'C-' . basename($path);
-        //     $compressedOutputPath = $filePath . '/' . $compressedName;
-
-        //     FFmpegHelper::compressImage($inputPath, $compressedOutputPath, 75);
-        //     Storage::disk($storage)->delete($inputPath);
-
-        //     $fileName = $compressedName;
-
-        // }
-
-
-
-
-
-
-        // Determine the type of media based on MIME type
+        // Determine media type
         $type = match (true) {
             str_contains($mimeType, 'video/') => 'video',
             str_contains($mimeType, 'image/') => 'image',
@@ -108,57 +59,48 @@ class ProcessMedia implements ShouldQueue
             default => 'other',
         };
 
-        // Save media details to the database
-        $media = UserMedia::create([
+        // Update media metadata
+        $media->update([
             'storage' => $storage,
             'folder' => $filePath,
             'filename' => $fileName,
-            'size' => Storage::disk($storage)->size($filePath . '/' . $fileName),
-            'user_id' => $this->userId,
-            'type' => $type, // Save the detected type
+            'type' => $type,
         ]);
 
-        if (str_contains($mimeType, 'video/')) {
-            // Generate a thumbnail for the video
-            $thumbnailFilename = 'TH-' . \Str::uuid() . '.jpg';
-            $thumbnailOutputPath = $thumbnailFolder . '/' . $thumbnailFilename;
-
-            // Ensure thumbnail folder exists
-            Storage::disk($storage)->makeDirectory($thumbnailFolder);
-
-            // Call the generateThumbnail function
-            try {
-                FFmpegHelper::generateThumbnail(
-                    $filePath . '/' . $fileName, // Relative input path
-                    $thumbnailOutputPath, // Relative output path
-                    1, // Time in seconds
-                    300 // Width
-                );
-
-                // Save thumbnail details to database
-                MediaThumbnail::create([
-                    'media_id' => $media->id, // Update with actual media ID if available
-                    'storage' => $storage,
-                    'folder' => $thumbnailFolder,
-                    'filename' => $thumbnailFilename,
-                ]);
-
-                Log::info("Thumbnail generated successfully for video: {$filePath}/{$fileName}");
-
-                // Emit event after processing
-                event(new MediaProcessed($this->userId));
-
-            } catch (\Exception $e) {
-                Log::error("Failed to generate thumbnail for video: {$filePath}/{$fileName}", [
-                    'exception' => $e->getMessage(),
-                ]);
-                throw $e;
-            }
+        if ($type === 'video') {
+            $this->generateThumbnail($media, $storage, $filePath, $fileName, $thumbnailFolder);
         }
 
+        // Clean up temporary file
+        Storage::disk('local')->delete($this->tempPath);
+    }
 
+    private function generateThumbnail($media, $storage, $filePath, $fileName, $thumbnailFolder)
+    {
+        $thumbnailFilename = 'TH-' . \Str::uuid() . '.jpg';
+        $thumbnailOutputPath = $thumbnailFolder . '/' . $thumbnailFilename;
 
+        // Ensure thumbnail folder exists
+        Storage::disk($storage)->makeDirectory($thumbnailFolder);
 
+        try {
+            FFmpegHelper::generateThumbnail(
+                $filePath . '/' . $fileName,
+                $thumbnailOutputPath,
+                1,
+                300
+            );
 
+            MediaThumbnail::create([
+                'media_id' => $media->id,
+                'storage' => $storage,
+                'folder' => $thumbnailFolder,
+                'filename' => $thumbnailFilename,
+            ]);
+
+            Log::info("Thumbnail generated successfully for video: {$filePath}/{$fileName}");
+        } catch (\Exception $e) {
+            Log::error("Failed to generate thumbnail: {$e->getMessage()}");
+        }
     }
 }
