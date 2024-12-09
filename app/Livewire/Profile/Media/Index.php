@@ -15,6 +15,8 @@ use ZipArchive;
 use App\Helper\OpenAiHelper;
 use App\Helper\FFmpegHelper;
 
+use App\Helper\SubscriptionHelper;
+
 use App\Jobs\ProcessMedia;
 
 
@@ -62,8 +64,20 @@ class Index extends Component
 
         set_time_limit(0);
 
+        if(SubscriptionHelper::hasExceededStorageLimit(Auth::user()->id) == true){
+            return $this->dialog()->show([
+                'icon' => 'error',
+                'title' => 'Surpassed Storage Space!',
+                'description' => 'Woops, you surpassed your limit. Please <a href="'.url('subscription-pricing').'" style="color: #007bff; text-decoration: underline;">upgrade your subscription</a> to continue.',
+            ]);
+        }
+
         if (!$this->image) {
-            return;
+            return $this->dialog()->show([
+                'icon' => 'error',
+                'title' => 'Image Error!',
+                'description' => 'Woops, There was an issue. Please <a href="'.url('contact Us').'" style="color: #007bff; text-decoration: underline;">contact us</a> if the issue persist.',
+            ]);
         }
 
         foreach ($this->image as $uploadedFile) {

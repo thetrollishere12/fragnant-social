@@ -98,11 +98,9 @@
 
                         <!-- Not subbed -->
                         @else
-                                <form method="POST" action="{{ url('subscription-upgrade') }}">
-                                    @csrf
-                                    <input type="hidden" name="plan_id" value="{{ $subscription['id'] }}">
-                                    <button class="main-bg-c" type="submit">GET STARTED</button>
-                                </form>
+
+                                    <a href="{{ url('subscription-upgrade/'.$subscription['id']) }}"><button class="main-bg-c" type="submit">GET STARTED</button></a>
+                
                         @endif
                 @endif
 

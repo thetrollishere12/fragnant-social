@@ -63,36 +63,21 @@ Route::middleware([
 
 
 
-    // API/API Subscription
+    
+
 
     Route::get('subscription-pricing',[SubscriptionController::class, 'pricing'])->name('subscription-story-pricing');
 
 
 
 
-            Route::post('subscription-upgrade',[SubscriptionController::class, 'upgrade']);
-
-
-            // Stripe
-
-            Route::post('stripe-payment-subscription',[SubscriptionController::class, 'stripe_payment_subscription']);
-
-            // Route::post('stripe-payment-subscription-custom','SubscriptionController@stripe_payment_subscription_custom');
-
-            // Paypal
-
-            Route::post('paypal-payment-subscription',[SubscriptionController::class, 'paypal_payment_subscription']);
-
-
-
-
-
+    
 
     // Contact
 
-    Route::get('contact','ContactController@contact')->name('contact');
+    // Route::get('contact','ContactController@contact')->name('contact');
 
-    Route::post('send-contact','ContactController@send_contact');
+    // Route::post('send-contact','ContactController@send_contact');
 
 
 
@@ -153,6 +138,38 @@ Route::get('/download-published-media/{id}', function($id){
     return back()->with('error', 'File not found.');
 
 })->name('download.published-media');
+
+
+
+
+
+
+
+
+    // API/API Subscription
+    Route::get('user/subscription',function(){
+        return view('profile.subscription');
+    });
+
+
+    Route::get('subscription-upgrade/{subscription_id}',[SubscriptionController::class, 'upgrade']);
+
+
+    Route::post('/user/subscription/update-payment-info',[SubscriptionController::class, 'stripe_subscription_payment_update']);
+    
+    Route::post('subscription-change',[SubscriptionController::class, 'change']);
+
+    Route::post('stripe-payment-subscription',[SubscriptionController::class, 'stripe_payment_subscription']);
+
+    Route::get('stripe-payment-subscription/{plan_id}',[SubscriptionController::class, 'stripe_payment_subscription_v2']);
+
+    // Paypal
+
+    Route::post('paypal-payment-subscription',[SubscriptionController::class, 'paypal_payment_subscription']);
+
+
+
+
 
 
 

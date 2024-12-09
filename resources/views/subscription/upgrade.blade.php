@@ -55,7 +55,7 @@ Upgrade Subscription
 
 <div class="order-first md:order-last" style="box-shadow: -6px 0 16px -9px rgb(0 0 0 / 10%);">
 
-    @livewire('stripe.subscription',['plan_id'=>$req->plan_id])
+    @livewire('stripe.subscription',['plan_id'=> $plan->id])
 </div>
 
 

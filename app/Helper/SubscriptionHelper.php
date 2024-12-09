@@ -62,7 +62,7 @@ public static function is_subscribed_type($id,$product_name){
             $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
         })->get();
 
-        $stripe = User::find($id)->subscriptions()->active()->whereIn('stripe_price',$plan_name)->get();
+        $stripe = User::find($id)->subscriptions()->active()->whereIn('type',$plan_name)->get();
 
         $both = $paypal->merge($stripe);
 
@@ -78,7 +78,7 @@ public static function is_subscribed_to($id,$name){
             $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
         })->get();
 
-        $stripe = User::find($id)->subscriptions()->active()->whereIn('stripe_price', $name)->get();
+        $stripe = User::find($id)->subscriptions()->active()->whereIn('type', $name)->get();
 
     }else{
 
@@ -86,7 +86,7 @@ public static function is_subscribed_to($id,$name){
             $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
         })->get();
 
-        $stripe = User::find($id)->subscriptions()->active()->where('stripe_price', $name)->get();
+        $stripe = User::find($id)->subscriptions()->active()->where('type', $name)->get();
 
     }
 
@@ -107,7 +107,7 @@ public static function user_is_subscribed_type($product_name){
             $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
         })->get();
 
-        $stripe = auth()->user()->subscriptions()->active()->whereIn('stripe_price',$plan_name)->get();
+        $stripe = auth()->user()->subscriptions()->active()->whereIn('type',$plan_name)->get();
 
         $both = $paypal->merge($stripe);
 
@@ -123,7 +123,7 @@ public static function user_is_subscribed_to($name){
             $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
         })->get();
 
-        $stripe = auth()->user()->subscriptions()->active()->whereIn('stripe_price', $name)->get();
+        $stripe = auth()->user()->subscriptions()->active()->whereIn('type', $name)->get();
 
     }else{
 
@@ -131,7 +131,7 @@ public static function user_is_subscribed_to($name){
             $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
         })->get();
 
-        $stripe = auth()->user()->subscriptions()->active()->where('stripe_price', $name)->get();
+        $stripe = auth()->user()->subscriptions()->active()->where('type', $name)->get();
 
     }
 
@@ -171,7 +171,7 @@ public static function user_is_pastDue($product_name){
 
     $plan_name = SubscriptionPlan::where('subscription_product_id',$product->id)->pluck('name')->toArray();
 
-    $stripe = Auth::user()->subscriptions()->pastDue()->whereIn('stripe_price',$plan_name)->get();
+    $stripe = Auth::user()->subscriptions()->pastDue()->whereIn('type',$plan_name)->get();
 
     $both = $stripe;
 
@@ -185,7 +185,7 @@ public static function user_is_onGracePeriod($product_name){
 
     $plan_name = SubscriptionPlan::where('subscription_product_id',$product->id)->pluck('name')->toArray();
 
-    $stripe = Auth::user()->subscriptions()->active()->where('ends_at','!=',NULL)->where('ends_at','>',Carbon::today())->whereIn('stripe_price',$plan_name)->get();
+    $stripe = Auth::user()->subscriptions()->active()->where('ends_at','!=',NULL)->where('ends_at','>',Carbon::today())->whereIn('type',$plan_name)->get();
 
     $paypal = PaypalSubscription::where('user_id',auth()->user()->id)->where('paypal_status','=','active')->where('ends_at','!=',NULL)->where('ends_at','>',Carbon::today())->whereIn('name',$plan_name)->get();
 
@@ -202,7 +202,7 @@ public static function cancel_user_subscription($product_name){
         case 'Stripe':
 
             Stripe::setApiKey(env('STRIPE_SECRET'));
-            $stripe_name = $subscription->name;
+            $stripe_name = $subscription->type;
             auth()->user()->subscription($stripe_name)->cancel();
 
             break;
@@ -234,7 +234,7 @@ public static function resume_user_subscription($product_name){
 
             Stripe::setApiKey(env('STRIPE_SECRET'));
 
-            $stripe_name = $subscription->name;
+            $stripe_name = $subscription->type;
 
             auth()->user()->subscription($stripe_name)->resume();
 
@@ -268,65 +268,91 @@ public static function resume_user_subscription($product_name){
 // Custom
 
 
-    /**
-     * Check if the user has exceeded the monthly video upload limit.
-     */
-    public static function hasExceededMonthlyVideoLimit(int $userId, int $limit = 15): bool
-    {
 
-        // Check if the user is subscribed
+
+
+
+
+
+
+
+
+    /**
+     * Get the current storage used by the user.
+     */
+    public static function getCurrentStorageUsed(int $userId): int
+    {
+        return UserMedia::getTotalStorageUsed($userId);
+    }
+
+    /**
+     * Get the maximum storage limit for the user.
+     */
+    public static function getMaxStorageLimit(int $userId): int
+    {
         $subscriptions = self::is_subscribed($userId);
 
-        // If no active subscription, use default limit
         if ($subscriptions->isEmpty()) {
-            $limit = 1; // Default limit
-        } else {
-            // Retrieve the first subscription's metadata
-            $subscription = $subscriptions->first();
-            $planName = $subscription->name ?? $subscription->plan_name;
-
-            $plan = SubscriptionPlan::where('name', $planName)->first();
-            $limit = $plan->plan_metadata['max_videos'] ?? 1; // Use metadata or default
+            return 0; // Default limit in GB
         }
 
-        // Check the user's monthly video count against the limit
-        return UserMedia::getMonthlyVideoCount($userId) >= $limit;
+        $subscription = $subscriptions->first();
+        $planName = $subscription->type;
+        $plan = SubscriptionPlan::where('name', $planName)->first();
 
+        $maxStorageGB = $plan->plan_metadata['max_storage'] ?? 0; // Use metadata or default
+
+        // Convert GB to bytes
+        return $maxStorageGB * 1024 * 1024 * 1024;
     }
 
     /**
      * Check if the user has exceeded the storage limit.
      */
-    public static function hasExceededStorageLimit(int $userId, int $maxStorageGB = 5): bool
+    public static function hasExceededStorageLimit(int $userId): bool
     {
-    
-        // Check if the user is subscribed
-        $subscriptions = self::is_subscribed($userId);
+        $currentStorage = self::getCurrentStorageUsed($userId);
+        $maxStorage = self::getMaxStorageLimit($userId);
 
-        // If no active subscription, use default storage limit
-        if ($subscriptions->isEmpty()) {
-            $maxStorageGB = 0; // Default limit in GB
-        } else {
-            // Retrieve the first subscription's metadata
-            $subscription = $subscriptions->first();
-            $planName = $subscription->name ?? $subscription->plan_name;
-
-            $plan = SubscriptionPlan::where('name', $planName)->first();
-            $maxStorageGB = $plan->plan_metadata['max_storage'] ?? 0; // Use metadata or default
-        }
-
-        // Convert GB to bytes
-        $maxStorageBytes = $maxStorageGB * 1024 * 1024 * 1024;
-
-        // Check the user's storage usage against the limit
-        return UserMedia::getTotalStorageUsed($userId) >= $maxStorageBytes;
-
+        return $currentStorage >= $maxStorage;
     }
 
+    /**
+     * Get the current monthly video upload count for the user.
+     */
+    public static function getMonthlyVideoCount(int $userId): int
+    {
+        return UserMedia::getMonthlyVideoCount($userId);
+    }
 
+    /**
+     * Get the monthly video upload limit for the user.
+     */
+    public static function getMaxMonthlyVideoLimit(int $userId): int
+    {
+        $subscriptions = self::is_subscribed($userId);
 
+        if ($subscriptions->isEmpty()) {
+            return 1; // Default limit
+        }
 
+        $subscription = $subscriptions->first();
+        $planName = $subscription->type;
+        $plan = SubscriptionPlan::where('name', $planName)->first();
 
+        return $plan->plan_metadata['max_videos'] ?? 1; // Use metadata or default
+    }
+
+    /**
+     * Check if the user has exceeded the monthly video upload limit.
+     */
+    public static function hasExceededMonthlyVideoLimit(int $userId): bool
+    {
+        $currentVideoCount = self::getMonthlyVideoCount($userId);
+        $maxVideoLimit = self::getMaxMonthlyVideoLimit($userId);
+
+        return $currentVideoCount >= $maxVideoLimit;
+    }
 
 
 

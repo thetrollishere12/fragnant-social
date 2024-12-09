@@ -28,8 +28,11 @@ use App\Models\SubscriptionProduct;
 
 class SubscriptionController extends Controller
 {
-    
-    public function pricing(){
+ 
+
+
+
+public function pricing(){
         return view('subscription.pricing',[
             'products'=>SubscriptionProduct::all()
         ]);
@@ -37,20 +40,22 @@ class SubscriptionController extends Controller
 
 
 
-    public function upgrade(Request $req){
+    public function upgrade(Request $req, $subscription_id){
 
         try{
 
-        $json = SubscriptionPlan::find($req->plan_id);
+            $plan = SubscriptionPlan::find($subscription_id);
 
-        if (SubscriptionHelper::user_is_subscribed_to($json->name)->count() > 0) {
-            return redirect('subscription-api-pricing');
-        }
+            if (SubscriptionHelper::user_is_subscribed_to($plan->name)->count() > 0) {
+                return redirect('subscription-api-pricing');
+            }
 
-        return view('subscription.upgrade',["plan"=>$json,"req"=>$req]);
+            return view('subscription.upgrade',["plan"=>$plan]);
 
         }catch(\Exception $e){
+
             return redirect('subscription-api-pricing');
+
         }
 
     }
@@ -94,9 +99,86 @@ class SubscriptionController extends Controller
             'payment_method'=>'Stripe'
          ]);
 
-        return redirect('user/subscription');
+        return redirect('user/developer');
 
     }
+
+
+    public function stripe_payment_subscription_v2(Request $req, $plan_id){
+
+
+        if(!$req->payment_intent){
+            return redirect('subscription-api-pricing');
+        }
+
+
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+
+        $paymentIntent = $stripe->paymentIntents->retrieve($req->payment_intent, []);
+
+
+        if (!$paymentIntent) {
+            return redirect('subscription-api-pricing');
+        }
+
+        try{
+
+            $user = $req->user();
+
+            $user->createOrGetStripeCustomer();
+
+            $user->updateDefaultPaymentMethod($paymentIntent->payment_method);
+
+            $plan = SubscriptionPlan::find($plan_id);
+
+            $stripe_subscription = $stripe->subscriptions->all([
+                'status' => 'active',
+                'limit' => 1,
+                'customer' => $user->stripe_id
+            ])->data[0];
+
+            $stripe->subscriptions->update($stripe_subscription->id,
+                [
+              'default_payment_method'=>$paymentIntent->payment_method
+            ]);
+
+            $new_subscription = Subscription::firstOrcreate([
+                'stripe_id'=>$stripe_subscription->id
+            ],
+            [
+                'user_id'=>$user->id,
+                'type'=>$plan->name,
+                'stripe_id'=>$stripe_subscription->id,
+                'stripe_price'=>$plan->stripe_plan_id,
+                'quantity'=>1,
+                'payment_method'=>'Stripe',
+                'stripe_status'=>'active'
+            ]);
+
+            SubscriptionItem::firstOrcreate([
+                'stripe_id'=>$stripe_subscription->items->data[0]->id,
+            ],[
+                'subscription_id'=>$new_subscription->id,
+                'stripe_id'=>$stripe_subscription->items->data[0]->id,
+                'stripe_product'=>$stripe_subscription->items->data[0]->plan->product,
+                'stripe_price'=>$stripe_subscription->items->data[0]->plan->id,
+                'quantity'=>1
+            ]);
+
+
+        }catch(\Exception $e){
+
+
+            return back()->withErrors($e->getMessage());
+
+            
+        }
+        
+        return redirect('user/developer');
+
+    }
+
+
 
     public function change_subscription(Request $req){
 
@@ -135,7 +217,7 @@ class SubscriptionController extends Controller
 
             }
 
-            return redirect('user/subscription');
+            return redirect('user/developer');
 
         }else{
 
@@ -187,6 +269,17 @@ class SubscriptionController extends Controller
             return response()->json(['message' => 'There was an error with subscription'],404);
 
         }
+
+    }
+
+
+
+    public function stripe_subscription_payment_update(Request $request){
+
+
+        Auth::user()->updateDefaultPaymentMethod($request->paymentMethod);
+
+        return Redirect(url('/user/developer'))->with('success','Payment method has been updated.');
 
     }
 

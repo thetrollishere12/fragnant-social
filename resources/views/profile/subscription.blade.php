@@ -8,14 +8,14 @@
 
     <div class="md:flex">
 
-        <x-profile-nav>
+        <x-custom.profile-nav>
             <x-slot name="url">subscription</x-slot>
-        </x-profile-nav>
+        </x-custom.profile-nav>
 
         <div class="w-full border-l border-gray-200 p-4">
 
         <x-validation-errors class="mb-4" />
-        <x-validation-success class="my-2" />
+
 
         <div>
            <div class="md:col-span-1 flex justify-between">
