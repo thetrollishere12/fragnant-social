@@ -324,7 +324,7 @@ public function addBenefits()
 
         $this->reset();
 
-        return $this->notification([
+        return $this->notification()->send([
             'title'       => 'Created!',
             'description' => 'Product was created',
             'icon'        => 'success',
@@ -441,7 +441,7 @@ public function addBenefits()
 
         $this->reset();
 
-        return $this->notification([
+        return $this->notification()->send([
             'title'       => 'Created!',
             'description' => 'Plan was created',
             'icon'        => 'success',

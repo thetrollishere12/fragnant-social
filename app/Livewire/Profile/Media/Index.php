@@ -101,7 +101,7 @@ class Index extends Component
             
         }
 
-        $this->notification([
+        $this->notification()->send([
             'title' => 'Media Uploaded!',
             'description' => 'Your media has been uploaded and is being processed in the background.',
             'icon' => 'success',
@@ -152,7 +152,7 @@ class Index extends Component
                     }
                     $zip->close();
                 } else {
-                    $this->notification([
+                    $this->notification()->send([
                         'title' => 'Cannot Download!',
                         'description' => 'Please try again later',
                         'icon' => 'error',
@@ -166,7 +166,7 @@ class Index extends Component
                 }
             }
         } catch (\Exception $e) {
-            $this->notification([
+            $this->notification()->send([
                 'title' => 'Cannot Download!',
                 'description' => 'Please try again later',
                 'icon' => 'error',
@@ -190,7 +190,7 @@ class Index extends Component
 
         $this->selectedMedia = [];
 
-        $this->notification([
+        $this->notification()->send([
             'title' => 'Deleted!',
             'description' => 'Media was deleted',
             'icon' => 'success',
@@ -238,7 +238,7 @@ class Index extends Component
                 ['description' => $this->mediaDescription]
             );
 
-            $this->notification([
+            $this->notification()->send([
                 'title' => 'Media Updated!',
                 'description' => 'The media details have been updated successfully.',
                 'icon' => 'success',

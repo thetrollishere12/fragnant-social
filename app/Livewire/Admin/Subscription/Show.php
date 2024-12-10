@@ -81,7 +81,7 @@ class Show extends Component
 
         SubscriptionPlan::where('id',$this->plan_id)->update($data);
 
-        return $this->notification([
+        return $this->notification()->send([
             'title'       => 'Saved!',
             'description' => 'Plan was saved',
             'icon'        => 'success',

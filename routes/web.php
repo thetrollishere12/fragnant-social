@@ -114,9 +114,7 @@ Route::middleware([
 
 
     Route::get('user/published', function(){
-        return view('profile.media.published',[
-            'published' => PublishedMedia::where('user_id',Auth::user()->id)->get()
-        ]);
+        return view('profile.media.published');
     });
 
 

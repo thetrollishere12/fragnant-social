@@ -129,7 +129,7 @@ class Subscription extends Component
 
         SubscriptionHelper::cancel_user_subscription($type);
 
-        $this->notification([
+        $this->notification()->send([
             'title'       => 'Subscription was cancelled',
             'description' => 'Your subscription was successfully cancelled',
             'icon'        => 'error',
@@ -141,7 +141,7 @@ class Subscription extends Component
 
         SubscriptionHelper::resume_user_subscription($type);
 
-        $this->notification([
+        $this->notification()->send([
             'title'       => 'Subscription was resumed',
             'description' => 'Your subscription was successfully resumed',
             'icon'        => 'success',
