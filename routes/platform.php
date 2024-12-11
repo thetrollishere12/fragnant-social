@@ -27,7 +27,7 @@ use App\Orchid\Screens\Webpage\WebpageEditScreen;
 use App\Orchid\Screens\Webpage\WebpageListScreen;
 
 
-
+use App\Orchid\Screens\WebsiteBlock\WebsiteBlockScreen;
 /*
 |--------------------------------------------------------------------------
 | Dashboard Routes
@@ -127,3 +127,11 @@ Route::screen('webpage/title-description/{webpage?}/edit', WebpageEditScreen::cl
 
 Route::screen('webpage/title-descriptions', WebpageListScreen::class)
     ->name('platform.webpage.list');
+
+
+
+
+    // Website Blocks
+
+    Route::screen('website-block', WebsiteBlockScreen::class)
+    ->name('platform.website-block');

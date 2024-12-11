@@ -10,8 +10,10 @@
     <!-- Primary Navigation Menu -->
     <div class="">
 
-        @if(env('HEADER_MESSAGE'))
-        <div class="mx-auto px-2 sm:px-4 lg:px-6 py-2 main-bg-c text-xs text-center text-white">{{ env('HEADER_MESSAGE') }}</div>
+        @if(isset($blocks['HEADER_MESSAGE']))
+            <div class="mx-auto px-2 sm:px-4 lg:px-6 py-2 text-center text-white {{ $blocks['HEADER_CLASS_COLOR'] ?? 'main-bg-c' }}">
+                {!! $blocks['HEADER_MESSAGE'] !!}
+            </div>
         @endif
 
         <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 flex justify-between py-2.5">
@@ -31,7 +33,7 @@
 
             <div class="hidden space-x-6 sm:-my-px sm:ml-10 sm:flex">
 
-                <x-nav-link href="{{ url('subscription-story-pricing') }}">
+                <x-nav-link href="{{ url('subscription-pricing') }}">
                     {{ __('Pricing') }}
                 </x-nav-link>
 
@@ -130,7 +132,7 @@
 
         <div class="space-y-1">
             
-                <x-responsive-nav-link href="{{ url('subscription-story-pricing') }}">
+                <x-responsive-nav-link href="{{ url('subscription-pricing') }}">
                     {{ __('Pricing') }}
                 </x-responsive-nav-link>
 

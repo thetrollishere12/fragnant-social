@@ -56,138 +56,134 @@ Route::middleware([
 
 
 
-    Route::get('/', function () {
-        return view('welcome');
+        Route::get('/', function () {
+            return view('welcome');
+        });
+
+
+
+
+        Route::get('subscription-pricing',[SubscriptionController::class, 'pricing'])->name('subscription-story-pricing');
+
+
+
+
+        // Contact
+
+        Route::get('contact',function(){
+            return view('contact.index');
+        })->name('contact');
+
+
+
+
+
+    Route::middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+    ])->group(function () {
+
+
+
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+
+
+
+        // Project
+        Route::get('user/media', function(){
+            return view('profile.media.index');
+        });
+
+
+        Route::get('user/media-setting', function(){
+            return view('profile.media.setting');
+        });
+
+
+        Route::get('user/published', function(){
+            return view('profile.media.published');
+        });
+
+
+
+
+    Route::get('/download-published-media/{id}', function($id){
+
+        $history = PublishedMedia::findOrFail($id);
+
+        // published/combined_reel_user_1_20241126_040840.mp4
+        $filePath = $history->url;
+
+        // Check if the file exists
+        if (Storage::disk('public')->exists($filePath)) {
+            // Use Storage facade to download the file
+            return Storage::disk('public')->download($filePath);
+        }
+
+        return back()->with('error', 'File not found.');
+
+    })->name('download.published-media');
+
+
+
+
+
+
+
+
+        // API/API Subscription
+        Route::get('user/subscription',function(){
+            return view('profile.subscription');
+        });
+
+
+        Route::get('subscription-upgrade/{subscription_id}',[SubscriptionController::class, 'upgrade']);
+
+
+        Route::post('/user/subscription/update-payment-info',[SubscriptionController::class, 'stripe_subscription_payment_update']);
+        
+        Route::post('subscription-change',[SubscriptionController::class, 'change']);
+
+        Route::post('stripe-payment-subscription',[SubscriptionController::class, 'stripe_payment_subscription']);
+
+        Route::get('stripe-payment-subscription/{plan_id}',[SubscriptionController::class, 'stripe_payment_subscription_v2']);
+
+        // Paypal
+
+        Route::post('paypal-payment-subscription',[SubscriptionController::class, 'paypal_payment_subscription']);
+
+
+
+
+
+
+
+
+
+
     });
 
 
 
+    Route::middleware([
+        'guest',
+    ])->withoutMiddleware(['logout'])->group(function () {
 
-    
+        // Login
 
+        Route::get('google-login', [GoogleLoginController::class, 'redirect']);
 
-    Route::get('subscription-pricing',[SubscriptionController::class, 'pricing'])->name('subscription-story-pricing');
+        Route::get('google-callback', [GoogleLoginController::class, 'success']);
 
+        Route::get('google-link', [GoogleLoginController::class, 'link']);
 
+        Route::post('google-linking', [GoogleLoginController::class, 'linking']);
 
-
-    
-
-    // Contact
-
-    // Route::get('contact','ContactController@contact')->name('contact');
-
-    // Route::post('send-contact','ContactController@send_contact');
-
-
-
-
-
-
-});
-
-
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-
-
-
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-
-
-    // Project
-    Route::get('user/media', function(){
-        return view('profile.media.index');
     });
 
 
-    Route::get('user/media-setting', function(){
-        return view('profile.media.setting');
-    });
-
-
-    Route::get('user/published', function(){
-        return view('profile.media.published');
-    });
-
-
-
-
-Route::get('/download-published-media/{id}', function($id){
-
-    $history = PublishedMedia::findOrFail($id);
-
-    // published/combined_reel_user_1_20241126_040840.mp4
-    $filePath = $history->url;
-
-    // Check if the file exists
-    if (Storage::disk('public')->exists($filePath)) {
-        // Use Storage facade to download the file
-        return Storage::disk('public')->download($filePath);
-    }
-
-    return back()->with('error', 'File not found.');
-
-})->name('download.published-media');
-
-
-
-
-
-
-
-
-    // API/API Subscription
-    Route::get('user/subscription',function(){
-        return view('profile.subscription');
-    });
-
-
-    Route::get('subscription-upgrade/{subscription_id}',[SubscriptionController::class, 'upgrade']);
-
-
-    Route::post('/user/subscription/update-payment-info',[SubscriptionController::class, 'stripe_subscription_payment_update']);
-    
-    Route::post('subscription-change',[SubscriptionController::class, 'change']);
-
-    Route::post('stripe-payment-subscription',[SubscriptionController::class, 'stripe_payment_subscription']);
-
-    Route::get('stripe-payment-subscription/{plan_id}',[SubscriptionController::class, 'stripe_payment_subscription_v2']);
-
-    // Paypal
-
-    Route::post('paypal-payment-subscription',[SubscriptionController::class, 'paypal_payment_subscription']);
-
-
-
-
-
-
-
-
-
-
-});
-
-Route::middleware([
-    'guest',
-])->withoutMiddleware(['logout'])->group(function () {
-
-    // Login
-
-    Route::get('google-login', [GoogleLoginController::class, 'redirect']);
-
-    Route::get('google-callback', [GoogleLoginController::class, 'success']);
-
-    Route::get('google-link', [GoogleLoginController::class, 'link']);
-
-    Route::post('google-linking', [GoogleLoginController::class, 'linking']);
 
 });

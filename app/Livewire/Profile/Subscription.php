@@ -192,7 +192,36 @@ class Subscription extends Component
         ],
     ];
 
-    return view('livewire.profile.subscription')->with('chartData', $chartData);
+
+
+
+
+
+
+
+    // Fetch user data
+    $currentStorage = SubscriptionHelper::getCurrentStorageUsed(Auth::user()->id); // Bytes
+    $maxStorage = SubscriptionHelper::getMaxStorageLimit(Auth::user()->id); // Bytes
+
+    $storage_data = [
+        'currentStorage'=>round($currentStorage/1024 / 1024 / 1024,2),
+        'maxStorage'=>$maxStorage/1024 / 1024 / 1024
+    ];
+
+    // Fetch user video data
+    $currentVideoCount = SubscriptionHelper::getMonthlyVideoCount(Auth::user()->id);
+    $maxVideoLimit = SubscriptionHelper::getMaxMonthlyVideoLimit(Auth::user()->id);
+
+    $video_data = [
+        'currentVideoCount' => $currentVideoCount,
+        'maxVideoLimit' => $maxVideoLimit,
+    ];
+
+    return view('livewire.profile.subscription',[
+        'chartData' => $chartData,
+        'storage_data' =>$storage_data,
+        'video_data' => $video_data
+    ]);
 }
 
 

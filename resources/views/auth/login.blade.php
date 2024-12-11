@@ -25,53 +25,56 @@
 
 
 
-
+        
 
 
 
         <form method="POST" action="{{ route('login') }}">
-            @csrf
 
-            <div>
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" placeholder="Email Address" name="email" :value="old('email')" required autofocus />
-            </div>
+            @if(isset($blocks['WEBSITE_LOGIN']) && $blocks['WEBSITE_LOGIN'] == 'TRUE')
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" placeholder="Password" name="password" required autocomplete="current-password" />
-            </div>
+                        @csrf
 
-            <div class="block mt-4">
-                <label for="remember_me" class="flex items-center">
-                    <x-checkbox id="remember_me" name="remember" />
-                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                </label>
-            </div>
+                        <div>
+                            <x-label for="email" value="{{ __('Email') }}" />
+                            <x-input id="email" class="block mt-1 w-full" type="email" placeholder="Email Address" name="email" :value="old('email')" required autofocus />
+                        </div>
 
-            <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
+                        <div class="mt-4">
+                            <x-label for="password" value="{{ __('Password') }}" />
+                            <x-input id="password" class="block mt-1 w-full" type="password" placeholder="Password" name="password" required autocomplete="current-password" />
+                        </div>
 
-                <x-button type="submit" class="ml-4 main-bg-c text-white">
-                    {{ __('Log in') }}
-                </x-button>
-            </div>
+                        <div class="block mt-4">
+                            <label for="remember_me" class="flex items-center">
+                                <x-checkbox id="remember_me" name="remember" />
+                                <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                            </label>
+                        </div>
 
-            <x-custom.google-login-button>
+                        <div class="flex items-center justify-end mt-4">
+                            @if (Route::has('password.request'))
+                                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
+                                    {{ __('Forgot your password?') }}
+                                </a>
+                            @endif
+
+                            <x-button type="submit" class="ml-4 main-bg-c text-white">
+                                {{ __('Log in') }}
+                            </x-button>
+                        </div>
+            @endif
+            <x-google-login-button>
                 @if(isset($redirect))
                 <x-slot name="link">{{ $redirect }}</x-slot>
                 @endif
-            </x-custom.google-login-button>
+            </x-google-login-button>
 
-            <!-- <x-custom.facebook-login-button>
+            <!-- <x-facebook-login-button>
                 @if(isset($redirect))
                 <x-slot name="link">{{ $redirect }}</x-slot>
                 @endif
-            </x-custom.facebook-login-button> -->
+            </x-facebook-login-button> -->
 
             <br>
             <div class="border-b border-gray-200"></div>
@@ -87,6 +90,8 @@
             @endif
             
         </form>
+
+        
     </x-authentication-card>
 
 </x-guest-layout>

@@ -19,21 +19,20 @@
 
 
 
-        <x-custom.google-login-button>
+        <x-google-login-button>
             @if(isset($redirect))
             <x-slot name="link">{{ $redirect }}</x-slot>
             @endif
-        </x-custom.google-login-button>
-      <!--   <x-custom.facebook-login-button>
-            @if(isset($redirect))
-            <x-slot name="link">{{ $redirect }}</x-slot>
-            @endif
-        </x-custom.facebook-login-button> -->
+        </x-google-login-button>
+       
         <br>
         <div class="border-b border-gray-200"></div>
         <br>
 
         <form method="POST" action="{{ route('register') }}">
+
+            @if(isset($blocks['WEBSITE_LOGIN']) && $blocks['WEBSITE_LOGIN'] == 'TRUE')
+
             @csrf
 
             <div>
@@ -73,14 +72,18 @@
                 </div>
             @endif
 
+            @endif
+
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}@if(isset($redirect))?link={{ $redirect }}@endif">
                     {{ __('Already registered?') }}
                 </a>
 
+                @if(isset($blocks['WEBSITE_LOGIN']) && $blocks['WEBSITE_LOGIN'] == 'TRUE')
                 <x-button type="submit" class="ml-4 main-bg-c text-white">
                     {{ __('Register') }}
                 </x-button>
+                @endif
             </div>
 
             @if(isset($redirect))

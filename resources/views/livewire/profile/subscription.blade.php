@@ -81,78 +81,7 @@
     <script type="text/javascript" src="{{ asset('js/billing.js') }}"></script>
 
 
-
-
-<div class="grid md:grid-cols-2 gap-3 mt-3">
-    <div class="bg-white rounded-lg p-2 shadow">
-        <canvas class="w-full" id="countChart"></canvas>
-    </div>
-</div>
-
-    
-    <script>
-
-document.addEventListener('livewire:initialized', function () {
-    console.log("Livewire loaded successfully.");
-
-    let countCtx = document.getElementById('countChart').getContext('2d');
-
-    let chartDataValues = @json($chartData['video_count']['values']).map(Number);
-
-
-    let countChartData = {
-        labels: @json($chartData['labels']),
-        datasets: [
-            {
-                label: @json($chartData['video_count']['name']),
-                backgroundColor: '#6366f1',
-                data: chartDataValues,
-            },
-        ],
-    };
-
-    let maxCountValue = Math.max(...countChartData.datasets[0].data);
-
-    let countChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: {
-                grid: {
-                    display: false,
-                },
-                ticks: {
-                    font: {
-                        size: 10,
-                    },
-                },
-            },
-            y: {
-                grid: {},
-                max: maxCountValue + 5,
-                ticks: {
-                    beginAtZero: true,
-                    precision: 0,
-                    stepSize: 1,
-                    font: {
-                        size: 10,
-                    },
-                },
-            },
-        },
-    };
-
-    new Chart(countCtx, {
-        type: 'bar',
-        data: countChartData,
-        options: countChartOptions,
-    });
-});
-
-    </script>
-
-
-    @foreach($subscriptions as $key => $subscription)
+@foreach($subscriptions as $key => $subscription)
 
 
 
@@ -232,7 +161,7 @@ document.addEventListener('livewire:initialized', function () {
 
         <div></div>
 
-        <div class="shadow bg-white rounded-lg m-2 w-full mx-auto">
+        <div class="shadow-md bg-white rounded-lg m-2 w-full mx-auto">
 
             <div class="rounded-t-lg capitalize main-bg-c text-white text-lg px-8 py-3">{{ $subscription['details']["name"] }}</div>
 
@@ -275,5 +204,140 @@ document.addEventListener('livewire:initialized', function () {
     @endif
 
     @endforeach
+
+<div class="grid md:grid-cols-2 gap-3 mt-3">
+ 
+
+
+<!-- Storage Usage -->
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">Storage Usage</h2>
+    <div class="flex items-center justify-between mb-4">
+        <div class="text-left">
+            <p class="text-sm font-medium text-gray-500">Used</p>
+            <p class="text-2xl font-bold text-gray-800">{{ $storage_data['currentStorage'] }} GB</p>
+        </div>
+        <div class="text-left">
+            <p class="text-sm font-medium text-gray-500">Max Allowed</p>
+            <p class="text-2xl font-bold text-gray-800">{{ $storage_data['maxStorage'] }} GB</p>
+        </div>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-2.5 relative">
+        <div 
+            class="{{ $storage_data['currentStorage'] > $storage_data['maxStorage'] ? 'bg-red-500' : 'main-bg-c' }} h-2.5 rounded-full" 
+            style="width: {{ min(($storage_data['currentStorage'] / $storage_data['maxStorage']) * 100, 100) }}%">
+        </div>
+    </div>
+    <p class="text-sm mt-2 text-gray-500 text-right">
+        {{ round(($storage_data['currentStorage'] / $storage_data['maxStorage']) * 100, 2) }}% used
+    </p>
+    @if ($storage_data['currentStorage'] > $storage_data['maxStorage'])
+        <p class="text-sm mt-2 text-red-500 font-bold text-right">You have surpassed your storage limit!</p>
+    @endif
+</div>
+
+<!-- Monthly Video Uploads -->
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">Monthly Video Uploads</h2>
+    <div class="flex items-center justify-between mb-4">
+        <div class="text-left">
+            <p class="text-sm font-medium text-gray-500">Uploaded</p>
+            <p class="text-2xl font-bold text-gray-800">{{ $video_data['currentVideoCount'] }}</p>
+        </div>
+        <div class="text-left">
+            <p class="text-sm font-medium text-gray-500">Max Allowed</p>
+            <p class="text-2xl font-bold text-gray-800">{{ $video_data['maxVideoLimit'] }}</p>
+        </div>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-2.5 relative">
+        <div 
+            class="{{ $video_data['currentVideoCount'] > $video_data['maxVideoLimit'] ? 'bg-red-500' : 'bg-green-500' }} h-2.5 rounded-full" 
+            style="width: {{ min(($video_data['currentVideoCount'] / $video_data['maxVideoLimit']) * 100, 100) }}%">
+        </div>
+    </div>
+    <p class="text-sm mt-2 text-gray-500 text-right">
+        {{ round(($video_data['currentVideoCount'] / $video_data['maxVideoLimit']) * 100, 2) }}% used
+    </p>
+    @if ($video_data['currentVideoCount'] > $video_data['maxVideoLimit'])
+        <p class="text-sm mt-2 text-red-500 font-bold text-right">You have surpassed your video upload limit!</p>
+    @endif
+
+</div>
+
+
+
+   <div class="bg-white rounded-lg p-2 shadow">
+        <canvas class="w-full" id="countChart"></canvas>
+    </div>
+
+
+
+
+</div>
+
+    
+    <script>
+
+document.addEventListener('livewire:initialized', function () {
+    console.log("Livewire loaded successfully.");
+
+    let countCtx = document.getElementById('countChart').getContext('2d');
+
+    let chartDataValues = @json($chartData['video_count']['values']).map(Number);
+
+
+    let countChartData = {
+        labels: @json($chartData['labels']),
+        datasets: [
+            {
+                label: @json($chartData['video_count']['name']),
+                backgroundColor: '#6366f1',
+                data: chartDataValues,
+            },
+        ],
+    };
+
+    let maxCountValue = Math.max(...countChartData.datasets[0].data);
+
+    let countChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+                ticks: {
+                    font: {
+                        size: 10,
+                    },
+                },
+            },
+            y: {
+                grid: {},
+                max: maxCountValue + 5,
+                ticks: {
+                    beginAtZero: true,
+                    precision: 0,
+                    stepSize: 1,
+                    font: {
+                        size: 10,
+                    },
+                },
+            },
+        },
+    };
+
+    new Chart(countCtx, {
+        type: 'bar',
+        data: countChartData,
+        options: countChartOptions,
+    });
+});
+
+    </script>
+
+
+    
 
 </div>

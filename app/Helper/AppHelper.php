@@ -21,6 +21,8 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 
+use App\Models\WebsiteBlock;
+use Illuminate\Support\Facades\Cache;
 
 
 class AppHelper
@@ -43,6 +45,52 @@ class AppHelper
         $tz = file_get_contents($url);
         $tz = json_decode($tz,true)['timezone'];
         return $tz;
+    }
+
+
+
+
+    public static function getWebsiteBlocks(){
+
+            return Cache::remember('website_blocks', 600, function () {
+                $blocksCollection = WebsiteBlock::all();
+                $blocks = [];
+
+                foreach ($blocksCollection as $block) {
+                    switch ($block->block_type) {
+                        case 'string':
+                            $blocks[$block->block_key] = (string) $block->block_value;
+                            break;
+                        case 'boolean':
+                            $blocks[$block->block_key] = filter_var($block->block_value, FILTER_VALIDATE_BOOLEAN);
+                            break;
+                        case 'integer':
+                            $blocks[$block->block_key] = (int) $block->block_value;
+                            break;
+                        case 'float':
+                            $blocks[$block->block_key] = (float) $block->block_value;
+                            break;
+                        case 'array':
+                            $blocks[$block->block_key] = json_decode($block->block_value, true);
+                            break;
+                        case 'json':
+                            $blocks[$block->block_key] = json_decode($block->block_value, true);
+                            break;
+                        case 'date':
+                            $blocks[$block->block_key] = Carbon::parse($block->block_value);
+                            break;
+                        case 'serialized':
+                            $blocks[$block->block_key] = unserialize($block->block_value);
+                            break;
+                        default:
+                            $blocks[$block->block_key] = $block->block_value;
+                            break;
+                    }
+                }
+
+                return $blocks;
+            });
+
     }
 
 

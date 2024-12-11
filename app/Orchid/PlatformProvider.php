@@ -109,7 +109,9 @@ class PlatformProvider extends OrchidServiceProvider
 
 
 
-
+            Menu::make('Website Block/Component')
+                ->icon('puzzle-fill')
+                ->route('platform.website-block'),
 
 
 

@@ -27,7 +27,7 @@ class GenerateShortFormJob implements ShouldQueue
     protected $ffmpegPath;
     protected $ffprobePath;
     protected $videoDuration = 2; // Duration of each trimmed video
-    protected $totalVideo = 9;
+    protected $totalVideo = 2;
 
     /**
      * Execute the job.

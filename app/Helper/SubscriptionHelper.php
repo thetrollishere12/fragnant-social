@@ -293,17 +293,28 @@ public static function resume_user_subscription($product_name){
         $subscriptions = self::is_subscribed($userId);
 
         if ($subscriptions->isEmpty()) {
-            return 0; // Default limit in GB
+            
+            $plan = SubscriptionPlan::where('name', 'personal')->first();
+
+            $maxStorageGB = $plan->plan_metadata['storage']; // Use metadata or default
+
+            // Convert GB to bytes
+            return $maxStorageGB * 1024 * 1024 * 1024;
+
+        }else{
+
+            $subscription = $subscriptions->first();
+            $planName = $subscription->type;
+            $plan = SubscriptionPlan::where('name', $planName)->first();
+
+            $maxStorageGB = $plan->plan_metadata['storage']; // Use metadata or default
+
+            // Convert GB to bytes
+            return $maxStorageGB * 1024 * 1024 * 1024;
+
         }
 
-        $subscription = $subscriptions->first();
-        $planName = $subscription->type;
-        $plan = SubscriptionPlan::where('name', $planName)->first();
-
-        $maxStorageGB = $plan->plan_metadata['max_storage'] ?? 0; // Use metadata or default
-
-        // Convert GB to bytes
-        return $maxStorageGB * 1024 * 1024 * 1024;
+        
     }
 
     /**
@@ -322,7 +333,10 @@ public static function resume_user_subscription($product_name){
      */
     public static function getMonthlyVideoCount(int $userId): int
     {
-        return UserMedia::getMonthlyVideoCount($userId);
+        return PublishedMedia::where('user_id', $userId)
+        ->whereYear('created_at', now()->year)
+        ->whereMonth('created_at', now()->month)
+        ->count();
     }
 
     /**
@@ -333,14 +347,22 @@ public static function resume_user_subscription($product_name){
         $subscriptions = self::is_subscribed($userId);
 
         if ($subscriptions->isEmpty()) {
-            return 1; // Default limit
+            
+            $plan = SubscriptionPlan::where('name', 'personal')->first();
+
+            return $plan->plan_metadata['published']; // Use metadata or default
+
+        }else{
+
+            $subscription = $subscriptions->first();
+            $planName = $subscription->type;
+            $plan = SubscriptionPlan::where('name', $planName)->first();
+
+            return $plan->plan_metadata['published']; // Use metadata or default
+
         }
 
-        $subscription = $subscriptions->first();
-        $planName = $subscription->type;
-        $plan = SubscriptionPlan::where('name', $planName)->first();
-
-        return $plan->plan_metadata['max_videos'] ?? 1; // Use metadata or default
+        
     }
 
     /**
