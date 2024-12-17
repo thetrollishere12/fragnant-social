@@ -13,6 +13,10 @@ use App\Models\MediaThumbnail;
 use App\Helper\FFmpegHelper;
 use Log;
 
+use App\Events\MediaProcessed;
+
+use App\Models\DigitalAsset;
+
 class ProcessMedia implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -28,16 +32,19 @@ class ProcessMedia implements ShouldQueue
 
     public function handle()
     {
-        $media = UserMedia::find($this->mediaId);
+
+
+
+     $media = UserMedia::find($this->mediaId);
 
         if (!$media) {
-            Log::error("Media not found for ID: {$this->mediaId}");
+            Log::error("Media not found for ID: {$media->id}");
             return;
         }
 
         $storage = 'public';
-        $filePath = 'media';
-        $thumbnailFolder = 'thumbnails';
+        $filePath = 'digital-assets/'.$media->digital_asset_id.'/media';
+        $thumbnailFolder = 'digital-assets/'.$media->digital_asset_id.'/media-thumbnails';
 
         $originalName = basename($this->tempPath);
         $fileName = 'MD-' . \Str::uuid() . '.' . pathinfo($originalName, PATHINFO_EXTENSION);
@@ -73,6 +80,14 @@ class ProcessMedia implements ShouldQueue
 
         // Clean up temporary file
         Storage::disk('local')->delete($this->tempPath);
+
+        $digitalAsset = DigitalAsset::find($media->digital_asset_id);
+
+        Log::info("sending Signal For Media Processed For User - ".$digitalAsset->user_id);
+
+        event(new MediaProcessed($digitalAsset->user_id));
+
+
     }
 
     private function generateThumbnail($media, $storage, $filePath, $fileName, $thumbnailFolder)

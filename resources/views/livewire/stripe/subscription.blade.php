@@ -341,7 +341,7 @@ $("form[name=paypal-thank-form]").submit(function(e){
                     success: function (t) {
                         console.log(t);
                         if (t.message == "Subscribed") {
-                            window.location.replace(window.location.origin+'/user/developer');
+                            window.location.replace(window.location.origin+'/user/subscription');
                             processing_hide();
                         }
                     },

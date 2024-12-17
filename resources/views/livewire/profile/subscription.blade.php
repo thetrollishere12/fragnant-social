@@ -9,7 +9,7 @@
 <script src="https://js.stripe.com/v3/"></script>
 
 
-<form action="{{ url('user/developer/update-payment-info') }}" method="POST" id="addPaymentFrm">
+<form action="{{ url('user/subscription/update-payment-info') }}" method="POST" id="addPaymentFrm">
 
 <x-wui-modal.card title="Update Payment Info" blur wire:model.defer="paymentInfoModal">
     

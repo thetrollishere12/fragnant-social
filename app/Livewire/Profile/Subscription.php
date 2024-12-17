@@ -23,6 +23,8 @@ use App\Models\SubscriptionProduct;
 use App\Models\SubscriptionPlan;
 use App\Models\PublishedMedia;
 
+use App\Models\DigitalAsset;
+
 
 
 class Subscription extends Component
@@ -160,8 +162,10 @@ class Subscription extends Component
     $start = Carbon::now()->startOfMonth();
     $end = Carbon::now()->endOfMonth();
 
+    $digitalAssets = DigitalAsset::where('user_id', Auth::user()->id)->pluck('id');
+
     // Query to get the count of generated stories for each day within the period
-    $publishedMedia = PublishedMedia::where('user_id', Auth::user()->id)
+    $publishedMedia = PublishedMedia::whereIn('digital_asset_id', $digitalAssets)
         ->whereBetween('created_at', [$start, $end])
         ->selectRaw('DATE(created_at) as date, COUNT(*) as video_count')
         ->groupBy('date')
@@ -209,7 +213,7 @@ class Subscription extends Component
     ];
 
     // Fetch user video data
-    $currentVideoCount = SubscriptionHelper::getMonthlyVideoCount(Auth::user()->id);
+    $currentVideoCount = SubscriptionHelper::getMonthlyVideoCountByDate(Auth::user()->id);
     $maxVideoLimit = SubscriptionHelper::getMaxMonthlyVideoLimit(Auth::user()->id);
 
     $video_data = [
@@ -222,6 +226,8 @@ class Subscription extends Component
         'storage_data' =>$storage_data,
         'video_data' => $video_data
     ]);
+
+    
 }
 
 

@@ -95,27 +95,15 @@
 
 
     <div class="px-2 py-1">
-        <div class="rounded transition p-3 text-sm">MEDIA</div>
+        <div class="rounded transition p-3 text-sm">ASSETS</div>
     </div>
 
 
 
     <div class="px-3 py-1">
-        <a href="{{ url('user/media') }}"><div class="@if(isset($url) && $url == 'media') main-bg-c text-white @else hover:bg-gray-100 @endif rounded transition p-3 text-sm"><span class="icon-pencil pr-3"></span> My Media</div></a>
+        <a href="{{ url('user/digital-assets') }}"><div class="@if(isset($url) && $url == 'digital-assets') main-bg-c text-white @else hover:bg-gray-100 @endif rounded transition p-3 text-sm"><span class="icon-pencil pr-3"></span> My Digital Assets</div></a>
     </div>
 
-
-
-
-    <div class="px-3 py-1">
-        <a href="{{ url('user/media-setting') }}"><div class="@if(isset($url) && $url == 'setting') main-bg-c text-white @else hover:bg-gray-100 @endif rounded transition p-3 text-sm"><span class="icon-pencil pr-3"></span> My Setting</div></a>
-    </div>
-
-
-
-    <div class="px-3 py-1">
-        <a href="{{ url('user/published') }}"><div class="@if(isset($url) && $url == 'published') main-bg-c text-white @else hover:bg-gray-100 @endif rounded transition p-3 text-sm"><span class="icon-books pr-3"></span> My Published Video</div></a>
-    </div>
 
 
   <!--   <div class="px-3 py-1">

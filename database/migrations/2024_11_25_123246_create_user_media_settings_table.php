@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('user_media_settings', function (Blueprint $table) {
             
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Foreign key to users table
+
+            $table->integer('digital_asset_id');
+            
             $table->longText('video_type_id')->nullable(); // Type of video
             $table->longText('music_genre_id')->nullable(); // Foreign key to music_genres
             $table->integer('frequency')->nullable(); // How often (1,2,3)

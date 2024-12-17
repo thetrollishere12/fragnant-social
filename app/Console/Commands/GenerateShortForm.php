@@ -6,6 +6,13 @@ use Illuminate\Console\Command;
 use App\Models\UserMedia;
 use App\Jobs\GenerateShortFormJob;
 
+use App\Helper\ShortFormGeneratorHelper;
+use App\Helper\FfmpegHelper;
+
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Storage;
+
 class GenerateShortForm extends Command
 {
     /**
@@ -27,11 +34,14 @@ class GenerateShortForm extends Command
      */
     public function handle()
     {
-        $users = UserMedia::where('type', 'video')->get()->unique('user_id');
 
-        foreach ($users as $user) {
-            GenerateShortFormJob::dispatch($user->user_id);
-            $this->info("Dispatched job for user ID {$user->user_id}");
-        }
+        dd(FfmpegHelper::generateFrames('digital-assets/1/published/combined_reel_user_1_20241215_143619.mp4', $frameRate = 1, $width = 512, $outputPath = 'test/', $height = null));
+
+        dd(GenerateShortFormJob::dispatch(1));
+
+        dd(ShortFormGeneratorHelper::slideShow(1));
+
+        dd(FfmpegHelper::detectFrameChanges('assets/clips/micheal.mp4'));
+                
     }
 }

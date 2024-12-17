@@ -8,13 +8,13 @@ class UserMediaSetting extends Model
 {
     
     protected $fillable = [
-        'user_id',
         'video_type_id',
         'music_genre_id',
         'frequency',
         'frequency_type',
         'quantity',
-        'user_audio'
+        'user_audio',
+        'digital_asset_id'
     ];
 
     protected $casts = [

@@ -10,15 +10,30 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Arr;
+
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
+
+
 use App\Models\UserMedia;
 use App\Models\UserMediaSetting;
 use App\Models\PublishedMedia;
+use App\Models\PublishedMediaThumbnail;
+
 use App\Models\MusicGenre;
 use App\Models\User;
-use App\Helper\AudiusHelper;
+
+use App\Models\DigitalAsset;
+
 use App\Mail\Media\MailMediaLink;
+
+use App\Helper\ShortFormGeneratorHelper;
+
+use App\Helper\FFmpegHelper;
+
+use Log;
+
+use App\Events\MediaPublished;
+
 
 class GenerateShortFormJob implements ShouldQueue
 {
@@ -29,139 +44,64 @@ class GenerateShortFormJob implements ShouldQueue
     protected $videoDuration = 2; // Duration of each trimmed video
     protected $totalVideo = 2;
 
+
+
+
+    protected $digitalAssetId; // Add a property to store the ID
+
+    /**
+     * Create a new job instance.
+     *
+     * @param int $digitalAssetId
+     */
+    public function __construct($digitalAssetId)
+    {
+        $this->digitalAssetId = $digitalAssetId; // Assign the ID to the property
+    }
+
+
+
     /**
      * Execute the job.
      */
     public function handle()
     {
-        $this->ffmpegPath = env('FFMPEG_BINARIES', '/usr/bin/ffmpeg');
-        $this->ffprobePath = env('FFPROBE_BINARIES', '/usr/bin/ffprobe');
 
-        $users = UserMedia::where('type', 'video')->get()->unique('user_id');
 
-        foreach ($users as $user) {
-            $setting = UserMediaSetting::where('user_id', $user->user_id)->first();
+        $outputPath = ShortFormGeneratorHelper::slideShow($this->digitalAssetId);
 
-            $localMusicPath = $this->getBackgroundMusicPath($setting, $user->user_id);
 
-            if (!$localMusicPath) {
-                continue;
-            }
+        $media = PublishedMedia::create([
+            'url' => 'digital-assets/'.$this->digitalAssetId.'/published/'.basename($outputPath),
+            'digital_asset_id' => $this->digitalAssetId,
+        ]);
 
-            $userMedia = UserMedia::where('user_id', $user->user_id)
-                ->where('type', 'video')
-                ->get()
-                ->random($this->totalVideo);
+        $filePath = 'digital-assets/'.$this->digitalAssetId.'/published';
+        $fileName = basename($outputPath);
+        $thumbnailFolder = 'digital-assets/'.$this->digitalAssetId.'/published-media-thumbnails';
 
-            if ($userMedia->isEmpty()) {
-                logger()->error("No videos found for user ID {$user->user_id}");
-                continue;
-            }
 
-            $outputDir = storage_path('app/public/published/');
-            if (!File::exists($outputDir)) {
-                File::makeDirectory($outputDir, 0755, true);
-            }
+        $this->generateThumbnail($media, 'public', $filePath, $fileName, $thumbnailFolder);
 
-            $outputFileName = 'combined_reel_user_' . $user->user_id . '_' . now()->format('Ymd_His') . '.mp4';
-            $outputPath = $outputDir . $outputFileName;
+        $digitalAsset = DigitalAsset::find($this->digitalAssetId);
 
-            $this->generateVideo($userMedia, $localMusicPath, $outputPath, $user->user_id);
+        $user = User::find($digitalAsset->user_id);
+
+        Log::info("sending Signal For MediaPublished For User - ".$user->id);
+        
+        event(new MediaPublished($user->id));
+
+        if (!empty($user->email)) {
+            $this->sendEmail($user->email, $outputPath);
         }
+
+
+        
+
+
     }
 
-    private function getBackgroundMusicPath($setting, $userId)
-    {
-        if ($setting->user_audio == true) {
-            $userMedia = UserMedia::where('type', 'audio')
-                ->where('user_id', $userId)
-                ->inRandomOrder()
-                ->first();
-
-            return $userMedia
-                ? Storage::disk($userMedia->storage)->path($userMedia->folder . '/' . $userMedia->filename)
-                : null;
-        } else {
-            $randomGenre = is_array($setting->music_genre_id) && !empty($setting->music_genre_id)
-                ? Arr::random($setting->music_genre_id)
-                : null;
-
-            $randomGenreName = MusicGenre::find($randomGenre)->value('name');
-            $trendingTracks = AudiusHelper::getTrendingTracks($randomGenreName);
-            $trackArray = $trendingTracks['data'] ?? [];
-            $randomTrack = is_array($trackArray) && !empty($trackArray)
-                ? Arr::random($trackArray)
-                : null;
-
-            $backgroundMusicPath = AudiusHelper::streamTrack($randomTrack['id']);
-            $localMusicPath = Storage::disk('public')->path('music/' . uniqid('', true) . '.mp3');
-
-            try {
-                $musicContent = file_get_contents($backgroundMusicPath);
-                file_put_contents($localMusicPath, $musicContent);
-                return $localMusicPath;
-            } catch (\Exception $e) {
-                logger()->error("Failed to download background music: " . $e->getMessage());
-                return null;
-            }
-        }
-    }
-
-    private function generateVideo($userMedia, $localMusicPath, $outputPath, $userId)
-    {
-        $inputFiles = [];
-        $filterComplex = '';
-        $concatParts = '';
-        $validVideoCount = 0;
-
-        foreach ($userMedia as $mediaFile) {
-            $videoPath = Storage::disk($mediaFile->storage)->path("{$mediaFile->folder}/{$mediaFile->filename}");
-            if (!file_exists($videoPath)) {
-                logger()->error("Video file not found: $videoPath");
-                continue;
-            }
-
-            $inputFiles[] = "-i " . escapeshellarg($videoPath);
-            $filterComplex .= "[{$validVideoCount}:v]trim=duration={$this->videoDuration},setpts=PTS-STARTPTS,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2[vid{$validVideoCount}];";
-            $concatParts .= "[vid{$validVideoCount}]";
-            $validVideoCount++;
-        }
-
-        if ($validVideoCount === 0) {
-            logger()->error("No valid videos found for user ID {$userId}");
-            return;
-        }
-
-        $totalVideoDuration = $validVideoCount * $this->videoDuration;
-
-        $filterComplex .= "{$concatParts}concat=n={$validVideoCount}:v=1:a=0[outv];";
-        $inputFiles[] = "-i " . escapeshellarg($localMusicPath);
-
-        $audioDuration = 60;
-        $randomStart = rand(0, $audioDuration - $totalVideoDuration);
-
-        $filterComplex .= "[{$validVideoCount}:a]atrim=start={$randomStart}:duration={$totalVideoDuration},asetpts=PTS-STARTPTS,volume=1.9[finalaudio]";
-
-        $ffmpegCmd = $this->ffmpegPath . ' ' . implode(' ', $inputFiles) .
-            " -filter_complex \"" . $filterComplex . "\" " .
-            " -map \"[outv]\" -map \"[finalaudio]\" -r 60 -y " . escapeshellarg($outputPath);
-
-        exec($ffmpegCmd . ' 2>&1', $output, $returnVar);
-
-        if ($returnVar === 0 && file_exists($outputPath)) {
-            PublishedMedia::create([
-                'url' => 'published/' . basename($outputPath),
-                'user_id' => $userId,
-            ]);
-
-            $user = User::find($userId);
-            if (!empty($user->email)) {
-                $this->sendEmail($user->email, $outputPath);
-            }
-        } else {
-            logger()->error("Failed to generate combined reel for user ID {$userId}. FFmpeg output: " . implode("\n", $output));
-        }
-    }
+    
 
     private function sendEmail($email, $outputPath)
     {
@@ -171,4 +111,50 @@ class GenerateShortFormJob implements ShouldQueue
             logger()->error("Failed to send email: " . $e->getMessage());
         }
     }
+
+
+
+
+    private function generateThumbnail($media, $storage, $filePath, $fileName, $thumbnailFolder)
+    {
+
+
+        $thumbnailOutputPath = $thumbnailFolder . '/PM_'.$media->id.'_'.\Str::uuid().'/';
+
+
+        try {
+
+            FFmpegHelper::generateFrames(
+                inputPath: $filePath . '/' . $fileName,
+                outputPath: $thumbnailOutputPath,
+                frameRate: .1,
+                width:250
+            );
+
+            PublishedMediaThumbnail::create([
+                'published_media_id' => $media->id,
+                'storage' => $storage,
+                'folder' => $thumbnailOutputPath,
+                'filename' => 'frame_000000.jpg',
+            ]);
+
+            Log::info("Thumbnail generated successfully for video: {$filePath}/{$fileName}");
+
+        } catch (\Exception $e) {
+
+            Log::error("Failed to generate thumbnail: {$e->getMessage()}");
+
+        }
+
+
+
+
+
+
+
+
+    }
+
+
+
 }

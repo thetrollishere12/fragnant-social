@@ -12,7 +12,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
-
+use Illuminate\Support\Facades\File;
 
 class FFmpegHelper
 {
@@ -137,88 +137,102 @@ class FFmpegHelper
 
 
 
-//     public static function generateFrames($inputPath, $frameRate = 1, $width = 512)
-//     {
-//         try {
-//             $ffmpeg = LaravelFFMpeg::fromDisk('public')->open($inputPath);
-//             $duration = $ffmpeg->getDurationInSeconds();
-//             $framesDirectory = 'frames/'.Str::uuid().'/';
-//             Storage::disk('public')->makeDirectory($framesDirectory);
-
-//             for ($seconds = 0; $seconds < $duration; $seconds += $frameRate) {
-//                 $outputPath = $framesDirectory . 'frame_' . $seconds . '.jpg';
-//                 self::generateFrame($inputPath, $outputPath, $seconds, $width);
-//             }
-
-//             return $framesDirectory;
-
-//         } catch (\Exception $e) {
-//             Log::error('FFmpeg Error: ' . $e->getMessage());
-//             throw $e; // Re-throw for debugging purposes
-//         }
-//     }
 
 
+public static function generateFrames($inputPath, $frameRate = 1, $width = 512, $outputPath = null, $height = null)
+{
+try {
+
+        // If $outputPath is not provided, generate a default one
+        if (!$outputPath) {
+            $outputPath = 'assets/frames/' . (string)Str::uuid() . '/';
+        }
+
+        $ffmpeg = LaravelFFMpeg::fromDisk('public')->open($inputPath);
+        $duration = $ffmpeg->getDurationInSeconds();
 
 
-//     public static function generateFrame($inputPath, $outputPath, $timeInSeconds, $width)
-//     {
+        Storage::disk('public')->makeDirectory($outputPath);
+
+        // Frame counter for consistent naming
+        $frameIndex = 0;
+
+        while (true) {
+            // Calculate the exact timestamp for this frame
+            $seconds = $frameIndex * $frameRate;
+
+            // Break the loop if the calculated time exceeds the duration
+            if ($seconds >= $duration) {
+                break;
+            }
+
+            // Format the frame index for consistent filenames (e.g., 000060, 000061)
+            $formattedFrameIndex = str_pad((string)$frameIndex, 6, '0', STR_PAD_LEFT);
+
+            // Use the formatted frame index in the filename
+            $outputFullPath = $outputPath . 'frame_' . $formattedFrameIndex . '.jpg';
+
+            // Generate the frame
+            self::generateFrame($inputPath, $outputFullPath, $seconds, $width, $height);
+
+            // Increment the frame index
+            $frameIndex++;
+        }
 
 
+        return $outputPath;
 
 
-
-//         try {
-//             $ffmpeg = LaravelFFMpeg::fromDisk('public')
-//                 ->open($inputPath)
-//                 ->getFrameFromSeconds($timeInSeconds)
-//                 ->export()
-//                 ->toDisk('public')
-//                 // ->resize($width, null, function ($constraint) {
-//                 //         $constraint->aspectRatio();
-//                 // })
-//                 ->save($outputPath);
-
-//             // Resize the thumbnail while keeping the aspect ratio
-//             $image = Image::make(Storage::disk('public')->get($outputPath))
-//                 ->resize($width, null, function ($constraint) {
-//                     $constraint->aspectRatio();
-//                 })
-//                 ->save(Storage::disk('public')->path($outputPath));
-
-
-
-
-//         } catch (\Exception $e) {
-
-//             Log::error('FFmpeg Error: ' . $e->getMessage());
-//             throw $e; // Re-throw for debugging purposes
-//         }
-//     }
+    } catch (\Exception $e) {
+        // Log::error('FFmpeg Error: ' . $e->getMessage());
+        throw $e; // Re-throw for debugging purposes
+    }
+}
 
 
 
-//     public static function compressVideo($inputPath, $outputPath, $bitrate = 1000)
-//     {
-//         $lowBitrateFormat = new \FFMpeg\Format\Video\X264();
-//         $lowBitrateFormat->setKiloBitrate($bitrate);
 
-//         LaravelFFMpeg::fromDisk('public')
-//             ->open($inputPath)
-//             ->export()
-//             ->toDisk('public')
-//             ->inFormat($lowBitrateFormat)
-//             ->save($outputPath);
-//     }
+    public static function generateFrame($inputPath, $outputPath, $timeInSeconds, $width, $height)
+    {
 
 
-//     public static function compressImage($inputPath, $outputPath, $quality = 75)
-//     {
 
-//         $image = Image::make(Storage::disk('public')->get($inputPath))
-//         ->save(Storage::disk('public')->path($outputPath), $quality);
 
-//     }
+
+        try {
+            $ffmpeg = LaravelFFMpeg::fromDisk('public')
+                ->open($inputPath)
+                ->getFrameFromSeconds($timeInSeconds)
+                ->export()
+                ->toDisk('public')
+                // ->resize($width, null, function ($constraint) {
+                //         $constraint->aspectRatio();
+                // })
+                ->save($outputPath);
+
+
+            // Resize the thumbnail while keeping the aspect ratio
+            // Create a new ImageManager instance
+	        $imageManager = new ImageManager(new Driver()); // Use 'imagick' if ImageMagick is available
+
+	        // Load the extracted frame and resize it
+	        $image = $imageManager->read(Storage::disk('public')->path($outputPath))
+	            ->scale($width, $height, function ($constraint) {
+                    $constraint->aspectRatio(); // Keep the aspect ratio
+                })
+	            ->save(Storage::disk('public')->path($outputPath));
+
+
+
+
+        } catch (\Exception $e) {
+
+            Log::error('FFmpeg Error: ' . $e->getMessage());
+            throw $e; // Re-throw for debugging purposes
+        }
+    }
+
+
 
 
 //     // Test out
@@ -570,86 +584,167 @@ class FFmpegHelper
 
 
 
+// filepath = 'assets/clips/micheal.mp4'
+public static function detectFrameChangesPython($videoPath, $threshold = 50000, $frameInterval = 0.1)
+{
+    // Step 1: Generate frames using FFMpeg
+    $framesDir = self::generateFrames($videoPath, $frameInterval);
 
-
-
-
-// // public static function detectFrameChanges($filePath, $threshold = 0.4)
-// // {
-// //     $ffmpegPath = base_path('ffmpeg/bin/ffmpeg');
-// //     $outputDir = 'public/splitted_frames/';
-// //     $fileParts = pathinfo($filePath);
-// //     $outputFile = $outputDir . $fileParts['filename'] . '_changes.txt';
-
-// //     // Make sure the output directory exists
-// //         if (!Storage::exists($outputDir)) {
-// //             Storage::makeDirectory($outputDir);
-// //         }
-
-// //     // Build the FFMpeg command to detect frame changes
-// //     $cmd = sprintf(
-// //         '%s -i %s -filter:v "select=\'gt(scene,%f)\',showinfo" -f null - 2> %s',
-// //         escapeshellarg($ffmpegPath),
-// //         escapeshellarg(storage_path('app/public/' . $filePath)),
-// //         $threshold,
-// //         escapeshellarg(public_path($outputFile))
-// //     );
-
-// //     $outputLog = [];
-// //     $returnCode = 0;
-
-// //     // Execute the FFMpeg command
-// //     exec($cmd, $outputLog, $returnCode);
-
-
-// //     // Read the output file to get the frame change times
-// //     $frameChanges = [];
-// //     if (file_exists(public_path($outputFile))) {
-// //         $lines = file(public_path($outputFile));
-// //         foreach ($lines as $line) {
-// //             if (preg_match('/pts_time:([\d.]+)/', $line, $matches)) {
-// //                 $frameChanges[] = floatval($matches[1]);
-// //             }
-// //         }
-// //     }
-
-// //     return $frameChanges;
-// // }
-
-
-
-    protected static function getImageManager(): ImageManager
-    {
-        // Create and return an ImageManager instance with the GD driver
-        return new ImageManager(new Driver());
+    if (empty($framesDir)) {
+        throw new \RuntimeException("Failed to generate frames.");
     }
 
+    // Log progress
+    logger()->info("Frames generated at {$framesDir}");
 
-    public static function checkAudioInfo($filePath)
-    {
+    // Step 2: Analyze frames using Python
+    $pythonScriptPath = base_path('python/analyze_frames.py');
+    $absoluteFramesDir = Storage::disk('public')->path($framesDir); // Absolute path for Python
+
+    // Run the Python script
+    $process = new Process(['python', $pythonScriptPath, $absoluteFramesDir, (string)$threshold]);
+    $process->run();
+
+    // Check if the Python script executed successfully
+    if (!$process->isSuccessful()) {
+        logger()->error("Python script failed with error: {$process->getErrorOutput()}");
+        throw new ProcessFailedException($process);
+    }
+
+    // Parse the JSON output from the Python script
+    $analysisResults = json_decode($process->getOutput(), true);
+
+    if (empty($analysisResults)) {
+        logger()->info("No significant changes detected.");
+        return [];
+    }
+
+    // Filter frames with big changes
+    $bigChanges = array_filter($analysisResults, function ($change) use ($threshold) {
+        return $change['non_zero_count'] > $threshold;
+    });
+
+    if (empty($bigChanges)) {
+        logger()->info("No big changes detected above the threshold of {$threshold}.");
+        return [];
+    }
+
+    // Log and return all significant big changes
+    logger()->info("All significant big changes detected:");
+    foreach ($bigChanges as $index => $change) {
+        logger()->info("Frame: {$change['frame']}, Changes: {$change['non_zero_count']}");
+    }
+
+    return $bigChanges;
+}
 
 
-        try {
-            // Use LaravelFFMpeg to get FFProbe
-            $ffprobe = LaravelFFMpeg::getFFProbe();
 
-            // Get the audio stream information using the full file path
-            $audioStream = $ffprobe->streams(Storage::disk('public')->path($filePath))->audios()->first();
-            
-            if (!$audioStream) {
-                throw new \Exception("No audio stream found in file: $fullFilePath");
+
+
+
+
+// filepath = 'assets/clips/micheal.mp4'
+public static function detectFrameChanges($filePath, $threshold = 0.3)
+{
+    // Define paths
+    $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+    $outputDir = public_path('assets/clips/');
+    $fileParts = pathinfo($filePath);
+    $outputFile = $outputDir . $fileParts['filename'] . '_changes.txt';
+
+    // Ensure the output directory exists
+    if (!file_exists($outputDir)) {
+        mkdir($outputDir, 0777, true);
+    }
+
+    // Build the FFMpeg command to detect frame changes
+    $cmd = sprintf(
+        '%s -i %s -filter:v "select=\'gt(scene,%f)\',showinfo" -f null - 2> %s',
+        escapeshellarg($ffmpegPath),
+        escapeshellarg(storage_path('app/public/' . $filePath)),
+        $threshold,
+        escapeshellarg($outputFile)
+    );
+
+    // Log the command for debugging
+    logger()->info("FFMpeg Command: {$cmd}");
+
+    // Execute the FFMpeg command
+    $outputLog = [];
+    $returnCode = 0;
+    exec($cmd, $outputLog, $returnCode);
+
+    // Check for errors
+    if ($returnCode !== 0) {
+        throw new \RuntimeException("FFMpeg failed with return code {$returnCode}. Command: {$cmd}");
+    }
+
+    // Read the output file to get the frame change times
+    $frameChanges = [];
+    if (file_exists($outputFile)) {
+        $lines = file($outputFile);
+        foreach ($lines as $line) {
+            if (preg_match('/pts_time:([\d.]+)/', $line, $matches)) {
+                $frameChanges[] = floatval($matches[1]);
             }
+        }
+    }
 
-            return $audioStream;
+    return $frameChanges;
+}
 
-        } catch (\Exception $e) {
 
-            Log::error("Error probing file: {$e->getMessage()}");
-            throw $e;
-            
+
+
+
+
+
+
+
+protected static function getImageManager(): ImageManager
+{
+    // Create and return an ImageManager instance with the GD driver
+    return new ImageManager(new Driver());
+}
+
+
+
+
+
+
+
+
+
+public static function checkAudioInfo($filePath)
+{
+
+
+    try {
+        // Use LaravelFFMpeg to get FFProbe
+        $ffprobe = LaravelFFMpeg::getFFProbe();
+
+        // Get the audio stream information using the full file path
+        $audioStream = $ffprobe->streams(Storage::disk('public')->path($filePath))->audios()->first();
+        
+        if (!$audioStream) {
+            throw new \Exception("No audio stream found in file: $fullFilePath");
         }
 
+        return $audioStream;
+
+    } catch (\Exception $e) {
+
+        Log::error("Error probing file: {$e->getMessage()}");
+        throw $e;
+        
     }
+
+}
+
+
+
+
 
 
 public static function checkVideoInfo($filePath)
@@ -674,33 +769,45 @@ public static function checkVideoInfo($filePath)
 }
 
 
+
+
+
+
 public static function convertVideoFormat($inputPath, $outputPath, $format = 'mp4')
-    {
-        try {
-            LaravelFFMpeg::fromDisk('public')
-                ->open($inputPath)
-                ->export()
-                ->toDisk('public')
-                ->inFormat(new \FFMpeg\Format\Video\X264('libmp3lame', 'libx264'))
-                ->save($outputPath);
+{
+    try {
+        LaravelFFMpeg::fromDisk('public')
+            ->open($inputPath)
+            ->export()
+            ->toDisk('public')
+            ->inFormat(new \FFMpeg\Format\Video\X264('libmp3lame', 'libx264'))
+            ->save($outputPath);
 
-            Log::info("Video converted successfully: {$outputPath}");
-        } catch (\Exception $e) {
-            Log::error('FFmpeg Video Conversion Error: ' . $e->getMessage());
-            throw $e;
-        }
+        Log::info("Video converted successfully: {$outputPath}");
+    } catch (\Exception $e) {
+        Log::error('FFmpeg Video Conversion Error: ' . $e->getMessage());
+        throw $e;
     }
+}
 
-    /**
-     * Generate a thumbnail from a video at a specific time.
-     *
-     * @param string $inputPath
-     * @param string $outputPath
-     * @param int $timeInSeconds
-     * @param int $width
-     * @throws \Exception
-     */
-    public static function generateThumbnail($inputPath, $outputPath, $timeInSeconds, $width)
+
+
+
+
+
+
+
+/**
+* Generate a thumbnail from a video at a specific time.
+*
+* @param string $inputPath
+* @param string $outputPath
+* @param int $timeInSeconds
+* @param int $width
+* @throws \Exception
+*/
+
+public static function generateThumbnail($inputPath, $outputPath, $timeInSeconds, $width)
 {
     try {
         // Extract the frame at the specified time
@@ -731,6 +838,10 @@ public static function convertVideoFormat($inputPath, $outputPath, $format = 'mp
     }
 }
 
+
+
+
+
     /**
      * Compress an image to a specified quality.
      *
@@ -739,6 +850,7 @@ public static function convertVideoFormat($inputPath, $outputPath, $format = 'mp
      * @param int $quality
      * @throws \Exception
      */
+
     public static function compressImage($inputPath, $outputPath, $quality = 75)
     {
         try {
@@ -753,7 +865,6 @@ public static function convertVideoFormat($inputPath, $outputPath, $format = 'mp
             throw $e;
         }
     }
-
 
 
 

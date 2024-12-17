@@ -99,7 +99,7 @@ public function pricing(){
             'payment_method'=>'Stripe'
          ]);
 
-        return redirect('user/developer');
+        return redirect('user/subscription');
 
     }
 
@@ -174,7 +174,7 @@ public function pricing(){
             
         }
         
-        return redirect('user/developer');
+        return redirect('user/subscription');
 
     }
 
@@ -217,7 +217,7 @@ public function pricing(){
 
             }
 
-            return redirect('user/developer');
+            return redirect('user/subscription');
 
         }else{
 
@@ -279,7 +279,7 @@ public function pricing(){
 
         Auth::user()->updateDefaultPaymentMethod($request->paymentMethod);
 
-        return Redirect(url('/user/developer'))->with('success','Payment method has been updated.');
+        return Redirect(url('/user/subscription'))->with('success','Payment method has been updated.');
 
     }
 

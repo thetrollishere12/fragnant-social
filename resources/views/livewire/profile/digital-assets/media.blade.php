@@ -112,7 +112,7 @@
                     @if($previewMedia->type == "image")
                         <img src="{{ Storage::disk($previewMedia->storage)->url($previewMedia->folder . '/' . rawurlencode($previewMedia->filename)) }}" alt="Preview Image" class="max-w-full h-auto">
                     @elseif($previewMedia->type == "video")
-                        <video controls autoplay>
+                        <video controls autoplay class="w-full h-auto max-h-[90vh] object-contain">>
                             <source src="{{ Storage::disk($previewMedia->storage)->url($previewMedia->folder . '/' . rawurlencode($previewMedia->filename)) }}" type="video/mp4">
                         </video>
                     @elseif($previewMedia->type == "audio")

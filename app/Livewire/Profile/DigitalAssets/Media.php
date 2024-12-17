@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Profile\Media;
+namespace App\Livewire\Profile\DigitalAssets;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -14,19 +14,15 @@ use Str;
 use ZipArchive;
 use App\Helper\OpenAiHelper;
 use App\Helper\FFmpegHelper;
-
 use App\Helper\SubscriptionHelper;
-
 use App\Jobs\ProcessMedia;
-
-
 use App\Events\MediaProcessed;
+use App\Models\DigitalAsset;
 
-use App\Events\TestReverbEvent;
-
-class Index extends Component
+class Media extends Component
 {
-    use WireUiActions;
+
+        use WireUiActions;
     use WithFileUploads;
 
     public $selectedMedia = [];
@@ -43,6 +39,8 @@ class Index extends Component
 
     public $image;
 
+    public $digital_asset_id;
+
     protected $listeners = [
         'mediaProcessed' => 'reloadMedia',
     ];
@@ -50,10 +48,11 @@ class Index extends Component
 
 
 
+
+
     public function reloadMedia()
     {
-
-        $this->userMedia = UserMedia::where('user_id', Auth::id())->get();
+        $this->userMedia = UserMedia::where('digital_asset_id', $this->digital_asset_id)->get();
     }
 
 
@@ -92,7 +91,7 @@ class Index extends Component
                 'folder' => 'temp',
                 'filename' => $originalName,
                 'size' => Storage::disk('local')->size($tempPath),
-                'user_id' => Auth::id(),
+                'digital_asset_id' => $this->digital_asset_id,
                 'type' => 'pending', // Mark as pending
             ]);
 
@@ -135,7 +134,7 @@ class Index extends Component
 
     public function download()
     {
-        $mediaFiles = UserMedia::whereIn('code_id', $this->selectedMedia)->get();
+        $mediaFiles = UserMedia::whereIn('code_id', $this->selectedMedia)->where('digital_asset_id',$this->digital_asset_id)->get();
 
         try {
             if ($mediaFiles->count() > 1) {
@@ -176,7 +175,7 @@ class Index extends Component
 
     public function delete()
     {
-        $mediaFiles = UserMedia::whereIn('code_id', $this->selectedMedia)->get();
+        $mediaFiles = UserMedia::whereIn('code_id', $this->selectedMedia)->where('digital_asset_id',$this->digital_asset_id)->get();
 
         foreach ($mediaFiles as $media) {
             $thumbnail = MediaThumbnail::where('media_id', $media->id)->first();
@@ -199,7 +198,7 @@ class Index extends Component
 
     public function preview($code_id)
     {
-        $mediaItem = UserMedia::where('code_id', $code_id)->first();
+        $mediaItem = UserMedia::where('code_id', $code_id)->where('digital_asset_id',$this->digital_asset_id)->first();
 
         if ($mediaItem) {
             $this->previewMedia = $mediaItem;
@@ -220,7 +219,7 @@ class Index extends Component
 
     public function edit($code_id)
     {
-        $mediaItem = UserMedia::where('code_id', $code_id)->first();
+        $mediaItem = UserMedia::where('code_id', $code_id)->where('digital_asset_id',$this->digital_asset_id)->first();
 
         if ($mediaItem) {
             $detail = MediaDetail::where('media_id', $mediaItem->id)->first();
@@ -250,8 +249,8 @@ class Index extends Component
 
     public function render()
     {
-        $userMedia = UserMedia::where('user_id', Auth::user()->id)->get();
+        $userMedia = UserMedia::where('digital_asset_id',$this->digital_asset_id)->get();
 
-        return view('livewire.profile.media.index', compact('userMedia'));
+        return view('livewire.profile.digital-assets.media', compact('userMedia'));
     }
 }

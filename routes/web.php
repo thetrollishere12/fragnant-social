@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\GoogleLoginController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\DigitalAssetController;
 
 
 use Intervention\Image\ImageManager;
@@ -92,19 +93,33 @@ Route::middleware([
 
 
 
-        // Project
-        Route::get('user/media', function(){
-            return view('profile.media.index');
+        // Digital Assets Project
+        Route::get('user/digital-assets', function(){
+            return view('profile.digital-assets.index');
         });
 
 
-        Route::get('user/media-setting', function(){
-            return view('profile.media.setting');
+        Route::get('user/digital-assets/{id}',[DigitalAssetController::class, 'show']);
+
+
+        Route::get('user/digital-assets/{id}/media', function($id){
+            return view('profile.digital-assets.media',[
+                'digital_asset_id'=>$id
+            ]);
         });
 
 
-        Route::get('user/published', function(){
-            return view('profile.media.published');
+        Route::get('user/digital-assets/{id}/settings', function($id){
+            return view('profile.digital-assets.setting',[
+                'digital_asset_id'=>$id
+            ]);
+        });
+
+
+        Route::get('user/digital-assets/{id}/published', function($id){
+            return view('profile.digital-assets.published',[
+                'digital_asset_id'=>$id
+            ]);
         });
 
 

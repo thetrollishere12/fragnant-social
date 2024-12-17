@@ -19,11 +19,11 @@
 
 
 
-        <x-google-login-button>
+        <x-custom.google-login-button>
             @if(isset($redirect))
             <x-slot name="link">{{ $redirect }}</x-slot>
             @endif
-        </x-google-login-button>
+        </x-custom.google-login-button>
        
         <br>
         <div class="border-b border-gray-200"></div>

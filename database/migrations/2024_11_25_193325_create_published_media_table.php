@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('published_media', function (Blueprint $table) {
             $table->id();
-
+            $table->integer('digital_asset_id');
             $table->text('url')->nullable();
-            $table->integer('user_id');
 
             $table->timestamps();
         });

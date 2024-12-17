@@ -33,5 +33,9 @@ window.Echo.channel("test-reverb-channel").listen(".TestReverbEvent", (e) => {
 window.Echo.private(`user.${window.userId}`)
     .listen('.media-processed', () => {
         console.log('Media has been processed!');
-     window.Livewire.dispatch('mediaProcessed');
+        window.Livewire.dispatch('mediaProcessed');
+    })
+    .listen('.media-published', () => {
+        console.log('Media has been published!');
+        window.Livewire.dispatch('mediaPublished');
     });

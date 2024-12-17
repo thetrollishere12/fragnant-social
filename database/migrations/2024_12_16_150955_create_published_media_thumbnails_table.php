@@ -11,26 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_media', function (Blueprint $table) {
+        Schema::create('published_media_thumbnails', function (Blueprint $table) {
+
             $table->id();
 
-            $table->integer('digital_asset_id');
 
-            $table->string('code_id')->unique();
+
+            $table->integer('published_media_id');
 
             $table->string('storage');
 
             $table->string('folder');
 
             $table->string('filename');
+            
 
-            $table->bigInteger('size')->nullable();
-
-            $table->string('type');
-
-            // $table->integer('project_id');
 
             $table->timestamps();
+
         });
     }
 
@@ -39,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_media');
+        Schema::dropIfExists('published_media_thumbnails');
     }
 };

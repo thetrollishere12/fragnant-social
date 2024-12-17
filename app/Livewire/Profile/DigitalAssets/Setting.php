@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Profile\Media;
+namespace App\Livewire\Profile\DigitalAssets;
 
 use Livewire\Component;
 use App\Helper\AudiusHelper;
@@ -9,7 +9,7 @@ use App\Models\MusicGenre;
 use App\Models\UserMediaSetting;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserMedia;
-
+use App\Models\DigitalAsset;
 class Setting extends Component
 {
 
@@ -25,10 +25,16 @@ class Setting extends Component
     public $user_audio;
     public $own_music = false;
 
+
+    public $digital_asset_id;
+
+
     public function mount()
     {
+
+
         // Load existing user settings if they exist
-        $settings = UserMediaSetting::where('user_id', Auth::id())->first();
+        $settings = UserMediaSetting::where('digital_asset_id',$this->digital_asset_id)->first();
 
         if ($settings) {
             $this->videoTypes = $settings->video_type_id ? $settings->video_type_id : [];
@@ -39,7 +45,7 @@ class Setting extends Component
             $this->user_audio = $settings->user_audio;
         }
 
-        if (UserMedia::where('user_id',Auth::user()->id)->where('type','audio')->count() > 0) {
+        if (UserMedia::where('digital_asset_id',$this->digital_asset_id)->where('type','audio')->count() > 0) {
             $this->own_music = true;
         }
 
@@ -58,7 +64,9 @@ class Setting extends Component
 
         // Save or update user settings
         UserMediaSetting::updateOrCreate(
-            ['user_id' => Auth::id()],
+            [
+                'digital_asset_id' => $this->digital_asset_id
+            ],
             [
                 // 'video_type_id' => $this->videoTypes,
                 'music_genre_id' => $this->musicGenres,
@@ -84,7 +92,7 @@ class Setting extends Component
     public function render()
     {
 
-        return view('livewire.profile.media.setting', [
+        return view('livewire.profile.digital-assets.setting', [
             'genres' => MusicGenre::pluck('name', 'id')
         ]);
 
