@@ -102,7 +102,7 @@
     <!-- Image Upload -->
     <input wire:loading.attr="disabled" type="file" wire:model="image" multiple accept="*" id="image-upload" class="hidden" name="image"/>
 
-    <x-button primary label="Add Media" class="upload-case mt-4 w-full"/>
+    <x-button wire:loading.attr="disabled" wire:loading.remove wire:target="updatedImage" primary label="Add Media" class="upload-case mt-4 w-full"/>
 
     <!-- Preview Modal -->
     <div class="@if($showPreviewModal) block @else hidden @endif fixed z-50 left-0 top-0 w-full h-full bg-black bg-opacity-75">

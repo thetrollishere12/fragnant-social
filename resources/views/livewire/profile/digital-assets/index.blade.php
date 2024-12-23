@@ -15,7 +15,7 @@
                 <th class="border border-gray-300 px-6 py-3 text-left font-medium">Name</th>
                 <th class="border border-gray-300 px-6 py-3 text-left font-medium">Description</th>
                 <th class="border border-gray-300 px-6 py-3 text-left font-medium">Image</th>
-                <th class="border border-gray-300 px-6 py-3 text-center font-medium">Actions</th>
+                <th class="border border-gray-300 px-6 py-3 text-right font-medium">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -34,13 +34,16 @@
                             <span class="text-gray-500 italic">No Image</span>
                         @endif
                     </td>
-                    <td class="border border-gray-300 px-6 py-4 text-center">
-                        <div class="flex justify-center space-x-2">
+                    <td class="border border-gray-300 px-6 py-4 text-right">
+                        <div class="flex justify-end space-x-2">
                             <x-button flat label="Edit" wire:click="editAsset({{ $asset->id }})" class="text-blue-600 hover:bg-blue-100" />
-                            <x-button negative label="Delete" wire:click="deleteAsset({{ $asset->id }})" class="text-red-600 hover:bg-red-100" />
+                            
                             <a href="{{ url('user/digital-assets/'.$asset->id) }}" class="inline-flex">
                                 <x-button primary label="Show" class="text-green-600 hover:bg-green-100" />
                             </a>
+
+                            <x-button negative label="Delete" wire:click="deleteAsset({{ $asset->id }})" class="text-red-600 hover:bg-red-100" />
+                            
                         </div>
                     </td>
                 </tr>
@@ -77,21 +80,25 @@
     <div wire:loading wire:target="image" class="text-gray-500 text-sm">Uploading...</div>
     @if ($image)
         <img src="{{ $image->temporaryUrl() }}" alt="Image Preview" class="mt-2 w-16 h-16 rounded">
-    @elseif ($assetId && $imagePath = DigitalAsset::find($assetId)?->image)
-        <img src="{{ asset('storage/' . $imagePath) }}" alt="Current Image" class="mt-2 w-16 h-16 rounded">
     @endif
     @error('image') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 </div>
 
         </div>
 
-        <x-slot name="footer">
+    <x-slot name="footer">
         <div class="flex justify-between gap-x-4">
             <x-button secondary label="Cancel" wire:click="resetForm" />
-            <div class="flex">
-                
-                <x-button primary label="Save" wire:click="saveAsset" />
-            </div>
+            <x-button 
+                primary 
+                label="Save" 
+                wire:click="saveAsset" 
+                wire:loading.attr="disabled" 
+                spinner
+                wire:target="saveAsset, image"
+            >
+
+            </x-button>
         </div>
     </x-slot>
 

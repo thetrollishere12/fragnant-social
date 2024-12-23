@@ -18,6 +18,12 @@ use Storage;
 use Db;
 
 
+use App\Models\MediaTemplate;
+
+use App\Models\PublishedDetail;
+
+use App\Models\PublishedAssetMap;
+
 
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
@@ -53,7 +59,7 @@ class ShortFormGeneratorHelper
                     : null;
 
                 $backgroundMusicPath = AudiusHelper::streamTrack($randomTrack['id']);
-                $localMusicPath = Storage::disk('public')->path('assets/music/' . uniqid('', true) . '.mp3');
+                $localMusicPath = Storage::disk('private')->path('temp/' . uniqid('', true) . '.mp3');
 
                 try {
                     $musicContent = file_get_contents($backgroundMusicPath);
@@ -80,7 +86,7 @@ class ShortFormGeneratorHelper
                 : null;
 
             $backgroundMusicPath = AudiusHelper::streamTrack($randomTrack['id']);
-            $localMusicPath = Storage::disk('public')->path('assets/music/' . uniqid('', true) . '.mp3');
+            $localMusicPath = Storage::disk('private')->path('temp/' . uniqid('', true) . '.mp3');
 
             try {
                 $musicContent = file_get_contents($backgroundMusicPath);
@@ -94,9 +100,10 @@ class ShortFormGeneratorHelper
     }
 
 
-    public static function outputDirection($digital_asset_id,$format = 'short'){
 
-    	$folder = 'digital-assets/'.$digital_asset_id.'/published/';
+    public static function outputDirection($digital_asset_id, $format = 'short', $folderName = 'published'){
+
+    	$folder = 'digital-assets/'.$digital_asset_id.'/'.$folderName.'/';
 
     	$outputDir = storage_path('app/public/'.$folder);
         
@@ -104,7 +111,7 @@ class ShortFormGeneratorHelper
             File::makeDirectory($outputDir, 0755, true);
         }
 
-        $outputFileName = 'combined_reel_user_' . $digital_asset_id . '_' . now()->format('Ymd_His') . '.mp4';
+        $outputFileName = 'fragnant_short_form_' . $digital_asset_id . '_' . now()->format('Ymd_His') . '.mp4';
 
         if($format == 'storage_path'){
 
@@ -122,9 +129,52 @@ class ShortFormGeneratorHelper
 
     }
 
-    public static function OneFrameText($digital_asset_id,$textColor = "white", $topText = "This is the top text" ,$topTextPosition = 200, $bottomText = "This is the bottom text" ,$bottomTextPosition = 300){
+
+    public static function recordPublished($digitalAssetId, $outputPath, $template = [], $userMedia = null, $type = null, $description = null)
+    {
+
+        // Create the published media record
+        $published = PublishedMedia::create([
+            'url' => 'digital-assets/' . $digitalAssetId . '/published/' . basename($outputPath),
+            'digital_asset_id' => $digitalAssetId,
+        ]);
+
+        // Create the published detail record
+        PublishedDetail::create([
+            'published_id' => $published->id,
+            'media_template_id' => $template->id ?? null, // Handle optional template ID
+            'type' => $type,
+            'description' => $description
+        ]);
+
+        // Check if userMedia is a collection or a single object
+        if ($userMedia instanceof \Illuminate\Support\Collection) {
+            // Loop through the collection and insert each item
+            foreach ($userMedia as $key => $media) {
+                PublishedAssetMap::create([
+                    'published_id' => $published->id,
+                    'user_media_id' => $media->id,
+                    'weight' => $key,
+                ]);
+            }
+        } elseif ($userMedia) {
+            // Handle a single object
+            PublishedAssetMap::create([
+                'published_id' => $published->id,
+                'user_media_id' => $userMedia->id,
+                'weight' => 0, // Default weight for a single item
+            ]);
+        }
+
+        return $published;
+    }
+
+
+    public static function textOverlayVideo($digital_asset_id,$textColor = "white", $topText = "This is the top text" ,$topTextPosition = 250, $bottomText = "This is the bottom text" ,$bottomTextPosition = 350){
 
     	try {
+
+
 
     		$userMedia = UserMedia::where('digital_asset_id', $digital_asset_id)
             ->where('type', 'video')
@@ -151,7 +201,9 @@ class ShortFormGeneratorHelper
                 ->save($outputPath);
 
 
-            return $outputPath;
+
+            return self::recordPublished(digitalAssetId:$digital_asset_id, outputPath:$outputPath, type:'One Frame Text');
+
 
 
         } catch (\Exception $e) {
@@ -160,11 +212,24 @@ class ShortFormGeneratorHelper
 
     }
 
-public static function OneFrameSnippet($digital_asset_id)
+
+
+public static function clipTemplatePair($digital_asset_id, $template_id = null, $firstClipPath = null)
 {
+    if ($template_id === null) {
+        // Use `inRandomOrder` to fetch a random MediaTemplate
+        $template = MediaTemplate::where('type', 'LIKE', '%clip-template%')->inRandomOrder()->first();
+    } else {
+        // Fetch a specific template by ID
+        $template = MediaTemplate::find($template_id);
+    }
+
+
+    $firstClipPath = Storage::disk($template->storage)->path("{$template->folder}/{$template->filename}");
+
     // Define paths
     $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
-    $firstClipPath = storage_path('app/public/assets/clips/micheal.mp4');
+
 
     $userMedia = UserMedia::where('digital_asset_id', $digital_asset_id)
         ->where('type', 'video')
@@ -174,17 +239,16 @@ public static function OneFrameSnippet($digital_asset_id)
         throw new \Exception('No digital asset media found.');
     }
 
-    $inputVideoPath = storage_path('app/public/' . $userMedia->folder . '/' . $userMedia->filename);
-    $outputDir = storage_path('app/public/published');
-    if (!file_exists($outputDir)) {
-        mkdir($outputDir, 0777, true);
-    }
 
-    $tempSnippetPath = storage_path('app/public/assets/clips/temp_snippet.mp4');
-    $tempInputVideoPath = storage_path('app/public/assets/clips/temp_input_resized.mp4');
-    $concatListPath = storage_path('app/public/assets/clips/concat_list.txt');
-    $audioPath = storage_path('app/public/assets/clips/extracted_audio.mp3');
-    $finalOutputPath = $outputDir . '/final_video_' . time() . '.mp4';
+
+    $inputVideoPath = Storage::disk($userMedia->storage)->path("{$userMedia->folder}/{$userMedia->filename}");
+
+
+
+
+
+    $outputPath = self::outputDirection($digital_asset_id,'storage_path');
+
 
     // Ensure source files exist
     if (!file_exists($firstClipPath) || !file_exists($inputVideoPath)) {
@@ -192,53 +256,58 @@ public static function OneFrameSnippet($digital_asset_id)
     }
 
     // Step 1: Normalize the first clip
-    $resizeSnippetCommand = "\"$ffmpegPath\" -i \"$firstClipPath\" -an -t 5.4 -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=30\" \"$tempSnippetPath\"";
-    exec($resizeSnippetCommand, $outputSnippet, $resultCodeSnippet);
-    if ($resultCodeSnippet !== 0) {
-        throw new \Exception('Failed to resize the first clip: ' . implode("\n", $outputSnippet));
-    }
+    $splitByFrame = FfmpegHelper::detectFrameChanges($firstClipPath);
+
+    $readsplitFrame = FfmpegHelper::readFrameChanges($splitByFrame);
+
+    // Step 1: Process the intro clip (5-second snippet for video only)
+    $introClipPath = FfmpegHelper::splitMedia(
+        inputPath: $firstClipPath,
+        seconds: reset($readsplitFrame),
+        frame:30
+    );
 
     // Step 2: Normalize the second clip
-    $resizeInputCommand = "\"$ffmpegPath\" -i \"$inputVideoPath\" -an -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=30\" \"$tempInputVideoPath\"";
-    exec($resizeInputCommand, $outputInput, $resultCodeInput);
-    if ($resultCodeInput !== 0) {
-        throw new \Exception('Failed to resize the second clip: ' . implode("\n", $outputInput));
-    }
+    $tempInputVideoPath = FfmpegHelper::splitMedia(
+        inputPath: $inputVideoPath,
+        frame:30
+    );
+
 
     // Step 3: Extract audio from the first clip
-    $extractAudioCommand = "\"$ffmpegPath\" -i \"$firstClipPath\" -q:a 0 -map a \"$audioPath\"";
-    exec($extractAudioCommand, $outputAudio, $resultCodeAudio);
-    if ($resultCodeAudio !== 0) {
-        throw new \Exception('Failed to extract audio: ' . implode("\n", $outputAudio));
-    }
+    $audioPath = FfmpegHelper::extractAudio($firstClipPath);
 
     // Step 4: Create the concatenation list
-    file_put_contents($concatListPath, "file '$tempSnippetPath'\nfile '$tempInputVideoPath'");
+    $concatListPath = FfmpegHelper::generateConcatList([
+        $introClipPath,
+        $tempInputVideoPath
+    ]);
+
+
+
 
     // Step 5: Concatenate the videos
-    $mergedVideoPath = $outputDir . '/merged_video_' . time() . '.mp4';
-    $concatCommand = "\"$ffmpegPath\" -f concat -safe 0 -i \"$concatListPath\" -c:v libx264 -preset fast -crf 23 -an \"$mergedVideoPath\"";
-    exec($concatCommand, $outputConcat, $resultCodeConcat);
-    if ($resultCodeConcat !== 0) {
-        throw new \Exception('Failed to concatenate the videos: ' . implode("\n", $outputConcat));
-    }
+    $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
+
+
 
     // Step 6: Match audio and video duration
-    $syncCommand = "\"$ffmpegPath\" -i \"$mergedVideoPath\" -i \"$audioPath\" -c:v copy -c:a aac -shortest \"$finalOutputPath\"";
-    exec($syncCommand, $outputSync, $resultCodeSync);
-    if ($resultCodeSync !== 0) {
-        throw new \Exception('Failed to synchronize audio and video: ' . implode("\n", $outputSync));
-    }
+    FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+
+
 
     // Step 7: Clean up temporary files
-    @unlink($tempSnippetPath);
+    @unlink($introClipPath);
     @unlink($tempInputVideoPath);
     @unlink($concatListPath);
     @unlink($audioPath);
     @unlink($mergedVideoPath);
+    @unlink($splitByFrame);
 
+    // Save it
+    return self::recordPublished(
+        digitalAssetId:$digital_asset_id, outputPath:$outputPath, template:$template, userMedia:$userMedia, type:'clip template pair');
 
-    return $finalOutputPath;
 }
 
 
@@ -246,34 +315,48 @@ public static function OneFrameSnippet($digital_asset_id)
 
 
 
-public static function SlideShowSnippet($digital_asset_id, $slideDuration = 2, $totalSlides = 2)
+public static function clipTemplateSlideshow($digital_asset_id, $template_id = null, $slideDuration = null, $totalSlides = null, $firstClipPath = null)
 {
+
+
+    if ($template_id === null) {
+        // Use `inRandomOrder` to fetch a random MediaTemplate
+        $template = MediaTemplate::where('type', 'LIKE', '%clip-template-slideshow%')->inRandomOrder()->first();
+    } else {
+        // Fetch a specific template by ID
+        $template = MediaTemplate::find($template_id);
+    }
+
+    $firstClipPath = Storage::disk($template->storage)->path("{$template->folder}/{$template->filename}");
+
 // Define paths
     $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
-    $firstClipPath = storage_path('app/public/assets/clips/micheal.mp4');
-    $outputDir = storage_path('app/public/published');
-    if (!file_exists($outputDir)) {
-        mkdir($outputDir, 0777, true);
+ 
+
+
+    $outputPath = self::outputDirection($digital_asset_id,'storage_path');
+
+    // Ensure source files exist
+    if (!file_exists($firstClipPath)) {
+        throw new \Exception('One or more source files are missing.');
     }
 
-    $tempDir = storage_path('app/public/assets/clips/');
-    $concatListPath = $tempDir . 'concat_list.txt';
-    $introClipPath = $tempDir . 'intro_clip.mp4';
-    $audioPath = $tempDir . 'full_audio.mp3';
-    $finalOutputPath = $outputDir . '/slideshow_video_' . time() . '.mp4';
+    $splitByFrame = FfmpegHelper::detectFrameChanges($firstClipPath);
+
+    $readsplitFrame = FfmpegHelper::readFrameChanges($splitByFrame);
 
     // Step 1: Process the intro clip (5-second snippet for video only)
-    $resizeIntroCommand = "\"$ffmpegPath\" -i \"$firstClipPath\" -t 5.4 -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=30\" -c:v libx264 -crf 23 \"$introClipPath\"";
-    exec($resizeIntroCommand, $outputIntro, $resultCodeIntro);
-    if ($resultCodeIntro !== 0) {
-        throw new \Exception('Failed to process the intro clip: ' . implode("\n", $outputIntro));
-    }
+    $introClipPath = FfmpegHelper::splitMedia(
+        inputPath: $firstClipPath,
+        seconds: reset($readsplitFrame),
+        frame:30
+    );
 
     // Step 2: Extract the full audio from the first clip
-    $extractFullAudioCommand = "\"$ffmpegPath\" -i \"$firstClipPath\" -q:a 0 -map a \"$audioPath\"";
-    exec($extractFullAudioCommand, $outputAudio, $resultCodeAudio);
-    if ($resultCodeAudio !== 0) {
-        throw new \Exception('Failed to extract full audio: ' . implode("\n", $outputAudio));
+    $audioPath = FfmpegHelper::extractAudio($firstClipPath);
+
+    if($totalSlides == null){
+        $totalSlides = count($readsplitFrame);
     }
 
     // Step 3: Process user media (images/videos)
@@ -286,10 +369,19 @@ public static function SlideShowSnippet($digital_asset_id, $slideDuration = 2, $
         throw new \Exception('No digital asset media found.');
     }
 
+
+
     $slidePaths = [];
+
     foreach ($userMedia as $index => $media) {
-        $inputPath = storage_path('app/public/' . $media->folder . '/' . $media->filename);
-        $slidePath = $tempDir . "slide_$index.mp4";
+
+        $inputPath = Storage::disk($media->storage)->path("{$media->folder}/{$media->filename}");
+
+        $slidePath = Storage::disk("local")->path("assets/clips/slide_{$index}.mp4");
+
+        if($slideDuration == null){
+            $slideDuration = $readsplitFrame[$index+2] - $readsplitFrame[$index+1];
+        }
 
         if ($media->type === 'image') {
             // Convert image to video slide
@@ -299,38 +391,34 @@ public static function SlideShowSnippet($digital_asset_id, $slideDuration = 2, $
                 throw new \Exception("Failed to process image: $inputPath. " . implode("\n", $outputImage));
             }
         } else {
+
             // Trim and resize video
-            $videoToSlideCommand = "\"$ffmpegPath\" -i \"$inputPath\" -an -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=30\" -t $slideDuration -c:v libx264 -crf 23 \"$slidePath\"";
-            exec($videoToSlideCommand, $outputVideo, $resultCodeVideo);
-            if ($resultCodeVideo !== 0) {
-                throw new \Exception("Failed to process video: $inputPath. " . implode("\n", $outputVideo));
-            }
+            $slidePath = FfmpegHelper::splitMedia(
+                inputPath: $inputPath,
+                seconds: $slideDuration,
+                frame:30
+            );
+
         }
 
         $slidePaths[] = $slidePath;
     }
 
     // Step 4: Create concatenation list
-    $concatContent = "file '$introClipPath'\n";
-    foreach ($slidePaths as $slidePath) {
-        $concatContent .= "file '$slidePath'\n";
-    }
-    file_put_contents($concatListPath, $concatContent);
+    array_unshift($slidePaths, $introClipPath);
+    $concatListPath = FfmpegHelper::generateConcatList($slidePaths);
+
+
 
     // Step 5: Concatenate all videos
-    $mergedVideoPath = $tempDir . 'merged_slideshow.mp4';
-    $concatCommand = "\"$ffmpegPath\" -f concat -safe 0 -i \"$concatListPath\" -c:v libx264 -preset fast -crf 23 \"$mergedVideoPath\"";
-    exec($concatCommand, $outputConcat, $resultCodeConcat);
-    if ($resultCodeConcat !== 0) {
-        throw new \Exception('Failed to concatenate videos: ' . implode("\n", $outputConcat));
-    }
+    $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
 
     // Step 6: Add audio and synchronize duration
-    $syncCommand = "\"$ffmpegPath\" -i \"$mergedVideoPath\" -i \"$audioPath\" -filter_complex \"[0:v:0][1:a:0]concat=n=1:v=1:a=1[outv][outa]\" -map \"[outv]\" -map \"[outa]\" -c:v libx264 -c:a aac \"$finalOutputPath\"";
-    exec($syncCommand, $outputSync, $resultCodeSync);
-    if ($resultCodeSync !== 0) {
-        throw new \Exception('Failed to synchronize audio and video: ' . implode("\n", $outputSync));
-    }
+    FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+
+
+
+
 
     // Step 7: Clean up temporary files
     @unlink($introClipPath);
@@ -340,27 +428,154 @@ public static function SlideShowSnippet($digital_asset_id, $slideDuration = 2, $
     @unlink($concatListPath);
     @unlink($mergedVideoPath);
     @unlink($audioPath);
+    @unlink($splitByFrame);
 
     // Save the final video in the database
 
-    return $finalOutputPath;
+    // Save it
+    return self::recordPublished(digitalAssetId:$digital_asset_id, outputPath:$outputPath, template:$template, userMedia:$userMedia,type:'clip template slideshow');
 }
 
 
 
 
 
-
-
-    public static function slideShow($digital_asset_id,$videoDuration = 2,$totalVideo = 5)
+    public static function templateSlideshow($digital_asset_id, $template_id = null)
     {
 
 
-    	$ffmpegPath =  env('FFMPEG_BINARIES', '/usr/bin/ffmpeg');
+
+
+
+    if ($template_id === null) {
+        // Use `inRandomOrder` to fetch a random MediaTemplate
+        $template = MediaTemplate::where('type', 'template-slideshow')->inRandomOrder()->first();
+    } else {
+        // Fetch a specific template by ID
+        $template = MediaTemplate::find($template_id);
+    }
+
+    $firstClipPath = Storage::disk($template->storage)->path("{$template->folder}/{$template->filename}");
+
+// Define paths
+    $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+ 
+
+
+    $outputPath = self::outputDirection($digital_asset_id,'storage_path');
+
+    // Ensure source files exist
+    if (!file_exists($firstClipPath)) {
+        throw new \Exception('One or more source files are missing.');
+    }
+
+    $splitByFrame = FfmpegHelper::detectFrameChanges($firstClipPath, 0.1);
+
+    $readsplitFrame = FfmpegHelper::readFrameChanges($splitByFrame);
+
+
+
+    // Step 2: Extract the full audio from the first clip
+    $audioPath = FfmpegHelper::extractAudio($firstClipPath);
+
+
+    $totalSlides = count($readsplitFrame)-1;
+    
+
+    // Step 3: Process user media (images/videos)
+    $userMedia = UserMedia::where('digital_asset_id', $digital_asset_id)
+        ->whereIn('type', ['image', 'video'])
+        ->limit($totalSlides)
+        ->get();
+
+    if ($userMedia->isEmpty()) {
+        throw new \Exception('No digital asset media found.');
+    }
+
+
+
+    $slidePaths = [];
+
+    foreach ($userMedia as $index => $media) {
+
+        $inputPath = Storage::disk($media->storage)->path("{$media->folder}/{$media->filename}");
+
+        $slidePath = Storage::disk("local")->path("assets/clips/slide_{$index}.mp4");
+
+        $slideDuration = $readsplitFrame[$index+1] - $readsplitFrame[$index];
+        
+        if ($media->type === 'image') {
+            // Convert image to video slide
+            $imageToVideoCommand = "\"$ffmpegPath\" -loop 1 -i \"$inputPath\" -c:v libx264 -t $slideDuration -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=30\" -crf 23 \"$slidePath\"";
+            exec($imageToVideoCommand, $outputImage, $resultCodeImage);
+            if ($resultCodeImage !== 0) {
+                throw new \Exception("Failed to process image: $inputPath. " . implode("\n", $outputImage));
+            }
+        } else {
+
+            // Trim and resize video
+            $slidePath = FfmpegHelper::splitMedia(
+                inputPath: $inputPath,
+                seconds: $slideDuration,
+                frame:30
+            );
+
+        }
+
+        $slidePaths[] = $slidePath;
+    }
+
+    // Step 4: Create concatenation list
+    $concatListPath = FfmpegHelper::generateConcatList($slidePaths);
+
+
+
+    // Step 5: Concatenate all videos
+    $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
+
+    // Step 6: Add audio and synchronize duration
+    FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+
+
+
+
+
+    // Step 7: Clean up temporary files
+    @unlink($introClipPath);
+    foreach ($slidePaths as $slidePath) {
+        @unlink($slidePath);
+    }
+    @unlink($concatListPath);
+    @unlink($mergedVideoPath);
+    @unlink($audioPath);
+    @unlink($splitByFrame);
+
+    // Save the final video in the database
+
+    // Save it
+    return self::recordPublished(digitalAssetId:$digital_asset_id, outputPath:$outputPath, template:$template, userMedia:$userMedia,type:'template slideshow');
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+    public static function customSlideShow($digital_asset_id,$slideDuration = 1,$totalVideo = 5)
+    {
+
+        $ffmpegPath =  env('FFMPEG_BINARIES', '/usr/bin/ffmpeg');
         $ffprobePath = env('FFPROBE_BINARIES', '/usr/bin/ffprobe');
-
-	
-
 
         $userMedia = UserMedia::where('digital_asset_id', $digital_asset_id)
             ->where('type', 'video')
@@ -370,7 +585,6 @@ public static function SlideShowSnippet($digital_asset_id, $slideDuration = 2, $
             logger()->error("No videos found for digital asset ID {$digital_asset_id}");
             return;
         }
-
 
         $outputPath = self::outputDirection($digital_asset_id,'storage_path');
 
@@ -382,55 +596,68 @@ public static function SlideShowSnippet($digital_asset_id, $slideDuration = 2, $
         }
 
 
+        $slidePaths = [];
 
-        $inputFiles = [];
-        $filterComplex = '';
-        $concatParts = '';
-        $validVideoCount = 0;
+        foreach ($userMedia as $index => $media) {
 
-        foreach ($userMedia as $mediaFile) {
-            $videoPath = Storage::disk($mediaFile->storage)->path("{$mediaFile->folder}/{$mediaFile->filename}");
-            if (!file_exists($videoPath)) {
-                logger()->error("Video file not found: $videoPath");
-                continue;
+            $inputPath = Storage::disk($media->storage)->path("{$media->folder}/{$media->filename}");
+
+            $slidePath = Storage::disk("local")->path("assets/clips/slide_{$index}.mp4");
+
+
+            if ($media->type === 'image') {
+                // Convert image to video slide
+                $imageToVideoCommand = "\"$ffmpegPath\" -loop 1 -i \"$inputPath\" -c:v libx264 -t $slideDuration -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=30\" -crf 23 \"$slidePath\"";
+                exec($imageToVideoCommand, $outputImage, $resultCodeImage);
+                if ($resultCodeImage !== 0) {
+                    throw new \Exception("Failed to process image: $inputPath. " . implode("\n", $outputImage));
+                }
+            } else {
+
+                // Trim and resize video
+                $slidePath = FfmpegHelper::splitMedia(
+                    inputPath: $inputPath,
+                    seconds: $slideDuration,
+                    frame:30
+                );
+
             }
 
-            $inputFiles[] = "-i " . escapeshellarg($videoPath);
-            $filterComplex .= "[{$validVideoCount}:v]trim=duration={$videoDuration},setpts=PTS-STARTPTS,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2[vid{$validVideoCount}];";
-            $concatParts .= "[vid{$validVideoCount}]";
-            $validVideoCount++;
+            $slidePaths[] = $slidePath;
         }
 
-        if ($validVideoCount === 0) {
-            logger()->error("No valid videos found for digital asset ID {$digital_asset_id}");
-            return;
+        // Step 4: Create concatenation list
+        $concatListPath = FfmpegHelper::generateConcatList($slidePaths);
+
+        // Step 5: Concatenate all videos
+        $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
+
+        $totalDuration = count($slidePaths) * $slideDuration;
+
+        // Step 6: Extract the full audio from the first clip
+        $audioPath = FfmpegHelper::extractAudioRandomStart($localMusicPath,$totalDuration);
+
+        // Step 6: Add audio and synchronize duration
+        FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+
+         // Step 7: Clean up temporary files
+        foreach ($slidePaths as $slidePath) {
+            @unlink($slidePath);
         }
+        @unlink($localMusicPath);
+        @unlink($concatListPath);
+        @unlink($audioPath);
+        @unlink($mergedVideoPath);
 
-        $totalVideoDuration = $validVideoCount * $videoDuration;
-
-        $filterComplex .= "{$concatParts}concat=n={$validVideoCount}:v=1:a=0[outv];";
-        $inputFiles[] = "-i " . escapeshellarg($localMusicPath);
-
-        $audioDuration = 60;
-        $randomStart = max(0, rand(0, $audioDuration - $totalVideoDuration));
-
-        $filterComplex .= "[{$validVideoCount}:a]atrim=start={$randomStart}:duration={$totalVideoDuration},asetpts=PTS-STARTPTS,volume=1.9[finalaudio]";
-
-        $ffmpegCmd = $ffmpegPath . ' ' . implode(' ', $inputFiles) .
-            " -filter_complex \"" . $filterComplex . "\" " .
-            " -map \"[outv]\" -map \"[finalaudio]\" -r 60 -y " . escapeshellarg($outputPath);
-
-        exec($ffmpegCmd . ' 2>&1', $output, $returnVar);
-
-        if ($returnVar === 0 && file_exists($outputPath)) {
-
-            return $outputPath;
-
-        } else {
-            logger()->error("Failed to generate combined reel for digital asset ID {$digital_asset_id}. FFmpeg output: " . implode("\n", $output));
-        }
-
-
+    
+        // Step 6.5
+        return self::recordPublished(
+            digitalAssetId:$digital_asset_id,
+            outputPath:$outputPath,
+            userMedia:$userMedia,
+            type:'slideshow'
+        );
+      
     }
 
 

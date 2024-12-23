@@ -89,15 +89,15 @@
                         <video class="w-full max-w-5xl mx-auto" controls>
                             <source src="{{ Storage::disk('public')->url('image/welcome/sample_2.mp4') }}" type="video/mp4">
                         </video>
-                        <a href="{{ url('user/media') }}">
+                        <a href="{{ url('user/digital-assets') }}">
 
 
-@livewire('admin.trigger-event-button', [
-    'className' => 'text-xl mt-2 w-full main-bg-c text-white rounded py-2.5',
-    'text' => 'Start Repurposing Now',
-    'subject' => 'Repurpose Button Clicked',
-    'message' => 'This is a message to let you know this button was clicked'
-])
+                            @livewire('admin.trigger-event-button', [
+                                'className' => 'text-xl mt-2 w-full main-bg-c text-white rounded py-2.5',
+                                'text' => 'Start Repurposing Now',
+                                'subject' => 'Repurpose Button Clicked',
+                                'message' => 'This is a message to let you know this button was clicked'
+                            ])
 
 
 

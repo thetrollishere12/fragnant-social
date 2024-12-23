@@ -368,7 +368,7 @@ public static function resume_user_subscription($product_name){
  * @param int|null $digitalAssetId
  * @return int
  */
-public static function getMonthlyVideoCountByDate(int $userId, ?int $year = null, ?int $month = null, ?int $digitalAssetId = null): int
+public static function getMonthlyVideoCount(int $userId, ?int $year = null, ?int $month = null, ?int $digitalAssetId = null): int
 {
     $year = $year ?? now()->year;   // Default to the current year
     $month = $month ?? now()->month; // Default to the current month
@@ -381,8 +381,6 @@ public static function getMonthlyVideoCountByDate(int $userId, ?int $year = null
             })
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
-            ->selectRaw('DATE(created_at) as date') // Select the unique date
-            ->groupBy('date') // Group by the date
             ->get()
             ->count();
     }
@@ -398,8 +396,6 @@ public static function getMonthlyVideoCountByDate(int $userId, ?int $year = null
     return PublishedMedia::whereIn('digital_asset_id', $digitalAssets)
         ->whereYear('created_at', $year)
         ->whereMonth('created_at', $month)
-        ->selectRaw('DATE(created_at) as date') // Select the unique date
-        ->groupBy('date') // Group by the date
         ->get()
         ->count();
 }

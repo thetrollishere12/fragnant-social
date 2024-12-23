@@ -14,10 +14,14 @@ use Str;
 use ZipArchive;
 use App\Helper\OpenAiHelper;
 use App\Helper\FFmpegHelper;
-use App\Helper\SubscriptionHelper;
-use App\Jobs\ProcessMedia;
+
+
 use App\Events\MediaProcessed;
 use App\Models\DigitalAsset;
+
+
+
+use App\Jobs\BatchProcessMediaToDb;
 
 class Media extends Component
 {
@@ -63,13 +67,6 @@ class Media extends Component
 
         set_time_limit(0);
 
-        if(SubscriptionHelper::hasExceededStorageLimit(Auth::user()->id) == true){
-            return $this->dialog()->show([
-                'icon' => 'error',
-                'title' => 'Surpassed Storage Space!',
-                'description' => 'Woops, you surpassed your limit. Please <a href="'.url('subscription-pricing').'" style="color: #007bff; text-decoration: underline;">upgrade your subscription</a> to continue.',
-            ]);
-        }
 
         if (!$this->image) {
             return $this->dialog()->show([
@@ -79,6 +76,8 @@ class Media extends Component
             ]);
         }
 
+        $arrayPath = [];
+
         foreach ($this->image as $uploadedFile) {
             // Save the file temporarily in storage
             $tempPath = $uploadedFile->store('temp', 'local');
@@ -86,19 +85,14 @@ class Media extends Component
             // Insert media information into the database
             $originalName = $uploadedFile->getClientOriginalName();
 
-            $userMedia = UserMedia::create([
-                'storage' => 'local',
-                'folder' => 'temp',
-                'filename' => $originalName,
-                'size' => Storage::disk('local')->size($tempPath),
-                'digital_asset_id' => $this->digital_asset_id,
-                'type' => 'pending', // Mark as pending
-            ]);
-
-            // Dispatch the processing job
-            ProcessMedia::dispatch($tempPath, $userMedia->id);
+            $arrayPath[] = [
+                'temporary_path'=>$tempPath,
+                'originalName'=>$originalName
+            ];
             
         }
+
+        BatchProcessMediaToDb::dispatch($arrayPath,$this->digital_asset_id);
 
         $this->notification()->send([
             'title' => 'Media Uploaded!',
@@ -109,19 +103,7 @@ class Media extends Component
 
     }
 
-// #[On('echo-private:user.*.MediaProcessed')]
-// public function onMediaProcessed($event, $channel)
-// {
-//     dd(3);
-//     // Extract user ID from the channel
-//     $userId = str_replace('echo-private:user.', '', explode(',', $channel)[0]);
-
-//     // Ensure this event belongs to the authenticated user
-//     if ((int) $userId === Auth::id()) {
-//         $this->packageStatuses[] = $event;
-//         dd(31); // Debugging output
-//     }
-// }
+    
 
     public function select_media($code_id)
     {

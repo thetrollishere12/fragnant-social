@@ -14,6 +14,8 @@ use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\File;
 
+use App\Helper\AppHelper;
+
 class FFmpegHelper
 {
 
@@ -82,37 +84,7 @@ class FFmpegHelper
 
 
 
-// public static function convertAudioFormat($inputPath, $outputPath)
-// {
-//         try {
-//         $ffmpegPath = 'C:/xampp/htdocs/contentplanner/ffmpeg/bin/ffmpeg.exe';
 
-//         // Ensure the output format settings with fade in and fade out effects
-//         $process = new Process([
-//             $ffmpegPath, '-i', Storage::disk('public')->path($inputPath),
-//             '-af', 'afade=t=in:ss=0:d=0.5,afade=t=out:st=4.5:d=0.5,silenceremove=1:0:-50dB', // Apply fade in for 0.5 seconds and fade out starting at 4.5 seconds and silence if any empty in the beginning
-//             '-t', '5', // Limit the duration to 5 seconds
-//             '-codec:a', 'libmp3lame',  // Use MP3 codec
-//             '-b:a', '160k',            // Bit rate
-//             '-ar', '24000',            // Sample rate
-//             '-ac', '1',                // Number of audio channels (mono)
-//             Storage::disk('public')->path($outputPath)
-//         ]);
-
-//         // Run the process
-//         $process->run();
-
-//         // Handle errors
-//         if (!$process->isSuccessful()) {
-//             throw new \Exception($process->getErrorOutput());
-//         }
-
-//         return $outputPath;
-//     } catch (\Exception $e) {
-//         Log::error('FFmpeg Conversion Error: ' . $e->getMessage());
-//         throw $e; // Re-throw for debugging purposes
-//     }
-// }
 
 
 
@@ -149,6 +121,7 @@ try {
         }
 
         $ffmpeg = LaravelFFMpeg::fromDisk('public')->open($inputPath);
+
         $duration = $ffmpeg->getDurationInSeconds();
 
 
@@ -235,28 +208,6 @@ try {
 
 
 
-//     // Test out
-
-
-
-//     public static function convertMp4ToMp3($inputPath, $outputPath, $bitrate = 128){
-
-//         $audioFormat = new \FFMpeg\Format\Audio\Mp3();
-//         $audioFormat->setAudioKiloBitrate($bitrate);
-
-//         LaravelFFMpeg::fromDisk('public')
-//             ->open($inputPath)
-//                 ->export()
-//                 ->toDisk('public')
-//                 ->inFormat($audioFormat)
-//                 ->save($outputPath);
-
-//     }
-
-
-
-
-
 
 
 
@@ -322,263 +273,83 @@ try {
 
 
 
+public static function splitMedia($inputPath, $seconds = null, $outputPath = null, $frame = 30)
+{
+    // Generate a unique output path for the media file
+    $outputPath = $outputPath ?? Storage::disk('local')->path('temp/' . uniqid('splitted_', false) . '.mp4');
+
+    // Define the path to the ffmpeg executable
+    $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+
+    // Build the ffmpeg command
+    $resizeSnippetCommand = "\"$ffmpegPath\" -i \"$inputPath\" -an"
+    . ($seconds ? " -t $seconds" : "") // Include the `-t` flag only if $seconds is set
+    . " -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=$frame\""
+    . " -c:v libx264 \"$outputPath\"";
+
+    // Execute the ffmpeg command
+    exec($resizeSnippetCommand, $outputSnippet, $resultCodeSnippet);
+
+    // Return the path to the output file
+    return $outputPath;
+}
 
 
 
 
-//     public static function splitMediaByTxt($audioPath, $logPath)
-//     {
-//     $outputDir = 'public/splitted_silence_media/';
-//     $fileParts = pathinfo($audioPath);
-//     $outputPattern = $outputDir . $fileParts['filename'] . '_%03d.' . $fileParts['extension'];
+public static function generateConcatList($files = []){
 
-//     // Make sure the output directory exists
-//     if (!Storage::exists($outputDir)) {
-//         Storage::makeDirectory($outputDir);
-//     }
+    $outputPath = Storage::disk('local')->path('temp/' . uniqid('concat_', false) . '.txt');
 
-//     // Build full paths for input and output files
-//     $ffmpegPath = base_path('ffmpeg/bin/ffmpeg');
-//     $inputFile = Storage::disk('public')->path($audioPath);
 
-//     // Parse the log file to get silence end times
-//     $logContents = Storage::disk('public')->get($logPath);
-//     preg_match_all('/silence_end: (\d+(\.\d+)?)/', $logContents, $matches);
-//     $silenceEndTimes = $matches[1];
+    $concatContent = "";
 
-//     // Generate the segments from silence end times
-//     $segments = [];
-//     $start_time = 0;
-//     foreach ($silenceEndTimes as $end_time) {
-//         $segments[] = ['start' => $start_time, 'end' => $end_time];
-//         $start_time = $end_time;
-//     }
-//     $segments[] = ['start' => $start_time, 'end' => null];
+    foreach ($files as $key => $file) {
+         $concatContent .= "file '$file'\n";
+    }
 
-//     // Split the audio based on the determined segments
-//     foreach ($segments as $index => $segment) {
-//         $start = $segment['start'];
-//         $end = $segment['end'];
-//         $outputFile = sprintf("%s%s_%03d.%s", Storage::path($outputDir), $fileParts['filename'], $index, $fileParts['extension']);
-//         $endOption = $end ? "-to " . escapeshellarg($end) : "";
+    file_put_contents($outputPath, $concatContent);
 
-//         // Specify codecs explicitly
-//         $splitCommand = sprintf(
-//             '%s -i %s -ss %s %s -c:v libx264 -c:a aac %s',
-//             escapeshellarg($ffmpegPath),
-//             escapeshellarg($inputFile),
-//             escapeshellarg($start),
-//             $endOption,
-//             escapeshellarg($outputFile)
-//         );
+    return $outputPath;
 
-//         // Execute the command
-//         exec($splitCommand, $output, $return_var);
-//         if ($return_var !== 0) {
-//             dd('false');
-//         }
-//     }
+}
 
-//     // Helper function to convert seconds to 00:00 format
-//     $convertToTimeFormat = function ($seconds) {
-//         $minutes = floor($seconds / 60);
-//         $seconds = $seconds % 60;
-//         return sprintf('%02d:%02d', $minutes, $seconds);
-//     };
 
-//     // Return the list of split audio files and their timestamps
-//     $files = glob(Storage::path($outputDir . $fileParts['filename'] . '_*.' . $fileParts['extension']));
-//     $fileData = array_map(function ($file, $index) use ($segments, $convertToTimeFormat) {
-//         $start = $convertToTimeFormat($segments[$index]['start']);
-//         $end = $segments[$index]['end'] ? $convertToTimeFormat($segments[$index]['end']) : $convertToTimeFormat($segments[$index]['start']);
-//         return [
-//             'url' => str_replace(Storage::path('public'), '', $file),
-//             'start_time' => $start,
-//             'end_time' => $end,
-//         ];
-//     }, $files, array_keys($files));
+public static function mergeFromConcatList($concatPath){
 
-//     // Filter out segments where start_time is equal to end_time or duration is 1 second or less
-//     $fileData = array_filter($fileData, function ($segment) {
-//         $start_time = strtotime($segment['start_time']);
-//         $end_time = strtotime($segment['end_time']);
-//         return $start_time !== $end_time && ($end_time - $start_time) > 1;
-//     });
+    $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
 
-//     return [
-//         'status' => 'success',
-//         'files' => array_values($fileData), // Reset array keys
-//     ];
-//     }
+    $outputPath = Storage::disk('local')->path('temp/' . uniqid('merged_', false) . '.mp4');
+
+    $concatCommand = "\"$ffmpegPath\" -f concat -safe 0 -i \"$concatPath\" -c:v libx264 -preset fast -crf 23 -an \"$outputPath\"";
+
+    exec($concatCommand, $outputConcat, $resultCodeConcat);
+
+    if ($resultCodeConcat !== 0) {
+        throw new \Exception('Failed to concatenate the videos: ' . implode("\n", $outputConcat));
+    }
+
+    return $outputPath;
+
+}
 
 
 
+public static function replaceAudioFromVideo($audioPath, $videoPath, $outputPath = null){
 
-//     public static function mergeMedia($inputFiles, $outputPath)
-//     {
-//         try {
-//             $temporaryListFile = 'temp_merge_list.txt';
+    $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
 
-//             // Create the file list for FFmpeg
-//             $fileListContent = '';
-//             foreach ($inputFiles as $inputFile) {
-//                 $fileListContent .= "file '" . $inputFile . "'\n";
-//             }
+    $syncCommand = "\"$ffmpegPath\" -i \"$videoPath\" -i \"$audioPath\" -filter_complex \"[0:v:0][1:a:0]concat=n=1:v=1:a=1[outv][outa]\" -map \"[outv]\" -map \"[outa]\" -c:v libx264 -c:a aac -shortest \"$outputPath\"";
 
-//             // Save the list to a temporary file
-//             Storage::disk('local')->put($temporaryListFile, $fileListContent);
+    exec($syncCommand, $outputSync, $resultCodeSync);
 
-//             // Build the FFmpeg command to concatenate files
-//             $ffmpegPath = base_path('ffmpeg/bin/ffmpeg');
-//             $fileListPath = Storage::disk('local')->path($temporaryListFile);
-//             $outputFilePath = Storage::disk('public')->path($outputPath);
+    if ($resultCodeSync !== 0) {
+        throw new \Exception('Failed to synchronize audio and video: ' . implode("\n", $outputSync));
+    }
 
-//             $cmd = sprintf(
-//                 '%s -f concat -safe 0 -i %s -c copy %s',
-//                 escapeshellarg($ffmpegPath),
-//                 escapeshellarg($fileListPath),
-//                 escapeshellarg($outputFilePath)
-//             );
+    return $outputPath;
 
-//             // Execute the command
-//             exec($cmd, $outputLog, $returnCode);
-
-//             // Log the output and return code
-//             Log::info('FFmpeg Command Output: ' . implode("\n", $outputLog));
-//             Log::info('FFmpeg Command Return Code: ' . $returnCode);
-
-//             // Clean up the temporary file
-//             // Storage::disk('local')->delete($temporaryListFile);
-
-//             if ($returnCode === 0) {
-//                 dd(Storage::url($outputPath)); // Return the URL to the merged file
-//             } else {
-//                 throw new \Exception('FFmpeg merge failed.');
-//             }
-//         } catch (\Exception $e) {
-//             dd($e->getMessage());
-//             Log::error('FFmpeg Error: ' . $e->getMessage());
-//             throw $e; // Re-throw for debugging purposes
-//         }
-//     }
-
-
-
-
-
-
-// public static function mergeMediaWithAdditions($audioSections, $outputPath)
-// {
-//     try {
-
-//         $processedFiles = [];
-//         $ffmpegPath = base_path('ffmpeg/bin/ffmpeg');
-
-//         // foreach ($audioSections as $index => $mediaPaths) {
-
-//         //     $audioFile = null;
-//         //     $videoFile = null;
-
-//         //     // Iterate through mediaPaths to find audio and video files
-//         //     foreach ($mediaPaths as $mediaPath) {
-//         //         if (preg_match('/\.(mp3|wav|m4a)$/i', $mediaPath)) {
-//         //             $audioFile = $mediaPath;
-//         //         } elseif (preg_match('/\.(mp4|mov|mkv|avi)$/i', $mediaPath)) {
-//         //             $videoFile = $mediaPath;
-//         //         }
-//         //     }
-
-//         //     if ($audioFile && $videoFile) {
-//         //         $audioFilePath = $audioFile;
-//         //         $videoFilePath = $videoFile;
-//         //         $sectionOutputFilePath = Storage::disk('local')->path('section_' . $index . '.mp4');
-
-//         //         $cmd = sprintf(
-//         //             '%s -i %s -i %s -c:v libx264 -c:a aac -b:a 192k -map 0:v:0 -map 1:a:0 -shortest %s',
-//         //             escapeshellarg($ffmpegPath),
-//         //             escapeshellarg($videoFilePath),
-//         //             escapeshellarg($audioFilePath),
-//         //             escapeshellarg($sectionOutputFilePath)
-//         //         );
-
-
-
-//         //         exec($cmd, $outputLog, $returnCode);
-
-//         //         if ($returnCode !== 0) {
-//         //             throw new \Exception('FFmpeg merge failed for section: ' . $index);
-//         //         }
-
-//         //         $processedFiles[] = $sectionOutputFilePath;
-//         //     } elseif ($audioFile) {
-//         //         $audioFilePath = $audioFile;
-//         //         $videoFilePath = "https://videos.pexels.com/video-files/5544312/5544312-sd_640_360_24fps.mp4"; // Assuming the video file is a URL
-//         //         $sectionOutputFilePath = Storage::disk('local')->path('section_' . $index . '.mp4');
-
-//         //         $cmd = sprintf(
-//         //             '%s -i %s -i %s -c:v libx264 -c:a aac -b:a 192k -map 0:v:0 -map 1:a:0 -shortest %s',
-//         //             escapeshellarg($ffmpegPath),
-//         //             escapeshellarg($videoFilePath),
-//         //             escapeshellarg($audioFilePath),
-//         //             escapeshellarg($sectionOutputFilePath)
-//         //         );
-
-//         //         exec($cmd, $outputLog, $returnCode);
-
-//         //         if ($returnCode !== 0) {
-//         //             throw new \Exception('FFmpeg processing failed for audio section: ' . $index);
-//         //         }
-
-//         //         $processedFiles[] = $sectionOutputFilePath;
-//         //     } elseif ($videoFile) {
-//         //         $processedFiles[] = $videoFile;
-//         //     }
-
-//         // }
-
-//         // Combine all sections into the final output
-
-
-//         $finalListFile = 'final_merge_list.txt';
-//         // $finalFileListContent = '';
-//         // foreach ($processedFiles as $processedFile) {
-//         //     $finalFileListContent .= "file '" . $processedFile . "'\n";
-//         // }
-
-//         // Storage::disk('local')->put($finalListFile, $finalFileListContent);
-
-//         $finalListPath = Storage::disk('local')->path($finalListFile);
-//         $finalOutputFilePath = Storage::disk('public')->path($outputPath);
-
-//         $cmd = sprintf(
-//             '%s -f concat -safe 0 -i %s -c copy %s',
-//             escapeshellarg($ffmpegPath),
-//             escapeshellarg($finalListPath),
-//             escapeshellarg($finalOutputFilePath)
-//         );
-
-//         dd($cmd);
-
-//         exec($cmd, $outputLog, $returnCode);
-
-//         // Storage::disk('local')->delete($finalListFile);
-//         foreach ($processedFiles as $processedFile) {
-//             Storage::disk('local')->delete($processedFile);
-//         }
-
-//         if ($returnCode === 0) {
-//             return Storage::url($outputPath);
-//         } else {
-//             throw new \Exception('FFmpeg merge failed.');
-//         }
-//     } catch (\Exception $e) {
-//         Log::error('FFmpeg Error: ' . $e->getMessage());
-//         throw $e;
-//     }
-// }
-
-
-
+}
 
 
 
@@ -644,25 +415,24 @@ public static function detectFrameChangesPython($videoPath, $threshold = 50000, 
 
 
 
-// filepath = 'assets/clips/micheal.mp4'
+// filepath = 'C:\xampp\htdocs\fragnant-social\storage\app/public/assets/clips/micheal.mp4'
 public static function detectFrameChanges($filePath, $threshold = 0.3)
 {
     // Define paths
     $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
-    $outputDir = public_path('assets/clips/');
-    $fileParts = pathinfo($filePath);
-    $outputFile = $outputDir . $fileParts['filename'] . '_changes.txt';
 
-    // Ensure the output directory exists
-    if (!file_exists($outputDir)) {
-        mkdir($outputDir, 0777, true);
-    }
+    $outputDir = dirname($filePath).'/';
+
+    $fileParts = pathinfo($filePath);
+
+    $outputFile = $outputDir . $fileParts['filename'] . '_detected_frame_change.txt';
+
 
     // Build the FFMpeg command to detect frame changes
     $cmd = sprintf(
         '%s -i %s -filter:v "select=\'gt(scene,%f)\',showinfo" -f null - 2> %s',
         escapeshellarg($ffmpegPath),
-        escapeshellarg(storage_path('app/public/' . $filePath)),
+        escapeshellarg($filePath),
         $threshold,
         escapeshellarg($outputFile)
     );
@@ -673,6 +443,7 @@ public static function detectFrameChanges($filePath, $threshold = 0.3)
     // Execute the FFMpeg command
     $outputLog = [];
     $returnCode = 0;
+
     exec($cmd, $outputLog, $returnCode);
 
     // Check for errors
@@ -680,10 +451,21 @@ public static function detectFrameChanges($filePath, $threshold = 0.3)
         throw new \RuntimeException("FFMpeg failed with return code {$returnCode}. Command: {$cmd}");
     }
 
+
+    return $outputFile;
+
+}
+
+
+
+
+public static function readFrameChanges($filePath){
+
     // Read the output file to get the frame change times
     $frameChanges = [];
-    if (file_exists($outputFile)) {
-        $lines = file($outputFile);
+
+    if (file_exists($filePath)) {
+        $lines = file($filePath);
         foreach ($lines as $line) {
             if (preg_match('/pts_time:([\d.]+)/', $line, $matches)) {
                 $frameChanges[] = floatval($matches[1]);
@@ -692,12 +474,8 @@ public static function detectFrameChanges($filePath, $threshold = 0.3)
     }
 
     return $frameChanges;
+
 }
-
-
-
-
-
 
 
 
@@ -709,11 +487,132 @@ protected static function getImageManager(): ImageManager
 }
 
 
+// input,output path = Storage::disk('public')->path($inputPath)
+public static function convertAudioFormat($inputPath, $outputPath)
+{
+        try {
+
+            $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+
+            // Ensure the output format settings with fade in and fade out effects
+            $process = new Process([
+                $ffmpegPath, '-i', $inputPath,
+                '-af', 'afade=t=in:ss=0:d=0.5,afade=t=out:st=4.5:d=0.5,silenceremove=1:0:-50dB', // Apply fade in for 0.5 seconds and fade out starting at 4.5 seconds and silence if any empty in the beginning
+                '-t', '5', // Limit the duration to 5 seconds
+                '-codec:a', 'libmp3lame',  // Use MP3 codec
+                '-b:a', '160k',            // Bit rate
+                '-ar', '24000',            // Sample rate
+                '-ac', '1',                // Number of audio channels (mono)
+                $outputPath
+            ]);
+
+            // Run the process
+            $process->run();
+
+        // Handle errors
+        if (!$process->isSuccessful()) {
+            throw new \Exception($process->getErrorOutput());
+        }
+
+        return $outputPath;
+    } catch (\Exception $e) {
+        Log::error('FFmpeg Conversion Error: ' . $e->getMessage());
+        throw $e; // Re-throw for debugging purposes
+    }
+}
 
 
 
 
 
+public static function extractAudio($filePath){
+
+    try {
+
+        // Generate a unique output path for the audio file
+        $outputPath = Storage::disk('local')->path('temp/' . uniqid('audio_', false) . '.mp3');
+
+        // Extract audio from the raw input file path
+        $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+        
+        $extractAudioCommand = "\"$ffmpegPath\" -i \"$filePath\" -q:a 0 -map a \"$outputPath\"";
+
+        exec($extractAudioCommand, $outputAudio, $resultCodeAudio);
+
+        if ($resultCodeAudio !== 0) {
+            throw new \Exception('Failed to extract audio: ' . implode("\n", $outputAudio));
+        }
+
+        return $outputPath; // Return the full path to the saved audio file
+
+    } catch (\Exception $e) {
+        throw new \Exception('Failed to extract audio: ' . $e->getMessage());
+    }
+
+}
+
+
+public static function extractAudioRandomStart($filePath, $duration = 10)
+{
+    try {
+        // Generate a unique output path for the audio file
+        $outputPath = Storage::disk('local')->path('temp/' . uniqid('audio_random_st', false) . '.mp3');
+
+
+
+        $details = AppHelper::extractFileDetails($filePath);
+
+        // Initialize LaravelFFMpeg
+        $ffmpeg = LaravelFFMpeg::fromDisk($details['storage_disk'])->open($details['relative_path']);
+
+        // Get the total duration of the file in seconds
+        $totalDuration = $ffmpeg->getDurationInSeconds();
+
+        if (!$totalDuration || $totalDuration <= 10) {
+            throw new \Exception('File is too short or duration could not be determined.');
+        }
+
+        // Ensure the random start time and clip duration fit within the total duration
+        $randomStartTime = rand(10, max(10, $totalDuration - $duration));
+        $startTimeFormatted = gmdate("H:i:s", $randomStartTime); // Convert to HH:MM:SS
+
+        // Path to FFmpeg binary
+        $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+
+        // Build the FFmpeg command with the random start time and clip duration
+        $extractAudioCommand = "\"$ffmpegPath\" -ss $startTimeFormatted -i \"$filePath\" -t $duration -q:a 0 -map a \"$outputPath\"";
+
+        // Debugging: output the command being executed
+        logger()->info("Executing FFmpeg command: $extractAudioCommand");
+
+        // Execute the FFmpeg command
+        exec($extractAudioCommand, $outputAudio, $resultCodeAudio);
+
+        if ($resultCodeAudio !== 0) {
+            throw new \Exception('Failed to extract audio: ' . implode("\n", $outputAudio));
+        }
+
+        return $outputPath; // Return the full path to the saved audio file
+    } catch (\Exception $e) {
+        throw new \Exception('Failed to extract audio: ' . $e->getMessage());
+    }
+}
+
+
+
+//     public static function convertMp4ToMp3($inputPath, $outputPath, $bitrate = 128){
+
+//         $audioFormat = new \FFMpeg\Format\Audio\Mp3();
+//         $audioFormat->setAudioKiloBitrate($bitrate);
+
+//         LaravelFFMpeg::fromDisk('public')
+//             ->open($inputPath)
+//                 ->export()
+//                 ->toDisk('public')
+//                 ->inFormat($audioFormat)
+//                 ->save($outputPath);
+
+//     }
 
 
 public static function checkAudioInfo($filePath)
@@ -810,6 +709,9 @@ public static function convertVideoFormat($inputPath, $outputPath, $format = 'mp
 public static function generateThumbnail($inputPath, $outputPath, $timeInSeconds, $width)
 {
     try {
+
+
+        
         // Extract the frame at the specified time
         LaravelFFMpeg::fromDisk('public')
             ->open($inputPath)

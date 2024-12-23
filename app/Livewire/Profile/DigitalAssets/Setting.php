@@ -68,7 +68,7 @@ class Setting extends Component
                 'digital_asset_id' => $this->digital_asset_id
             ],
             [
-                // 'video_type_id' => $this->videoTypes,
+                'video_type_id' => $this->videoTypes,
                 'music_genre_id' => $this->musicGenres,
                 'frequency' => $this->frequency,
                 'frequency_type' => $this->frequencyType,

@@ -32,7 +32,14 @@ use App\Helper\FFmpegHelper;
 
 use Log;
 
-use App\Events\MediaPublished;
+use App\Events\Publish\PublishProcessing;
+
+
+use App\Helper\SubscriptionHelper;
+use App\Events\Subscription\SubscriptionStatus;
+
+
+use Illuminate\Support\Arr;
 
 
 class GenerateShortFormJob implements ShouldQueue
@@ -66,42 +73,139 @@ class GenerateShortFormJob implements ShouldQueue
      */
     public function handle()
     {
+        try {
 
 
-        $outputPath = ShortFormGeneratorHelper::slideShow($this->digitalAssetId);
+            // Retrieve Digital Asset
+            $digitalAsset = DigitalAsset::find($this->digitalAssetId);
+
+            if (!$digitalAsset) {
+                Log::error("Digital Asset not found: {$this->digitalAssetId}");
+                $this->triggerFailureEvent($this->digitalAssetId, 'Digital Asset not found.');
+                return;
+            }
+
+            // Retrieve the User
+            $user = User::find($digitalAsset->user_id);
+
+            if (!$user) {
+                Log::error("User not found for Digital Asset: {$this->digitalAssetId}");
+                $this->triggerFailureEvent($this->digitalAssetId, 'User not found.');
+                return;
+            }
+
+            // Checking Subscription
+            event(new PublishProcessing(
+                $user->id,
+                'Checking',
+                'Checking if user has not surpassed plan.',
+                5
+            ));
+
+            if (SubscriptionHelper::hasExceededMonthlyVideoLimit($user->id)) {
+                event(new SubscriptionStatus($digitalAsset->user_id, 'Surpassed'));
+                $this->triggerFailureEvent($this->digitalAssetId, 'Surpassed Subscription.');
+                return;
+            }
+
+            // Starting Processing
+            event(new PublishProcessing(
+                $user->id,
+                'Starting',
+                'Generating has started.',
+                10
+            ));
 
 
-        $media = PublishedMedia::create([
-            'url' => 'digital-assets/'.$this->digitalAssetId.'/published/'.basename($outputPath),
-            'digital_asset_id' => $this->digitalAssetId,
-        ]);
-
-        $filePath = 'digital-assets/'.$this->digitalAssetId.'/published';
-        $fileName = basename($outputPath);
-        $thumbnailFolder = 'digital-assets/'.$this->digitalAssetId.'/published-media-thumbnails';
 
 
-        $this->generateThumbnail($media, 'public', $filePath, $fileName, $thumbnailFolder);
+            $videoTypeId = is_array($digitalAsset->setting->video_type_id)
+            ? Arr::random($digitalAsset->setting->video_type_id)
+            : $digitalAsset->setting->video_type_id; // Fallback if not an array
 
-        $digitalAsset = DigitalAsset::find($this->digitalAssetId);
 
-        $user = User::find($digitalAsset->user_id);
+            // Process Media
+            $media = ShortFormGeneratorHelper::$videoTypeId($this->digitalAssetId);
 
-        Log::info("sending Signal For MediaPublished For User - ".$user->id);
-        
-        event(new MediaPublished($user->id));
+            event(new PublishProcessing(
+                $user->id,
+                'Creating',
+                'Media creating is done and now being recorded.',
+                40
+            ));
 
-        if (!empty($user->email)) {
-            $this->sendEmail($user->email, $outputPath);
+
+            event(new PublishProcessing(
+                $user->id,
+                'Created',
+                'Media has been created and recorded.',
+                50
+            ));
+
+            
+
+            event(new PublishProcessing(
+                $user->id,
+                'Thumbnail',
+                'Thumbnail creation is in progress.',
+                75
+            ));
+
+
+            // Generate Thumbnail
+            $this->generateThumbnail($media, 'public');
+
+            event(new PublishProcessing(
+                $user->id,
+                'CompletedThumbnail',
+                'Thumbnail creation is completed.',
+                85
+            ));
+
+            // Log and Complete Job
+            Log::info("Signal Media Published for User - {$user->id}");
+
+            event(new PublishProcessing(
+                $user->id,
+                'Completed',
+                'Media processing has been completed!',
+                100
+            ));
+
+            // Send Email
+            if (!empty($user->email)) {
+                $this->sendEmail($user->email, $media->url);
+            }
+        } catch (\Exception $e) {
+            // Log the exception and trigger failure event
+            Log::error("Media processing failed for User - ".$digitalAsset->user_id);
+
+            $this->triggerFailureEvent($digitalAsset->user_id ?? null, $e->getMessage());
+
         }
-
-
-        
-
-
     }
 
-    
+    /**
+     * Trigger a failure event with a message.
+     *
+     * @param int|null $userId
+     * @param string $errorMessage
+     */
+    private function triggerFailureEvent($userId, $errorMessage)
+    {
+        if ($userId) {
+            event(new PublishProcessing(
+                $userId,
+                'Failed',
+                $errorMessage,
+                100
+            ));
+        }
+    }
+
+        
+
+
 
     private function sendEmail($email, $outputPath)
     {
@@ -115,19 +219,21 @@ class GenerateShortFormJob implements ShouldQueue
 
 
 
-    private function generateThumbnail($media, $storage, $filePath, $fileName, $thumbnailFolder)
+    private function generateThumbnail($media, $storage)
     {
 
 
-        $thumbnailOutputPath = $thumbnailFolder . '/PM_'.$media->id.'_'.\Str::uuid().'/';
+        // Thumbnail Processing
+
+        $thumbnailOutputPath = 'digital-assets/' . $media->published_asset_id . '/published-media-thumbnails/'.'/PM_'.$media->id.'_'.\Str::uuid().'/';
 
 
         try {
 
             FFmpegHelper::generateFrames(
-                inputPath: $filePath . '/' . $fileName,
+                inputPath: $media->url,
                 outputPath: $thumbnailOutputPath,
-                frameRate: .1,
+                frameRate: 1,
                 width:250
             );
 

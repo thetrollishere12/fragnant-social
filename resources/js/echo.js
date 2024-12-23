@@ -31,11 +31,32 @@ window.Echo.channel("test-reverb-channel").listen(".TestReverbEvent", (e) => {
 
 
 window.Echo.private(`user.${window.userId}`)
+
     .listen('.media-processed', () => {
         console.log('Media has been processed!');
         window.Livewire.dispatch('mediaProcessed');
     })
-    .listen('.media-published', () => {
-        console.log('Media has been published!');
-        window.Livewire.dispatch('mediaPublished');
+
+    .listen('.subscription-status', (e) => {
+        console.log(e.message);
+        $wireui.dialog({
+            title: e.title,
+            description: e.message,
+            icon: 'error',
+            accept: {
+                label: 'Upgrade',
+                url: '/subscription-pricing'
+            },
+        });
+    })
+
+    .listen('.publish.processing', (e) => {
+        console.log(`Stage: ${e.stage}, Message: ${e.message}, Progress: ${e.progress}%`);
+        
+        // Update Livewire component
+        window.Livewire.dispatch('updateStage', { 
+            stage: e.stage, 
+            message: e.message, 
+            progress: e.progress 
+        });
     });

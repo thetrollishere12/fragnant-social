@@ -3,10 +3,6 @@
 
 
 
-
-
-
-
     <!-- Primary Navigation Menu -->
     <div class="">
 
@@ -49,6 +45,9 @@
                 @else
                 
 
+                <x-nav-link href="{{ url('user/digital-assets') }}">
+                    {{ __('Digital Assets') }}
+                </x-nav-link>
 
 
                 <!-- Settings Dropdown -->
@@ -193,11 +192,6 @@
 
 
     </div>
-
-
-
-
-
 
 
 

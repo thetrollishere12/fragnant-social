@@ -113,7 +113,9 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('puzzle-fill')
                 ->route('platform.website-block'),
 
-
+            Menu::make('Social Media Templates')
+                ->icon('file-break-fill')
+                ->route('platform.template-upload.index'),
 
 
 

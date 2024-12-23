@@ -23,6 +23,8 @@ use Tabuna\Breadcrumbs\Trail;
 
 use App\Orchid\Screens\Subscription\SubscriptionPlanScreen;
 
+use App\Orchid\Screens\SocialMedia\TemplateUploadScreen;
+
 use App\Orchid\Screens\Webpage\WebpageEditScreen;
 use App\Orchid\Screens\Webpage\WebpageListScreen;
 
@@ -116,6 +118,10 @@ Route::screen('/examples/cards', ExampleCardsScreen::class)->name('platform.exam
 
 Route::screen('subscription-plans', SubscriptionPlanScreen::class)
     ->name('platform.subscription.index');
+
+
+Route::screen('social-media-template-upload', TemplateUploadScreen::class)
+    ->name('platform.template-upload.index');
 
 
 // Webpage Title and Description

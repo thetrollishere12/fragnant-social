@@ -14,4 +14,11 @@ class DigitalAsset extends Model
         'description',
     ];
 
+
+    // Define the relationship with DigitalAsset
+    public function setting()
+    {
+        return $this->hasOne(UserMediaSetting::class, 'digital_asset_id');
+    }
+
 }

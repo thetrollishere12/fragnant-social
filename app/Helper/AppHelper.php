@@ -110,7 +110,7 @@ class AppHelper
 
 
 
-    public static function downloadContent($url,$disk = 'public',$path = true)
+    public static function downloadContent($url, $disk = 'public', $path = true)
     {
 
         $response = Http::get($url);
@@ -133,61 +133,78 @@ class AppHelper
 
 
 
-    public static function urlToPath($url)
-    {
-        // Ensure the URL is a valid storage URL
-        if (!preg_match('/storage\/(.*)$/', $url, $matches)) {
-            throw new \InvalidArgumentException('Invalid storage URL.');
-        }
-
-        // Extract the relative path from the URL
-        $relativePath = $matches[1];
-        // Construct the full storage path
-        $storagePath = storage_path('app/public/' . $relativePath);
-
-        return $storagePath;
-    }
-
-    /**
-     * Convert a file path to a storage URL.
-     *
-     * @param string $path
-     * @param string $disk
-     * @return string
-     */
-    public static function pathToUrl($path, $disk = 'public')
-    {
-        
-        return Storage::disk($disk)->url(AppHelper::extractRelativePath($path));
-
-    }
 
 
-
-
-public static function extractRelativePath($input) {
-    
-    // Normalize input to use forward slashes
+public static function extractFileDetails($input)
+{
+    // Normalize the input to use forward slashes
     $input = str_replace('\\', '/', $input);
 
-    
+    // Initialize details array
+    $details = [
+        'storage_disk' => null,
+        'full_path' => null,
+        'relative_path' => null,
+        'folder_name' => null,
+        'file_name' => null,
+        'file_name_with_extension' => null,
+        'file_extension' => null,
+        'url' => null,
+    ];
 
-    // Define the base storage path
-    $storageRoot = str_replace('\\', '/', storage_path('app/public/'));
+    // Define storage paths for public and local disks
+    $publicRoot = str_replace('\\', '/', storage_path('app/public/'));
+    $localRoot = str_replace('\\', '/', storage_path('app/'));
 
-    // Check if the input is a local path within the storage directory
-    if (strpos($input, $storageRoot) === 0) {
-        return substr($input, strlen($storageRoot));
+    // Helper function to extract relative path
+    $extractRelativePath = function ($path, $root) {
+        if (strpos($path, $root) === 0) {
+            return substr($path, strlen($root));
+        } elseif (preg_match('/storage\/(.*)$/', $path, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    };
+
+    // Determine which disk the file exists on
+    if (strpos($input, $publicRoot) === 0 || Storage::disk('public')->exists($extractRelativePath($input, $publicRoot))) {
+        $details['storage_disk'] = 'public';
+        $details['relative_path'] = $extractRelativePath($input, $publicRoot);
+        $details['full_path'] = storage_path('app/public/' . $details['relative_path']);
+    } elseif (strpos($input, $localRoot) === 0 || Storage::disk('local')->exists($extractRelativePath($input, $localRoot))) {
+        $details['storage_disk'] = 'local';
+        $details['relative_path'] = $extractRelativePath($input, $localRoot);
+        $details['full_path'] = storage_path('app/' . $details['relative_path']);
+    } else {
+        throw new \InvalidArgumentException('File not found on either public or local disk.');
     }
 
-
-
-    // Check if the input is a URL with "storage/"
-    if (preg_match('/storage\/(.*)$/', $input, $matches)) {
-        return $matches[1];
+    // Extract folder name and file details
+    if ($details['relative_path']) {
+        $pathInfo = pathinfo($details['relative_path']);
+        $details['folder_name'] = $pathInfo['dirname'] !== '.' ? $pathInfo['dirname'] : null;
+        $details['file_name'] = $pathInfo['filename'];
+        $details['file_name_with_extension'] = $pathInfo['basename'];
+        $details['file_extension'] = $pathInfo['extension'] ?? null;
     }
-    
 
+    // Generate the storage URL
+    $details['url'] = Storage::disk($details['storage_disk'])->url($details['relative_path']);
+
+    return $details;
+
+// Array
+// (
+//     [storage_disk] => public
+//     [full_path] => /path/to/project/storage/app/public/uploads/images/sample.jpg
+//     [relative_path] => uploads/images/sample.jpg
+//     [folder_name] => uploads/images
+//     [file_name] => sample
+//     [file_name_with_extension] => sample.jpg
+//     [file_extension] => jpg
+//     [url] => http://example.com/storage/uploads/images/sample.jpg
+// )
+    
 }
 
 

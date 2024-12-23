@@ -209,11 +209,11 @@ class Subscription extends Component
 
     $storage_data = [
         'currentStorage'=>round($currentStorage/1024 / 1024 / 1024,2),
-        'maxStorage'=>$maxStorage/1024 / 1024 / 1024
+        'maxStorage'=>round($maxStorage/1024 / 1024 / 1024,2)
     ];
 
     // Fetch user video data
-    $currentVideoCount = SubscriptionHelper::getMonthlyVideoCountByDate(Auth::user()->id);
+    $currentVideoCount = SubscriptionHelper::getMonthlyVideoCount(Auth::user()->id);
     $maxVideoLimit = SubscriptionHelper::getMaxMonthlyVideoLimit(Auth::user()->id);
 
     $video_data = [

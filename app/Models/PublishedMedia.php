@@ -47,5 +47,24 @@ class PublishedMedia extends Model
         return $this->belongsTo(DigitalAsset::class, 'digital_asset_id');
     }
 
+
+
+    /**
+     * Relationship with PublishedDetail.
+     */
+    public function details()
+    {
+        return $this->hasOne(PublishedDetail::class, 'published_id');
+    }
+
+    /**
+     * Relationship with PublishedAssetMap.
+     */
+    public function assetMaps()
+    {
+        return $this->hasMany(PublishedAssetMap::class, 'published_id');
+    }
+    
+
     
 }

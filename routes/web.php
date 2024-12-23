@@ -109,11 +109,6 @@ Route::middleware([
         });
 
 
-        Route::get('user/digital-assets/{id}/settings', function($id){
-            return view('profile.digital-assets.setting',[
-                'digital_asset_id'=>$id
-            ]);
-        });
 
 
         Route::get('user/digital-assets/{id}/published', function($id){
