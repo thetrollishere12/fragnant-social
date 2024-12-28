@@ -1,10 +1,10 @@
 <x-app-layout>
 
 	@section('title')
-    Country Global API Pricing | Continental Data for 230+ Nations
+
     @endsection
     @section('description')
-    API pricing for 230+ countries: images & national data. Details on demographics, economy, culture, landmarks, politics, history & more!
+
     @endsection
 
     <x-slot name="header">

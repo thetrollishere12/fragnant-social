@@ -1,68 +1,67 @@
-
-
 <div>
 
-<script src="https://www.paypal.com/sdk/js?client-id={{env('PAYPAL_CLIENT_ID')}}&vault=true&intent=subscription"></script>
 <script src="https://js.stripe.com/v3/"></script>
 
 
-
-
 <form id="addPaymentFrm">
-        @csrf
-        <div class="md:hidden block bg-gray-100 py-2.5 px-4">
-            <x-application-mark class="block h-9 w-auto" />
-            <h2 class="font-bold text-4xl text-black">${{$plan['sale_price'] ? $plan['sale_price'] : $plan['price']}}/{{$plan['recurring_type']}}</h2>
-        </div>
-        <div class="md:hidden block bg-gray-100 border-t py-2.5 px-4">
-            <h2 class="font-bold text-2xl text-black">Payment</h2>
-        </div>
-        <div class="right-section h-full md:h-screen p-7 lg:py-20 lg:pl-20 lg:pr-5">
-            <div class="my-2"><b>Payment Method</b></div>
+
+    @csrf
+    <div class="md:hidden block bg-gray-100 py-2.5 px-4">
+        <x-application-mark class="block h-9 w-auto" />
+        <h2 class="font-bold text-4xl text-black">
+            ${{ $plan['sale_price'] ? $plan['sale_price'] : $plan['price'] }}/{{ $plan['recurring_type'] }}
+        </h2>
+    </div>
+    <div class="md:hidden block bg-gray-100 border-t py-2.5 px-4">
+        <h2 class="font-bold text-2xl text-black">Payment</h2>
+    </div>
+    <div class="right-section h-full md:h-screen p-7 lg:py-20 lg:pl-20 lg:pr-5">
+        <div class="my-2"><b>Payment Method</b></div>
+
+        @if(isset($blocks['PAYMENT_METHOD_PAYPAL']) && $blocks['PAYMENT_METHOD_PAYPAL'] == 'TRUE')
+            <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&vault=true&intent=subscription"></script>
             <div wire:ignore><div id="paypal-button-container"></div></div>
-            <div class="flex">
-                <div class="w-full bg-gray-200 rounded-t w-full border-0 text-center h-8">
-                    <div class="flex justify-center leading-8">
-                        <div class="flex top-2.5 right-10">
-                            <div class="card-span pr-1 font-bold">Credit Card</div>
-                        </div>
+        @endif
+
+        <div class="flex">
+            <div class="w-full bg-gray-200 rounded-t w-full border-0 text-center h-8">
+                <div class="flex justify-center leading-8">
+                    <div class="flex top-2.5 right-10">
+                        <div class="card-span pr-1 font-bold">Credit Card</div>
                     </div>
                 </div>
-            </div>  
-            <div class="border pt-2 px-2 rounded-b">
-                
-
-
-                <div id="payment-element">
-        <!-- Elements will create form elements here -->
-      </div>
-
-
-
-
-
-    <button id="submit" class="w-full main-bg-c my-2 p-2 text-white rounded">
-        <div class="spinner hidden" id="spinner"></div>
-        <span id="button-text">Pay & Subscribe</span>
-      </button>
-      <div id="payment-message" class="hidden"></div>
-
-
-
-
-
-
-
-
             </div>
-            
         </div>
-    </form>
 
+        <div class="border pt-2 px-2 rounded-b">
+
+            <div id="payment-element">
+                <!-- Elements will create form elements here -->
+            </div>
+
+
+            
+
+            <button id="submit" class="w-full main-bg-c my-2 p-2 text-white rounded">
+                <div class="spinner hidden" id="spinner"></div>
+                <span id="button-text">
+                    @if($plan['trial_period_days'] && (!\App\Helper\SubscriptionHelper::has_used_free_trial(auth()->user()->id,$plan['subscription_product_id'])))
+                        Start Free Trial
+                    @else
+                        Pay & Subscribe
+                    @endif
+                </span>
+            </button>
+
+
+
+            <div id="payment-message" class="hidden"></div>
+        </div>
+    </div>
+</form>
 
 
 <style type="text/css">
-
 
 
 #payment-message {

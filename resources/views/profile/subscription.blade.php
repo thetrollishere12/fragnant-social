@@ -22,7 +22,7 @@
               <div class="p-1">
                  <h3 class="text-lg font-medium text-gray-900">Subscription</h3>
                  <p class="mt-1 text-sm text-gray-600">
-                    Set up to gain access to a key and our REST API
+                    Set up to gain access to our services
                  </p>
               </div>
               <div class="p-1">

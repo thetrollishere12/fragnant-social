@@ -40,6 +40,7 @@ class Subscription extends Component
     public $paymentInfoModal = false;
 
 
+    public $subscription_products = [];
 
 
     
@@ -48,88 +49,84 @@ class Subscription extends Component
     protected $listeners = ['refreshComponent' => '$refresh'];
 
 
+
+
+
+
     public function mount(){
 
 
-        foreach (SubscriptionProduct::all() as $key => $subscription_product) {
+        $this->subscription_products = SubscriptionHelper::user_product_plan(Auth::user()->id);
+
+
+        foreach ($this->subscription_products as $key => $subscription_product) {
 
             try{
 
-                $subscription = SubscriptionHelper::user_is_subscribed_type($subscription_product->name);
-            
 
-                if ($subscription->count() > 0) {
+                switch ($subscription_product['subscription']->payment_method) {
 
-                    switch ($subscription->first()->payment_method) {
-                        case 'Stripe':
+                    case 'Stripe':
 
-                            Stripe::setApiKey(config('services.stripe.secret'));
+                        Stripe::setApiKey(config('services.stripe.secret'));
 
-                            $stripe_id = $subscription->first()->stripe_id;
+                        $stripe_id = $subscription_product['subscription']->stripe_id;
 
-                            $account = \Stripe\Subscription::retrieve($stripe_id);
+                        $account = \Stripe\Subscription::retrieve($stripe_id);
 
-                            $this->subscriptions[$subscription_product->name] = [
-                                'details' => SubscriptionHelper::subscription_details($subscription->first()->type, $subscription_product->name),
-                                'payment_method' => 'Stripe',
-                                'subscription' => $subscription->first(),
-                                'user' => auth()->user(),
-                                'name' => $subscription->first()->type,
-                                'period_end' => $account->current_period_end,
-                                'period_valid' => $account->current_period_start,
-                                'amount' => number_format($account->plan->amount / 100, 2),
-                                'active' => $account->plan->active,
-                                'cancel' => $account->cancel_at_period_end,
-                            ];
+                        $this->subscription_products[$key]['details'] = [
+                            'period_end' => $account->current_period_end,
+                            'period_valid' => $account->current_period_start,
+                            'amount' => number_format($account->plan->amount / 100, 2),
+                            'active' => $account->plan->active,
+                            'cancel' => $account->cancel_at_period_end,
+                            'name' => $subscription_product['subscription']->type,
+                        ];
 
-                        break;
-                        case 'Paypal':
+                      
 
-                            $bearer_token = PaypalHelper::paypal_bearer_token();
+                    break;
+                    case 'Paypal':
 
-                            $subscription_details = PaypalHelper::paypal_subscription($subscription->first()->paypal_id,$bearer_token);
+                        $bearer_token = PaypalHelper::paypal_bearer_token();
 
-                            $this->subscriptions[$subscription_product->name] = [
-                                'details' => SubscriptionHelper::subscription_details($subscription->first()->type, $subscription_product->name),
-                                'payment_method' => 'Paypal',
-                                'subscription' => $subscription->first(),
-                                'user' => auth()->user(),
-                                'name' => $subscription->first()->type,
-                                'period_end' => Carbon::parse($subscription_details->billing_info->last_payment->time)->addDays(30),
-                                'period_valid' => $subscription_details->billing_info->last_payment->time,
-                                'amount' => number_format($subscription_details->billing_info->last_payment->amount->value, 2),
-                                'active' => $subscription_details->status,
-                                'cancel' => $subscription_details->status,
-                            ];
+                        $subscription_details = PaypalHelper::paypal_subscription($subscription->first()->paypal_id,$bearer_token);
 
-                        break;
-                        default:
-                        break;
-                    }
+                        $this->subscription_products[$key]['details'] = [
+                            'period_end' => Carbon::parse($subscription_details->billing_info->last_payment->time)->addDays(30),
+                            'period_valid' => $subscription_details->billing_info->last_payment->time,
+                            'amount' => number_format($subscription_details->billing_info->last_payment->amount->value, 2),
+                            'active' => $subscription_details->status,
+                            'cancel' => $subscription_details->status,
+                            'name' => $subscription_product['subscription']->name,
+                        ];
 
-                }else{
 
-                    $this->subscriptions[$subscription_product->name] = [
-                        'details' => SubscriptionHelper::subscription_details('personal',$subscription_product->name)
-                    ];
-
+                    break;
+                    default:
+                    $this->subscription_products[$key]['details'] = null;
+                    
+                    break;
                 }
 
+
             }catch(\Exception $e){
-                $this->subscriptions[$subscription_product->name] = [
-                    'details' => null
-                ];
+                
+                $this->subscription_products[$key]['details'] = null;
+
             }
 
         }
+
+        
 
     }
 
 
 
-    public function cancel_subscription($type){
+    public function cancel_subscription($product_name){
 
-        SubscriptionHelper::cancel_user_subscription($type);
+        SubscriptionHelper::cancel_user_subscription($product_name);
 
         $this->notification()->send([
             'title'       => 'Subscription was cancelled',
@@ -139,9 +136,9 @@ class Subscription extends Component
 
     }
 
-    public function resume_subscription($type){
+    public function resume_subscription($product_name){
 
-        SubscriptionHelper::resume_user_subscription($type);
+        SubscriptionHelper::resume_user_subscription($product_name);
 
         $this->notification()->send([
             'title'       => 'Subscription was resumed',
@@ -202,7 +199,6 @@ class Subscription extends Component
 
 
 
-
     // Fetch user data
     $currentStorage = SubscriptionHelper::getCurrentStorageUsed(Auth::user()->id); // Bytes
     $maxStorage = SubscriptionHelper::getMaxStorageLimit(Auth::user()->id); // Bytes
@@ -221,17 +217,15 @@ class Subscription extends Component
         'maxVideoLimit' => $maxVideoLimit,
     ];
 
+
     return view('livewire.profile.subscription',[
         'chartData' => $chartData,
         'storage_data' =>$storage_data,
-        'video_data' => $video_data
+        'video_data' => $video_data,
+        'products'=>SubscriptionProduct::where('status', 1)->get()
     ]);
 
     
 }
-
-
-
-
 
 }

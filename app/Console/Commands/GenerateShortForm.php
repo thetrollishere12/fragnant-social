@@ -7,7 +7,7 @@ use App\Models\UserMedia;
 use App\Jobs\GenerateShortFormJob;
 
 use App\Helper\ShortFormGeneratorHelper;
-use App\Helper\FfmpegHelper;
+use App\Helper\FFmpegHelper;
 use App\Helper\EssentiaHelper;
 
 
@@ -53,13 +53,13 @@ class GenerateShortForm extends Command
 
         dd(ShortFormGeneratorHelper::OneFrameSnippet(digital_asset_id:1, template_id:2));
             
-        // dd(FfmpegHelper::generateFrames('digital-assets/1/published/combined_reel_user_1_20241215_143619.mp4', $frameRate = 1, $width = 512, $outputPath = 'test/', $height = null));
+        // dd(FFmpegHelper::generateFrames('digital-assets/1/published/combined_reel_user_1_20241215_143619.mp4', $frameRate = 1, $width = 512, $outputPath = 'test/', $height = null));
 
         // dd(GenerateShortFormJob::dispatch(1));
 
         dd(ShortFormGeneratorHelper::slideShow(1));
 
-        dd(FfmpegHelper::detectFrameChanges('assets/clips/micheal.mp4'));
+        dd(FFmpegHelper::detectFrameChanges('assets/clips/micheal.mp4'));
                 
     }
 }

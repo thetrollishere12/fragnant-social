@@ -3,8 +3,11 @@
 namespace App\Livewire\Stripe;
 
 use Livewire\Component;
+
 use App\Models\SubscriptionPlan;
+
 use Auth;
+
 use App\Helper\SubscriptionHelper;
 
 class Subscription extends Component
@@ -19,15 +22,13 @@ class Subscription extends Component
 
             $this->plan = SubscriptionPlan::find($plan_id);
 
-        if (SubscriptionHelper::user_is_subscribed_to($this->plan->name)->count() > 0) {
-            return redirect('subscription-api-pricing');
+        if (SubscriptionHelper::subscribed_to_plan(Auth::user()->id, $this->plan->name)->count() > 0) {
+            return redirect('subscription-pricing');
         }
 
         }catch(\Exception $e){
-            return redirect('subscription-api-pricing');
+            return redirect('subscription-pricing');
         }
-
-
 
 
 
@@ -69,16 +70,10 @@ class Subscription extends Component
 
 
 
-
-
-
-
-
-
-
-
     public function render()
     {
         return view('livewire.stripe.subscription');
     }
+
+
 }

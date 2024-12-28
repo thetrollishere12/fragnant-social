@@ -45,7 +45,13 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helper/AppHelper.php",
+            "app/Helper/SubscriptionHelper.php",
+            "app/Helper/PaypalHelper.php"
+        ]
+
     },
     "autoload-dev": {
         "psr-4": {

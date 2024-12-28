@@ -40,6 +40,8 @@
         });
     </script>
 
+
+
     <div class="px-4 pt-8 pb-20">
         <div class="max-w-7xl mx-auto grid md:grid-cols-1 gap-6">
             <div>
@@ -137,7 +139,7 @@
         </div>
 
         <div class="text-center">
-            <a href="{{ url('user/media') }}">
+            <a href="{{ url('user/digital-assets') }}">
 
                 @livewire('admin.trigger-event-button', [
                     'className' => 'text-xl bg-indigo-500 text-white rounded px-4 py-2.5',

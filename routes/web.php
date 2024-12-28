@@ -155,7 +155,9 @@ Route::middleware([
 
         Route::post('/user/subscription/update-payment-info',[SubscriptionController::class, 'stripe_subscription_payment_update']);
         
-        Route::post('subscription-change',[SubscriptionController::class, 'change']);
+        Route::get('subscription-change/{subscription_id}',[SubscriptionController::class, 'change']);
+
+        Route::post('subscription-init-change',[SubscriptionController::class, 'change_subscription']);
 
         Route::post('stripe-payment-subscription',[SubscriptionController::class, 'stripe_payment_subscription']);
 

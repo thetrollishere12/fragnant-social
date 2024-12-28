@@ -1,1 +1,0 @@
-[0:v:0]format=pix_fmts=yuv420p[v0];[1:v:0]format=pix_fmts=yuv420p[v1];[v0][v1]xfade=transition=fade:duration=1:offset=0[v1];[v1]

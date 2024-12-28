@@ -7,9 +7,6 @@
         <!-- About Us Section -->
         <div class="w-full">
             <b class="py-2 italic">ABOUT US</b>
-            <div class="text-xs py-0.5"><a href="{{ url('/about') }}">Who We Are</a></div>
-            <div class="text-xs py-0.5"><a href="{{ url('/services') }}">Our Services</a></div>
-            <div class="text-xs py-0.5"><a href="{{ url('/portfolio') }}">Portfolio</a></div>
             <div class="text-xs py-0.5"><a href="{{ url('/contact') }}">Contact Us</a></div>
         </div>
 

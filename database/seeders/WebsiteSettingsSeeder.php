@@ -118,6 +118,13 @@ class WebsiteSettingsSeeder extends Seeder
                 'block_value' => '/register?ref=header_message',
                 'created_at' => '2024-10-25 18:45:36',
                 'updated_at' => '2024-10-25 18:45:36',
+            ],[
+                'id' => 14,
+                'block_key' => 'PAYMENT_METHOD_PAYPAL',
+                'block_type' => 'boolean',
+                'block_value' => null,
+                'created_at' => '2024-10-25 18:45:36',
+                'updated_at' => '2024-10-25 18:45:36',
             ],
         ];
 

@@ -20,7 +20,7 @@ return new class extends Migration
 
             $table->boolean('status')->default(0);
 
-            $table->string('name')->nullable();
+            $table->string('name')->nullable()->unique();
 
             $table->string('icon_image')->nullable();
 

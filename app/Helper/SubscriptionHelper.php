@@ -38,130 +38,147 @@ class SubscriptionHelper
 
 
 
-public static function is_subscribed($id){
+public static function subscribed($user_id)
+{
+    // Fetch PayPal subscriptions with active status and valid end date
+    $paypal = PaypalSubscription::where('user_id', $user_id)
+        ->where('paypal_status', 'active')
+        ->where(function ($query) {
+            $query->where('ends_at', '>', Carbon::today())
+                  ->orWhereNull('ends_at');
+        })
+        ->get();
 
-    $paypal = PaypalSubscription::where('user_id',$id)->where('paypal_status','=','active')->where(function($query){
-        $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
-    })->get();
+    // Fetch Stripe subscriptions with active status
+    $stripe = User::with(['subscriptions' => function ($query) {
+        $query->active();
+    }])->find($user_id)?->subscriptions ?? collect();
 
-    $stripe = User::find($id)->subscriptions()->active()->get();
-
-    $both = $paypal->merge($stripe);
-
-    return $both;
-
+    return $paypal->merge($stripe);
 }
 
-public static function is_subscribed_type($id,$product_name){
 
-        $product = SubscriptionProduct::where('name',$product_name)->first();
 
-        $plan_name = SubscriptionPlan::where('subscription_product_id',$product->id)->pluck('name')->toArray();
-
-        $paypal = PaypalSubscription::where('user_id',$id)->where('paypal_status','=','active')->whereIn('name',$plan_name)->where(function($query){
-            $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
-        })->get();
-
-        $stripe = User::find($id)->subscriptions()->active()->whereIn('type',$plan_name)->get();
-
-        $both = $paypal->merge($stripe);
-
-        return $both;
-
-}
-
-public static function is_subscribed_to($id,$name){
-
-    if (is_array($name)) {
-
-        $paypal = PaypalSubscription::where('user_id',$id)->where('paypal_status','=','active')->whereIn('name',$name)->where(function($query){
-            $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
-        })->get();
-
-        $stripe = User::find($id)->subscriptions()->active()->whereIn('type', $name)->get();
-
-    }else{
-
-        $paypal = PaypalSubscription::where('user_id',$id)->where('paypal_status','=','active')->where('name',$name)->where(function($query){
-            $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
-        })->get();
-
-        $stripe = User::find($id)->subscriptions()->active()->where('type', $name)->get();
-
+public static function subscribed_to_product($user_id, $product_name)
+{
+    $product = SubscriptionProduct::where('name', $product_name)->first();
+    
+    if (!$product) {
+        return collect(); // Return an empty collection if the product doesn't exist
     }
 
-    $both = $paypal->merge($stripe);
+    $plan_names = SubscriptionPlan::where('subscription_product_id', $product->id)
+        ->pluck('name')
+        ->toArray();
 
-    return $both;
-
+    return self::subscribed_to_plan($user_id, $plan_names);
 }
 
-public static function user_is_subscribed_type($product_name){
 
 
-        $product = SubscriptionProduct::where('name',$product_name)->first();
+public static function subscribed_to_plan($user_id, $plan_names)
+{
+    $isArray = is_array($plan_names);
+    $plan_names = $isArray ? $plan_names : [$plan_names];
 
-        $plan_name = SubscriptionPlan::where('subscription_product_id',$product->id)->pluck('name')->toArray();
+    // Fetch PayPal subscriptions matching the plan names
+    $paypal = PaypalSubscription::where('user_id', $user_id)
+        ->where('paypal_status', 'active')
+        ->whereIn('name', $plan_names)
+        ->where(function ($query) {
+            $query->where('ends_at', '>', Carbon::today())
+                  ->orWhereNull('ends_at');
+        })
+        ->get();
 
-        $paypal = PaypalSubscription::where('user_id',auth()->user()->id)->where('paypal_status','=','active')->whereIn('name',$plan_name)->where(function($query){
-            $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
-        })->get();
+    // Fetch Stripe subscriptions matching the plan types
+    $stripe = User::with(['subscriptions' => function ($query) use ($plan_names) {
+        $query->active()->whereIn('type', $plan_names);
+    }])->find($user_id)?->subscriptions ?? collect();
 
-        $stripe = auth()->user()->subscriptions()->active()->whereIn('type',$plan_name)->get();
-
-        $both = $paypal->merge($stripe);
-
-        return $both;
-
+    return $paypal->merge($stripe);
 }
 
-public static function user_is_subscribed_to($name){
 
-    if (is_array($name)) {
-        
-        $paypal = PaypalSubscription::where('user_id',auth()->user()->id)->where('paypal_status','=','active')->whereIn('name',$name)->where(function($query){
-            $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
-        })->get();
 
-        $stripe = auth()->user()->subscriptions()->active()->whereIn('type', $name)->get();
 
-    }else{
+public static function user_product_plan($user_id)
+{
 
-        $paypal = PaypalSubscription::where('user_id',auth()->user()->id)->where('paypal_status','=','active')->where('name',$name)->where(function($query){
-            $query->where('ends_at','>',Carbon::today())->orWhere('ends_at',NULL);
-        })->get();
+    // Attempt to fetch the product by name
+    $subscription_products = SubscriptionProduct::all();
 
-        $stripe = auth()->user()->subscriptions()->active()->where('type', $name)->get();
+    $subscription_product_details = [];
+
+    foreach ($subscription_products as $key => $product) {
+
+        $subscriptions = self::subscribed_to_product($user_id, $product->name);
+
+
+        if($subscriptions->count() > 0){
+            $subscription_product_details[] = [
+                'subscription' => $subscriptions->first(),
+                'subscription_product' => SubscriptionProduct::find($product->id),
+                'subscription_plan' => SubscriptionPlan::where('subscription_product_id', $product->id)->where('name', $subscriptions->first()->type ?? $subscriptions->first()->name)->first()
+            ];
+        }else{
+            $subscription_product_details[] = [
+                'subscription' => null,
+                'subscription_product' => SubscriptionProduct::find($product->id),
+                'subscription_plan' => SubscriptionPlan::where('subscription_product_id', $product->id)
+                                        ->where(function ($query) {
+                                            $query->where('price', 0.00)
+                                            ->orWhere('name', 'Free');
+                                        })
+                                        ->first()
+            ];
+        }
 
     }
-
-    $both = $paypal->merge($stripe);
-
-    return $both;
+    
+    return $subscription_product_details;
 
 }
 
-public static function subscription_details($name,$product_name){
 
-    $product = SubscriptionProduct::where('name',$product_name)->first();
 
-    $plan = SubscriptionPlan::where('name',$name)->where('subscription_product_id',$product->id)->first();
+
+
+
+
+
+public static function subscription_details($name, $product_name)
+{
+    // Fetch the product by name
+    $product = SubscriptionProduct::where('name', $product_name)->first();
+
+    if (!$product) {
+        return null; // Return null if the product doesn't exist
+    }
+
+    // Fetch the plan by name and product ID
+    $plan = SubscriptionPlan::where('name', $name)
+        ->where('subscription_product_id', $product->id)
+        ->first();
 
     if ($plan) {
-        $details = $plan;
-    }else{
-        $details = SubscriptionPlan::where(function ($query) use ($product) {
-            $query->where('name', 'Personal')
-                  ->where('subscription_product_id', $product->id);
-        })
-        ->orWhere('price', 0.00)
-        ->orWhere('name', 'Free')
-        ->first();
+        return $plan; // Return the plan if found
     }
 
-    return $details;
-
+    // Fetch fallback plan options
+    return SubscriptionPlan::where('subscription_product_id', $product->id)
+        ->where(function ($query) {
+            $query->where('name', 'Personal')
+                  ->orWhere('price', 0.00)
+                  ->orWhere('name', 'Free');
+        })
+        ->first();
 }
+
+
+
+
+
 
 
 
@@ -179,6 +196,9 @@ public static function user_is_pastDue($product_name){
 }
 
 
+
+
+
 public static function user_is_onGracePeriod($product_name){
 
     $product = SubscriptionProduct::where('name',$product_name)->first();
@@ -194,9 +214,12 @@ public static function user_is_onGracePeriod($product_name){
     return $both;
 }
 
+
+
+
 public static function cancel_user_subscription($product_name){
 
-    $subscription = self::user_is_subscribed_type($product_name)->first();
+    $subscription = self::subscribed_to_product(auth()->user()->id, $product_name)->first();
 
     switch ($subscription->payment_method) {
         case 'Stripe':
@@ -225,9 +248,14 @@ public static function cancel_user_subscription($product_name){
     }
 }
 
+
+
+
+
+ 
 public static function resume_user_subscription($product_name){
 
-    $subscription = self::user_is_subscribed_type($product_name)->first();
+    $subscription = self::subscribed_to_product(auth()->user()->id, $product_name)->first();
 
     switch ($subscription->payment_method) {
         case 'Stripe':
@@ -260,6 +288,29 @@ public static function resume_user_subscription($product_name){
 
 }
 
+
+
+// Trials
+
+
+
+
+public static function has_used_free_trial($user_id, $subscription_product_id)
+{
+
+    if (!$user_id) {
+        return false; // Guests haven't used the trial.
+    }
+
+    $plan_name = SubscriptionPlan::where('subscription_product_id',$subscription_product_id)->pluck('name')->toArray();
+
+    $paypal = PaypalSubscription::where('user_id', $user_id)->whereIn('name', $plan_name)->whereNotNull('trial_ends_at')->exists();
+
+    $stripe = User::find($user_id)->subscriptions()->whereIn('type', $plan_name)->whereNotNull('trial_ends_at')->exists();
+
+    return $paypal || $stripe;
+
+}
 
 
 
@@ -311,30 +362,36 @@ public static function resume_user_subscription($product_name){
      */
     public static function getMaxStorageLimit(int $userId): int
     {
-        $subscriptions = self::is_subscribed($userId);
 
-        if ($subscriptions->isEmpty()) {
-            
-            $plan = SubscriptionPlan::where('name', 'personal')->first();
+        try{
 
-            $maxStorageGB = $plan->plan_metadata['storage']; // Use metadata or default
+            $subscriptions = self::subscribed($userId);
 
-            // Convert GB to bytes
-            return $maxStorageGB * 1024 * 1024 * 1024;
+            if ($subscriptions->isEmpty()) {
+                
+                $plan = SubscriptionPlan::where('name', 'personal')->first();
 
-        }else{
+                $maxStorageGB = $plan->plan_metadata['storage']; // Use metadata or default
 
-            $subscription = $subscriptions->first();
-            $planName = $subscription->type;
-            $plan = SubscriptionPlan::where('name', $planName)->first();
+                // Convert GB to bytes
+                return $maxStorageGB * 1024 * 1024 * 1024;
 
-            $maxStorageGB = $plan->plan_metadata['storage']; // Use metadata or default
+            }else{
 
-            // Convert GB to bytes
-            return $maxStorageGB * 1024 * 1024 * 1024;
+                $subscription = $subscriptions->first();
+                $planName = $subscription->type;
+                $plan = SubscriptionPlan::where('name', $planName)->first();
 
+                $maxStorageGB = $plan->plan_metadata['storage']; // Use metadata or default
+
+                // Convert GB to bytes
+                return $maxStorageGB * 1024 * 1024 * 1024;
+
+            }
+
+        }catch(\Exception $e){
+            return 0;
         }
-
         
     }
 
@@ -409,21 +466,31 @@ public static function getMonthlyVideoCount(int $userId, ?int $year = null, ?int
      */
     public static function getMaxMonthlyVideoLimit(int $userId): int
     {
-        $subscriptions = self::is_subscribed($userId);
 
-        if ($subscriptions->isEmpty()) {
-            
-            $plan = SubscriptionPlan::where('name', 'personal')->first();
+        try{
 
-            return $plan->plan_metadata['published']; // Use metadata or default
+            $subscriptions = self::subscribed($userId);
 
-        }else{
+            if ($subscriptions->isEmpty()) {
+                
+                $plan = SubscriptionPlan::where('name', 'personal')->first();
 
-            $subscription = $subscriptions->first();
-            $planName = $subscription->type;
-            $plan = SubscriptionPlan::where('name', $planName)->first();
+                return $plan->plan_metadata['published']; // Use metadata or default
 
-            return $plan->plan_metadata['published']; // Use metadata or default
+            }else{
+
+                $subscription = $subscriptions->first();
+                $planName = $subscription->type;
+                $plan = SubscriptionPlan::where('name', $planName)->first();
+
+                return $plan->plan_metadata['published']; // Use metadata or default
+
+            }
+
+
+        }catch(\Exception $e){
+
+            return 0;
 
         }
 

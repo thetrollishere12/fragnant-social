@@ -19,7 +19,7 @@
 
 @if($isProcessing || $stageStatus == 'Completed' || $stageStatus == 'Failed')
 <div class="mb-4 p-4 border rounded shadow 
-    @if($stageStatus == 'Completed') bg-indigo-100 
+    @if($stageStatus == 'Completed') bg-green-100 
     @elseif($stageStatus == 'Failed') bg-red-100 
     @else bg-white 
     @endif"
@@ -53,7 +53,7 @@
     <!-- Progress Bar -->
     <div class="mt-4 w-full bg-gray-200 rounded-full h-2.5">
         <div 
-            class="@if($stageStatus == 'Failed') bg-red-600 @else bg-indigo-600 @endif h-2.5 rounded-full transition-all ease-in-out duration-500" 
+            class="@if($stageStatus == 'Failed') bg-red-600 @elseif($stageStatus == 'Completed') bg-green-600 @else bg-indigo-600 @endif h-2.5 rounded-full transition-all ease-in-out duration-500" 
             style="width: {{ $progress }}%;">
         </div>
     </div>

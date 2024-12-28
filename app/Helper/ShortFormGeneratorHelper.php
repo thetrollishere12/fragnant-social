@@ -25,6 +25,8 @@ use App\Models\PublishedDetail;
 use App\Models\PublishedAssetMap;
 
 
+use App\Helper\FFmpegHelper;
+
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
 
@@ -256,29 +258,30 @@ public static function clipTemplatePair($digital_asset_id, $template_id = null, 
     }
 
     // Step 1: Normalize the first clip
-    $splitByFrame = FfmpegHelper::detectFrameChanges($firstClipPath);
+    $splitByFrame = FFmpegHelper::detectFrameChanges($firstClipPath);
 
-    $readsplitFrame = FfmpegHelper::readFrameChanges($splitByFrame);
+    $readsplitFrame = FFmpegHelper::readFrameChanges($splitByFrame);
 
     // Step 1: Process the intro clip (5-second snippet for video only)
-    $introClipPath = FfmpegHelper::splitMedia(
+    $introClipPath = FFmpegHelper::splitMedia(
         inputPath: $firstClipPath,
         seconds: reset($readsplitFrame),
         frame:30
     );
 
     // Step 2: Normalize the second clip
-    $tempInputVideoPath = FfmpegHelper::splitMedia(
+    $tempInputVideoPath = FFmpegHelper::splitMedia(
         inputPath: $inputVideoPath,
+        seconds:end($readsplitFrame)-reset($readsplitFrame),
         frame:30
     );
 
 
     // Step 3: Extract audio from the first clip
-    $audioPath = FfmpegHelper::extractAudio($firstClipPath);
+    $audioPath = FFmpegHelper::extractAudio($firstClipPath);
 
     // Step 4: Create the concatenation list
-    $concatListPath = FfmpegHelper::generateConcatList([
+    $concatListPath = FFmpegHelper::generateConcatList([
         $introClipPath,
         $tempInputVideoPath
     ]);
@@ -287,12 +290,12 @@ public static function clipTemplatePair($digital_asset_id, $template_id = null, 
 
 
     // Step 5: Concatenate the videos
-    $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
+    $mergedVideoPath = FFmpegHelper::mergeFromConcatList($concatListPath);
 
 
 
     // Step 6: Match audio and video duration
-    FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+    FFmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
 
 
 
@@ -341,19 +344,19 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
         throw new \Exception('One or more source files are missing.');
     }
 
-    $splitByFrame = FfmpegHelper::detectFrameChanges($firstClipPath);
+    $splitByFrame = FFmpegHelper::detectFrameChanges($firstClipPath);
 
-    $readsplitFrame = FfmpegHelper::readFrameChanges($splitByFrame);
+    $readsplitFrame = FFmpegHelper::readFrameChanges($splitByFrame);
 
     // Step 1: Process the intro clip (5-second snippet for video only)
-    $introClipPath = FfmpegHelper::splitMedia(
+    $introClipPath = FFmpegHelper::splitMedia(
         inputPath: $firstClipPath,
         seconds: reset($readsplitFrame),
         frame:30
     );
 
     // Step 2: Extract the full audio from the first clip
-    $audioPath = FfmpegHelper::extractAudio($firstClipPath);
+    $audioPath = FFmpegHelper::extractAudio($firstClipPath);
 
     if($totalSlides == null){
         $totalSlides = count($readsplitFrame);
@@ -393,7 +396,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
         } else {
 
             // Trim and resize video
-            $slidePath = FfmpegHelper::splitMedia(
+            $slidePath = FFmpegHelper::splitMedia(
                 inputPath: $inputPath,
                 seconds: $slideDuration,
                 frame:30
@@ -406,15 +409,15 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
 
     // Step 4: Create concatenation list
     array_unshift($slidePaths, $introClipPath);
-    $concatListPath = FfmpegHelper::generateConcatList($slidePaths);
+    $concatListPath = FFmpegHelper::generateConcatList($slidePaths);
 
 
 
     // Step 5: Concatenate all videos
-    $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
+    $mergedVideoPath = FFmpegHelper::mergeFromConcatList($concatListPath);
 
     // Step 6: Add audio and synchronize duration
-    FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+    FFmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
 
 
 
@@ -469,14 +472,14 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
         throw new \Exception('One or more source files are missing.');
     }
 
-    $splitByFrame = FfmpegHelper::detectFrameChanges($firstClipPath, 0.1);
+    $splitByFrame = FFmpegHelper::detectFrameChanges($firstClipPath, 0.1);
 
-    $readsplitFrame = FfmpegHelper::readFrameChanges($splitByFrame);
+    $readsplitFrame = FFmpegHelper::readFrameChanges($splitByFrame);
 
 
 
     // Step 2: Extract the full audio from the first clip
-    $audioPath = FfmpegHelper::extractAudio($firstClipPath);
+    $audioPath = FFmpegHelper::extractAudio($firstClipPath);
 
 
     $totalSlides = count($readsplitFrame)-1;
@@ -514,7 +517,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
         } else {
 
             // Trim and resize video
-            $slidePath = FfmpegHelper::splitMedia(
+            $slidePath = FFmpegHelper::splitMedia(
                 inputPath: $inputPath,
                 seconds: $slideDuration,
                 frame:30
@@ -526,15 +529,15 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
     }
 
     // Step 4: Create concatenation list
-    $concatListPath = FfmpegHelper::generateConcatList($slidePaths);
+    $concatListPath = FFmpegHelper::generateConcatList($slidePaths);
 
 
 
     // Step 5: Concatenate all videos
-    $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
+    $mergedVideoPath = FFmpegHelper::mergeFromConcatList($concatListPath);
 
     // Step 6: Add audio and synchronize duration
-    FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+    FFmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
 
 
 
@@ -615,7 +618,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
             } else {
 
                 // Trim and resize video
-                $slidePath = FfmpegHelper::splitMedia(
+                $slidePath = FFmpegHelper::splitMedia(
                     inputPath: $inputPath,
                     seconds: $slideDuration,
                     frame:30
@@ -627,18 +630,18 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
         }
 
         // Step 4: Create concatenation list
-        $concatListPath = FfmpegHelper::generateConcatList($slidePaths);
+        $concatListPath = FFmpegHelper::generateConcatList($slidePaths);
 
         // Step 5: Concatenate all videos
-        $mergedVideoPath = FfmpegHelper::mergeFromConcatList($concatListPath);
+        $mergedVideoPath = FFmpegHelper::mergeFromConcatList($concatListPath);
 
         $totalDuration = count($slidePaths) * $slideDuration;
 
         // Step 6: Extract the full audio from the first clip
-        $audioPath = FfmpegHelper::extractAudioRandomStart($localMusicPath,$totalDuration);
+        $audioPath = FFmpegHelper::extractAudioRandomStart($localMusicPath,$totalDuration);
 
         // Step 6: Add audio and synchronize duration
-        FfmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
+        FFmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
 
          // Step 7: Clean up temporary files
         foreach ($slidePaths as $slidePath) {

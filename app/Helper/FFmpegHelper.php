@@ -284,7 +284,7 @@ public static function splitMedia($inputPath, $seconds = null, $outputPath = nul
     // Build the ffmpeg command
     $resizeSnippetCommand = "\"$ffmpegPath\" -i \"$inputPath\" -an"
     . ($seconds ? " -t $seconds" : "") // Include the `-t` flag only if $seconds is set
-    . " -vf \"scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=$frame\""
+    . " -vf \"scale=540:960:force_original_aspect_ratio=decrease,pad=540:960:(ow-iw)/2:(oh-ih)/2,fps=$frame\""
     . " -c:v libx264 \"$outputPath\"";
 
     // Execute the ffmpeg command
@@ -349,6 +349,25 @@ public static function replaceAudioFromVideo($audioPath, $videoPath, $outputPath
 
     return $outputPath;
 
+}
+
+
+public static function replaceAudioFromVideo($audioPath, $videoPath, $outputPath = null)
+{
+    $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+
+    // Construct the FFmpeg command to merge video and audio
+    $syncCommand = "\"$ffmpegPath\" -i \"$videoPath\" -i \"$audioPath\" -c:v copy -c:a aac -strict experimental -shortest \"$outputPath\"";
+
+    // Execute the command
+    exec($syncCommand, $outputSync, $resultCodeSync);
+
+    // Check for errors
+    if ($resultCodeSync !== 0) {
+        throw new \Exception('Failed to synchronize audio and video: ' . implode("\n", $outputSync));
+    }
+
+    return $outputPath;
 }
 
 

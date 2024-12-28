@@ -74,7 +74,7 @@
 <x-select
     label="Select Video Type"
     placeholder="Select multiple"
-    wire:model.defer="type"
+    wire:model.defer="videoTypes"
     multiselect
     :options="[
         'clipTemplatePair',

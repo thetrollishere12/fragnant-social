@@ -29,8 +29,6 @@ class Pricing extends Component
 
         $this->product_id = SubscriptionProduct::where('name',$this->product_name)->value('id');
 
-        
-
         $this->types = SubscriptionPlan::where('subscription_product_id', $this->product_id)->whereNotNull('recurring_type')->get()->unique('recurring_type')->pluck('recurring_type');
         
         $this->type = $this->types->first();
@@ -46,10 +44,10 @@ class Pricing extends Component
     public function render()
     {
 
-        $user_subbed = [];
+        $user_subbed = null;
 
         if (Auth::user()) {
-            $user_subbed = SubscriptionHelper::user_is_subscribed_to($this->plan_name)->first();
+            $user_subbed = SubscriptionHelper::subscribed_to_plan(Auth::user()->id, $this->plan_name)->first();
         }
 
         $subscriptions = SubscriptionPlan::where('subscription_product_id', $this->product_id)

@@ -97,7 +97,7 @@ class GenerateShortFormJob implements ShouldQueue
             // Checking Subscription
             event(new PublishProcessing(
                 $user->id,
-                'Checking',
+                'Checking If Surpassed',
                 'Checking if user has not surpassed plan.',
                 5
             ));
@@ -107,6 +107,21 @@ class GenerateShortFormJob implements ShouldQueue
                 $this->triggerFailureEvent($this->digitalAssetId, 'Surpassed Subscription.');
                 return;
             }
+
+            // Checking Subscription
+            // event(new PublishProcessing(
+            //     $user->id,
+            //     'Checking User Subscription Plan',
+            //     'Checking if user has valid plan.',
+            //     10
+            // ));
+
+            // $subscription = SubscriptionHelper::subscribed($user->id)
+            // if (SubscriptionHelper::user_is_onGracePeriod($user->id)) {
+            //     event(new SubscriptionStatus($digitalAsset->user_id, 'Surpassed'));
+            //     $this->triggerFailureEvent($this->digitalAssetId, 'Surpassed Subscription.');
+            //     return;
+            // }
 
             // Starting Processing
             event(new PublishProcessing(
@@ -131,7 +146,7 @@ class GenerateShortFormJob implements ShouldQueue
                 $user->id,
                 'Creating',
                 'Media creating is done and now being recorded.',
-                40
+                50
             ));
 
 
@@ -139,7 +154,7 @@ class GenerateShortFormJob implements ShouldQueue
                 $user->id,
                 'Created',
                 'Media has been created and recorded.',
-                50
+                80
             ));
 
             
@@ -148,7 +163,7 @@ class GenerateShortFormJob implements ShouldQueue
                 $user->id,
                 'Thumbnail',
                 'Thumbnail creation is in progress.',
-                75
+                90
             ));
 
 
@@ -159,7 +174,7 @@ class GenerateShortFormJob implements ShouldQueue
                 $user->id,
                 'CompletedThumbnail',
                 'Thumbnail creation is completed.',
-                85
+                95
             ));
 
             // Log and Complete Job

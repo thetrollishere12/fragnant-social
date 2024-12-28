@@ -336,6 +336,25 @@ public function addBenefits()
 
         $product = SubscriptionProduct::find($this->product);
         
+
+        $sub_images = null;
+
+        foreach($this->plan_image_array as $i => $image){
+
+            // Move from temporary to permanent folder
+            $random = AppHelper::random_id('i-'.$i.'-');
+
+            
+
+            // Move to new temporary folder
+            $imagePath = Storage::disk('public')->move('livewire-tmp/iq-'.$image['original_name'],'image/subscription/'.$random.'.png');
+            $sub_images = $random.'.png';
+
+        }
+
+        
+
+
         if ($this->plan_free == false) {
             
             $this->validate([
@@ -375,20 +394,7 @@ public function addBenefits()
             ]);
 
 
-            $sub_images = null;
-
-            foreach($this->plan_image_array as $i => $image){
-
-                // Move from temporary to permanent folder
-                $random = AppHelper::random_id('i-'.$i.'-');
-
-                
-
-                // Move to new temporary folder
-                $imagePath = Storage::disk('public')->move('livewire-tmp/iq-'.$image['original_name'],'image/subscription/'.$random.'.png');
-                $sub_images = $random.'.png';
-
-            }
+            
 
 
             $data = [
@@ -418,7 +424,6 @@ public function addBenefits()
                 'plan_name'=>'required'
             ]);
 
-            $sub_images = null;
             
             $data = [
                 'subscription_product_id'=>$product->id,

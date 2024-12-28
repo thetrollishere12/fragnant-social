@@ -58,7 +58,7 @@ Change Subscription
 
     </div>
 
-    <form class="order-first md:order-last" action="{{ url('change-subscription') }}" method="POST" id="addPaymentFrm" style="box-shadow: -6px 0 16px -9px rgb(0 0 0 / 10%);">
+    <form class="order-first md:order-last" action="{{ url('subscription-init-change') }}" method="POST" id="addPaymentFrm" style="box-shadow: -6px 0 16px -9px rgb(0 0 0 / 10%);">
         @csrf
 
             <div class="md:hidden block bg-gray-100 py-2.5 px-4">
@@ -94,7 +94,7 @@ Change Subscription
 
                 <x-errors class="mt-2" title="We found {errors} error(s)"/>
                 <x-button type="submit" class="w-full main-bg-c mt-2" spinner primary label="Change Plan" />
-                <input type="hidden" name="plan_id" value="{{ $req->plan_id }}">
+                <input type="hidden" name="plan_id" value="{{ $plan['id'] }}">
            </div>
 
     </form>   

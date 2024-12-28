@@ -25,6 +25,8 @@ return new class extends Migration
 
             $table->boolean('user_audio')->nullable(); // How many
 
+            $table->longText('type')->nullable(); // Foreign key to music_genres
+
             $table->timestamps();
 
       

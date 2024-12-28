@@ -34,7 +34,7 @@ class SubscriptionController extends Controller
 
 public function pricing(){
         return view('subscription.pricing',[
-            'products'=>SubscriptionProduct::all()
+            'products'=>SubscriptionProduct::where('status', 1)->get()
         ]);
     }
 
@@ -46,164 +46,221 @@ public function pricing(){
 
             $plan = SubscriptionPlan::find($subscription_id);
 
-            if (SubscriptionHelper::user_is_subscribed_to($plan->name)->count() > 0) {
-                return redirect('subscription-api-pricing');
+            if (SubscriptionHelper::subscribed_to_plan(Auth::user()->id, $plan->name)->count() > 0) {
+                return redirect('subscription-pricing');
             }
 
             return view('subscription.upgrade',["plan"=>$plan]);
 
         }catch(\Exception $e){
 
-            return redirect('subscription-api-pricing');
+            return redirect('subscription-pricing');
 
         }
 
     }
 
-    public function change(Request $req){
-
-        $json = SubscriptionPlan::find($req->plan_id);
-
-        $product = SubscriptionProduct::find($json->subscription_product_id);
-
-        $subscription = SubscriptionHelper::user_is_subscribed_type($product->name)->first();
-
-        if ($subscription->name == $json->name) {
-            return redirect(url('subscription-api-pricing'));
-        }
-
-        return view('subscription.change',["plan"=>$json,"req"=>$req]);
-
-    }
-
-
-
-
-
-    public function stripe_payment_subscription(Request $req){
-
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        $user = $req->user();
-
-        $user->createOrGetStripeCustomer();
-        $user->updateDefaultPaymentMethod($req->paymentMethod);
-
-        $json = SubscriptionPlan::find($req->plan_id);
-
-        $new_subscription = auth()->user()->newSubscription($json->name, $json->stripe_plan_id)->create($req->paymentMethod,[
-            'email'=>$user->email
-        ]);
-
-        $new_subscription->update([
-            'payment_method'=>'Stripe'
-         ]);
-
-        return redirect('user/subscription');
-
-    }
-
-
-    public function stripe_payment_subscription_v2(Request $req, $plan_id){
-
-
-        if(!$req->payment_intent){
-            return redirect('subscription-api-pricing');
-        }
-
-
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-
-        $paymentIntent = $stripe->paymentIntents->retrieve($req->payment_intent, []);
-
-
-        if (!$paymentIntent) {
-            return redirect('subscription-api-pricing');
-        }
+    public function change(Request $req, $subscription_id){
 
         try{
 
-            $user = $req->user();
+            $plan = SubscriptionPlan::find($subscription_id);
 
-            $user->createOrGetStripeCustomer();
+            if (SubscriptionHelper::subscribed_to_plan(Auth::user()->id, $plan->name)->count() > 0) {
+                return redirect('subscription-pricing');
+            }
 
-            $user->updateDefaultPaymentMethod($paymentIntent->payment_method);
-
-            $plan = SubscriptionPlan::find($plan_id);
-
-            $stripe_subscription = $stripe->subscriptions->all([
-                'status' => 'active',
-                'limit' => 1,
-                'customer' => $user->stripe_id
-            ])->data[0];
-
-            $stripe->subscriptions->update($stripe_subscription->id,
-                [
-              'default_payment_method'=>$paymentIntent->payment_method
-            ]);
-
-            $new_subscription = Subscription::firstOrcreate([
-                'stripe_id'=>$stripe_subscription->id
-            ],
-            [
-                'user_id'=>$user->id,
-                'type'=>$plan->name,
-                'stripe_id'=>$stripe_subscription->id,
-                'stripe_price'=>$plan->stripe_plan_id,
-                'quantity'=>1,
-                'payment_method'=>'Stripe',
-                'stripe_status'=>'active'
-            ]);
-
-            SubscriptionItem::firstOrcreate([
-                'stripe_id'=>$stripe_subscription->items->data[0]->id,
-            ],[
-                'subscription_id'=>$new_subscription->id,
-                'stripe_id'=>$stripe_subscription->items->data[0]->id,
-                'stripe_product'=>$stripe_subscription->items->data[0]->plan->product,
-                'stripe_price'=>$stripe_subscription->items->data[0]->plan->id,
-                'quantity'=>1
-            ]);
-
+            return view('subscription.change',["plan"=>$plan]);
 
         }catch(\Exception $e){
 
+            return redirect('subscription-pricing');
 
-            return back()->withErrors($e->getMessage());
-
-            
         }
-        
+
+    }
+
+
+
+
+
+
+   public function stripe_payment_subscription_v2(Request $req, $plan_id){
+
+        if (!$req->payment_intent) {
+            return redirect('subscription-pricing');
+        }
+
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+
+        try {
+            $paymentIntent = $stripe->paymentIntents->retrieve($req->payment_intent);
+
+            if (!$paymentIntent) {
+                return redirect('subscription-api-pricing');
+            }
+
+            $user = $req->user();
+            $user->createOrGetStripeCustomer();
+            $user->updateDefaultPaymentMethod($paymentIntent->payment_method);
+
+            $plan = SubscriptionPlan::findOrFail($plan_id);
+
+            $subscriptionData = [
+                'default_payment_method' => $paymentIntent->payment_method,
+            ];
+
+            // Check for trial eligibility
+            if ($plan->trial_period_days) {
+                $hasUsedTrial = SubscriptionHelper::has_used_free_trial($user->id, $plan->subscription_product_id);
+                $subscriptionData['trial_end'] = $hasUsedTrial ? 'now' : now()->addDays($plan->trial_period_days)->timestamp;
+            }
+
+            // Retrieve the active subscription
+            $activeSubscription = $stripe->subscriptions->all([
+                'status' => 'active',
+                'limit' => 1,
+                'customer' => $user->stripe_id,
+            ])->data[0] ?? null;
+
+            if (!$activeSubscription) {
+                throw new \Exception('No active subscription found for the user.');
+            }
+
+            // Update the subscription on Stripe
+            $stripe->subscriptions->update($activeSubscription->id, $subscriptionData);
+
+            // Save subscription data locally
+            $newSubscription = Subscription::firstOrCreate(
+                ['stripe_id' => $activeSubscription->id],
+                [
+                    'user_id' => $user->id,
+                    'type' => $plan->name,
+                    'stripe_price' => $plan->stripe_plan_id,
+                    'quantity' => 1,
+                    'payment_method' => 'Stripe',
+                    'stripe_status' => 'active',
+                    'trial_ends_at' => $plan->trial_period_days && !$hasUsedTrial ? now()->addDays($plan->trial_period_days) : null,
+                ]
+            );
+
+            // Save subscription item data locally
+            $subscriptionItem = $activeSubscription->items->data[0];
+
+            SubscriptionItem::firstOrCreate(
+                ['stripe_id' => $subscriptionItem->id],
+                [
+                    'subscription_id' => $newSubscription->id,
+                    'stripe_product' => $subscriptionItem->plan->product,
+                    'stripe_price' => $subscriptionItem->plan->id,
+                    'quantity' => 1,
+                ]
+            );
+
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
+
         return redirect('user/subscription');
 
     }
+
+
+
+
+
+
+
 
 
 
     public function change_subscription(Request $req){
 
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
 
-        $json = SubscriptionPlan::find($req->plan_id);
+        $plan = SubscriptionPlan::find($req->plan_id);
 
-        $product = SubscriptionProduct::find($json->subscription_product_id);
+        $product = SubscriptionProduct::find($plan->subscription_product_id);
 
-        $subscription = SubscriptionHelper::user_is_subscribed_type($product->name)->first();
+        $subscription = SubscriptionHelper::subscribed_to_product(Auth::user()->id, $product->name)->first();
 
 
         if ($subscription) {
             
             if ($subscription->payment_method == "Stripe") {
         
-                Auth::user()->subscription(Auth::user()->subscriptions()->active()->get()->first()->name)->swapAndInvoice($json['stripe_plan_id']);
-                Auth::user()->subscriptions()->active()->get()->first()->update(["name"=>$json['name']]);
+
+
+                $activeSubscription = Auth::user()->subscriptions($plan->name)->active()->first();
+
+                if (!$activeSubscription) {
+                    return response()->plan(['error' => 'No active subscription found'], 404);
+                }
+
+                
+
+
+
+                 // Check if the plan has a trial period
+                if ($activeSubscription->trial_ends_at && $plan->trial_period_days) {
+                    // Calculate the trial end date
+                    $trialEndTimestamp = $activeSubscription->trial_ends_at
+                        ? $activeSubscription->trial_ends_at->timestamp
+                        : now()->addDays($plan->trial_period_days)->timestamp;
+
+                    // Swap the subscription and invoice immediately
+                    Auth::user()
+                        ->subscription($activeSubscription->type)
+                        ->swapAndInvoice($plan['stripe_plan_id']);
+
+                    // Update the local subscription type and trial end date
+                    $activeSubscription->update([
+                        'type' => $plan['name'],
+                        'trial_ends_at' => $trialEndTimestamp,
+                    ]);
+
+                    $stripe->subscriptions->update($activeSubscription->stripe_id, [
+                        'trial_end' => $trialEndTimestamp,
+                    ]);
+
+                } elseif ($activeSubscription->trial_ends_at) {
+                    // End the active trial immediately
+                    Auth::user()
+                        ->subscription($activeSubscription->type)
+                        ->swapAndInvoice($plan['stripe_plan_id']);
+
+                    // Update the local subscription to reflect the trial has ended
+                    $activeSubscription->update([
+                        'type' => $plan['name'],
+                        'trial_ends_at' => now()->timestamp, // Clear the trial end date
+                    ]);
+
+                    $stripe->subscriptions->update($activeSubscription->stripe_id, [
+                       'trial_end' => now()->timestamp, // End the trial immediately
+                    ]);
+
+                } else {
+                    // Swap the subscription normally if there's no active trial
+                    Auth::user()
+                        ->subscription($activeSubscription->type)
+                        ->swapAndInvoice($plan['stripe_plan_id']);
+
+                    // Update the local subscription type
+                    $activeSubscription->update([
+                        'type' => $plan['name']
+                    ]);
+
+                }
+
+    
+
 
             }elseif($subscription->payment_method == "Paypal") {
                 
                 $bearer_token = PaypalHelper::paypal_bearer_token();
 
-                $revised = PaypalHelper::paypal_subscription_revise($subscription->paypal_id,$bearer_token,$json['paypal_plan_id']);
+                $revised = PaypalHelper::paypal_subscription_revise($subscription->paypal_id,$bearer_token,$plan['paypal_plan_id']);
 
                 PaypalSubscription::where('paypal_id',$subscription->paypal_id)->update([
                     'name'=>$value["name"],
@@ -225,6 +282,9 @@ public function pricing(){
         
 
     }
+
+
+
 
     // Paypal
 
@@ -282,6 +342,57 @@ public function pricing(){
         return Redirect(url('/user/subscription'))->with('success','Payment method has been updated.');
 
     }
+
+
+
+
+
+
+
+
+// public function stripe_payment_subscription(Request $req)
+// {
+//     Stripe::setApiKey(env('STRIPE_SECRET'));
+
+//     $user = $req->user();
+
+//     try {
+//         // Ensure the Stripe customer exists
+//         $user->createOrGetStripeCustomer();
+
+//         // Update the default payment method
+//         $user->updateDefaultPaymentMethod($req->paymentMethod);
+
+//         // Retrieve the subscription plan
+//         $plan = SubscriptionPlan::findOrFail($req->plan_id);
+
+//         // Check if the user is eligible for a trial
+//         $trialDays = $plan->trial_period_days ?? 0;
+//         $hasUsedTrial = SubscriptionHelper::has_used_free_trial($user->id,$plan->subscription_product_id);
+
+//         // Adjust trial period if already used
+//         $trialEnd = $hasUsedTrial ? null : now()->addDays($trialDays);
+
+//         // Create a new subscription
+//         $newSubscription = $user->newSubscription($plan->name, $plan->stripe_plan_id)
+//             ->trialUntil($trialEnd)
+//             ->create($req->paymentMethod, [
+//                 'email' => $user->email,
+//             ]);
+
+//         // Update subscription with additional metadata
+//         $newSubscription->update([
+//             'payment_method' => 'Stripe',
+//         ]);
+
+//         return redirect('user/subscription')->with('success', 'Subscription created successfully.');
+
+//     } catch (\Exception $e) {
+//         return back()->withErrors($e->getMessage());
+//     }
+// }
+
+
 
 
 

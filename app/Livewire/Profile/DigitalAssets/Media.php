@@ -50,7 +50,9 @@ class Media extends Component
     ];
 
 
-
+    public $rules = [
+        'image.*' => 'required|file|max:51200', // 50 MB per file
+    ];
 
 
 
@@ -76,9 +78,20 @@ class Media extends Component
             ]);
         }
 
+
+        $maxFileSize = 50 * 1024 * 1024; // 50 MB in bytes
         $arrayPath = [];
+        $skippedFiles = [];
+
 
         foreach ($this->image as $uploadedFile) {
+
+            if ($uploadedFile->getSize() > $maxFileSize) {
+                // Add the skipped file name to the array
+                $skippedFiles[] = $uploadedFile->getClientOriginalName();
+                continue; // Skip this file
+            }
+
             // Save the file temporarily in storage
             $tempPath = $uploadedFile->store('temp', 'local');
 
@@ -86,10 +99,19 @@ class Media extends Component
             $originalName = $uploadedFile->getClientOriginalName();
 
             $arrayPath[] = [
-                'temporary_path'=>$tempPath,
-                'originalName'=>$originalName
+                'temporary_path' => $tempPath,
+                'originalName' => $originalName,
             ];
             
+        }
+
+        if (!empty($skippedFiles)) {
+            // Notify user about skipped files
+            $this->notification()->send([
+                'icon' => 'warning',
+                'title' => 'Some Files Skipped',
+                'description' => 'The following files were too large and were skipped: ' . implode(', ', $skippedFiles),
+            ]);
         }
 
         BatchProcessMediaToDb::dispatch($arrayPath,$this->digital_asset_id);
