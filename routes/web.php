@@ -4,9 +4,15 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\GoogleLoginController;
+use App\Http\Controllers\GoogleServiceController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\DigitalAssetController;
 
+use App\Http\Controllers\InstagramController;
+
+use App\Http\Controllers\TiktokController;
+
+use App\Http\Controllers\FacebookController;
 
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -17,7 +23,7 @@ use App\Models\PublishedMedia;
 
 use App\Jobs\TestJob;
 use App\Jobs\FailingJob;
-
+use AdaiasMagdiel\MetaAI\Client;
 
 
 
@@ -48,6 +54,19 @@ Route::get('/image-test', function () {
 
 });
 
+
+
+
+Route::get('/meta-test', function () {
+
+        $client = new Client();
+        $response = $client->prompt(
+    "Who is Bruce Wayne?", 
+    stream: true
+);
+        dd($response);
+
+});
 
 
 Route::middleware([
@@ -102,6 +121,14 @@ Route::middleware([
         Route::get('user/digital-assets/{id}',[DigitalAssetController::class, 'show']);
 
 
+
+        Route::get('user/digital-assets/{id}/social-media', function($id){
+            return view('profile.digital-assets.social-media',[
+                'digital_asset_id'=>$id
+            ]);
+        });
+
+
         Route::get('user/digital-assets/{id}/media', function($id){
             return view('profile.digital-assets.media',[
                 'digital_asset_id'=>$id
@@ -121,6 +148,10 @@ Route::middleware([
 
 
     Route::get('/download-published-media/{id}', function($id){
+
+        // Add User Auth urgent!!
+
+
 
         $history = PublishedMedia::findOrFail($id);
 
@@ -173,6 +204,31 @@ Route::middleware([
 
 
 
+        // Social Media Login
+
+        Route::get('google-youtube-login', [GoogleServiceController::class, 'redirectToGoogleForChannel']);
+
+        Route::get('google-youtube-callback', [GoogleServiceController::class, 'handleGoogleChannelSuccess']);
+
+
+        Route::get('instagram-login', [InstagramController::class, 'redirect']);
+
+        Route::get('instagram-callback',[InstagramController::class, 'success']);
+
+
+
+        Route::get('tiktok-login', [TiktokController::class, 'redirect']);
+
+        Route::get('tiktok-callback',[TiktokController::class, 'success']);
+
+
+
+
+        Route::get('facebook-login', [FacebookController::class, 'redirect']);
+
+        Route::get('facebook-callback',[FacebookController::class, 'success']);
+
+
 
 
 
@@ -195,6 +251,10 @@ Route::middleware([
         Route::post('google-linking', [GoogleLoginController::class, 'linking']);
 
     });
+
+
+
+
 
 
 

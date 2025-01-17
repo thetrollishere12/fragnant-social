@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\File;
 
 use App\Helper\AppHelper;
 
+use App\Helper\OpenAiHelper;
+
 class FFmpegHelper
 {
 
@@ -273,7 +275,75 @@ try {
 
 
 
-public static function splitMedia($inputPath, $seconds = null, $outputPath = null, $frame = 30)
+
+
+public static function textOverlay($inputPath, $textDetails = [
+    [
+        "text" => "This is the top text",
+        "yPosition" => 250,
+        "color" => "white",
+        "fontPath" => "assets/fonts/Funnel_Sans/FunnelSans-Italic-VariableFont_wght.ttf",
+        "fontSize" => 60
+    ],
+    [
+        "text" => "This is the bottom text",
+        "yPosition" => "h-500",
+        "color" => "white",
+        "fontPath" => "assets/fonts/Funnel_Sans/FunnelSans-Italic-VariableFont_wght.ttf",
+        "fontSize" => 60
+    ]
+], $outputPath = null)
+{
+
+    try {
+        // Generate a unique output path for the media file
+        $outputPath = $outputPath ?? Storage::disk('local')->path('temp/' . uniqid('textOverlay_', false) . '.mp4');
+
+        // Prepare the FFMpeg text filter command
+        $textCommand = '';
+        foreach ($textDetails as $detail) {
+            $fontFile = str_replace('C:', 'C\\:', str_replace('\\', '\\\\', Storage::disk('public')->path($detail['fontPath'])));
+            $text = addslashes($detail['text']);
+            $color = $detail['color'];
+            $yPosition = $detail['yPosition'];
+            $fontSize = $detail['fontSize'];
+            $textCommand .= "drawtext=fontfile='$fontFile':text='$text':fontcolor=$color:fontsize=$fontSize:x=(w-text_w)/2:y=$yPosition,";
+        }
+        // Remove trailing comma
+        $textCommand = rtrim($textCommand, ',');
+
+        // Extract file details for FFMpeg processing
+        $extract = AppHelper::extractFileDetails($inputPath);
+
+        $extractOutput = AppHelper::extractFileDetails($outputPath);
+
+        $videoData = self::checkVideoInfo($extract['relative_path'],$extract['storage_disk']);
+
+        $scale = "{$videoData->get('width')}:{$videoData->get('height')}";
+
+        // Generate video with text overlays
+        LaravelFFMpeg::fromDisk($extract['storage_disk'])
+            ->open($extract['relative_path'])
+            ->addFilter([
+                '-vf',
+                "scale=$scale:force_original_aspect_ratio=decrease,pad=$scale:(ow-iw)/2:(oh-ih)/2,$textCommand"
+            ])
+            ->export()
+            ->toDisk($extractOutput['storage_disk'])
+            ->save($extractOutput['relative_path']);
+
+        return $outputPath;
+
+    } catch (\Exception $e) {
+
+        return 'Error generating daily donation reel: ' . $e->getMessage();
+
+    }
+}
+
+
+
+public static function cutMedia($inputPath, $seconds = null, $outputPath = null, $frame = 30, $scale = "270:480")
 {
     // Generate a unique output path for the media file
     $outputPath = $outputPath ?? Storage::disk('local')->path('temp/' . uniqid('splitted_', false) . '.mp4');
@@ -284,7 +354,7 @@ public static function splitMedia($inputPath, $seconds = null, $outputPath = nul
     // Build the ffmpeg command
     $resizeSnippetCommand = "\"$ffmpegPath\" -i \"$inputPath\" -an"
     . ($seconds ? " -t $seconds" : "") // Include the `-t` flag only if $seconds is set
-    . " -vf \"scale=540:960:force_original_aspect_ratio=decrease,pad=540:960:(ow-iw)/2:(oh-ih)/2,fps=$frame\""
+    . " -vf \"scale=$scale:force_original_aspect_ratio=decrease,pad=$scale:(ow-iw)/2:(oh-ih)/2,fps=$frame\""
     . " -c:v libx264 \"$outputPath\"";
 
     // Execute the ffmpeg command
@@ -335,21 +405,103 @@ public static function mergeFromConcatList($concatPath){
 
 
 
-public static function replaceAudioFromVideo($audioPath, $videoPath, $outputPath = null){
 
+
+
+
+
+// "c:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe" -i "C:\xampp\htdocs\fragnant-social\storage\app/private/temp/splitted_6771652e575da.mp4" -i "C:\xampp\htdocs\fragnant-social\storage\app/private/temp/splitted_6771652f5671e.mp4" -filter_complex "[0:v][1:v]xfade=transition=fade:duration=0.2:offset=3.5[merged]" -map "[merged]" -c:v libx264 -preset fast -crf 23 -an -pix_fmt yuv420p "C:\xampp\htdocs\fragnant-social\storage\app/private/temp/merged_with_fade_677165306d30b.mp4"
+
+
+
+// "c:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe" -i "C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_6771698f81615.mp4" -i "C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_6771699085f1a.mp4"  -filter_complex "[0:v][1:v]xfade=transition=fade:duration=0.2:offset=3.5[out1][merged]" -map "[merged]" -c:v libx264 -preset fast -crf 23 -an -pix_fmt yuv420p "C:\xampp\htdocs\fragnant-social\storage\app/private\temp/merged_with_fade_6771699194b72.mp4"
+
+
+
+
+
+
+
+
+
+
+
+
+
+public static function mergeFromConcatListWithFade($concatPath, float $fadeDuration = 0.1, float $fadeOffset = 0.1)
+{
     $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
 
-    $syncCommand = "\"$ffmpegPath\" -i \"$videoPath\" -i \"$audioPath\" -filter_complex \"[0:v:0][1:a:0]concat=n=1:v=1:a=1[outv][outa]\" -map \"[outv]\" -map \"[outa]\" -c:v libx264 -c:a aac -shortest \"$outputPath\"";
+    $outputPath = Storage::disk('local')->path('temp/' . uniqid('merged_with_fade_', false) . '.mp4');
+    $fileList = file($concatPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $inputCommands = '';
+    $filterComplex = '';
+    $previousLabel = '';
 
-    exec($syncCommand, $outputSync, $resultCodeSync);
+    $totalFiles = count($fileList);
+    $cumulativeOffset = 0; // Initialize cumulative offset
 
-    if ($resultCodeSync !== 0) {
-        throw new \Exception('Failed to synchronize audio and video: ' . implode("\n", $outputSync));
+    foreach ($fileList as $index => $line) {
+
+        if (strpos($line, "file '") === 0) {
+            $filePath = trim(str_replace("file ", '', $line), "'\"");
+            $inputCommands .= "-i \"$filePath\" ";
+
+            if ($index > 0) {
+                // Get duration of the previous video
+                $extract = AppHelper::extractFileDetails(trim(str_replace("file ", '', $fileList[$index - 1]), "'\""));
+                $length = FFmpegHelper::checkVideoInfo($extract['relative_path'], $extract['storage_disk']);
+                $currentDuration = $length->get('duration');
+
+                // Calculate the new cumulative offset
+                $cumulativeOffset += ($currentDuration - $fadeOffset);
+
+                // Determine the label for the current segment
+                if ($index < $totalFiles - 1) {
+                    $currentLabel = "v$index";
+                    $filterComplex .= "[$previousLabel][$index:v]xfade=transition=fade:duration={$fadeDuration}:offset={$cumulativeOffset}[$currentLabel]; ";
+                    $previousLabel = $currentLabel;
+                } else {
+                    $filterComplex .= "[$previousLabel][$index:v]xfade=transition=fade:duration={$fadeDuration}:offset={$cumulativeOffset}[merged]; ";
+                }
+            } else {
+                $previousLabel = "$index:v";
+            }
+        }
+    }
+
+    // Trim the trailing semicolon
+    $filterComplex = rtrim($filterComplex, '; ');
+
+    $command = "\"$ffmpegPath\" $inputCommands -filter_complex \"$filterComplex\" -map \"[merged]\" -c:v libx264 -preset fast -crf 23 -an -pix_fmt yuv420p \"$outputPath\"";
+
+    exec($command, $outputLog, $resultCode);
+
+    if ($resultCode !== 0) {
+        throw new \Exception('Failed to merge videos with fade: ' . implode("\n", $outputLog));
     }
 
     return $outputPath;
-
 }
+
+
+
+
+// public static function replaceAudioFromVideo($audioPath, $videoPath, $outputPath = null){
+
+//     $ffmpegPath = env('FFMPEG_BINARIES', 'C:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe');
+
+//     $syncCommand = "\"$ffmpegPath\" -i \"$videoPath\" -i \"$audioPath\" -filter_complex \"[0:v:0][1:a:0]concat=n=1:v=1:a=1[outv][outa]\" -map \"[outv]\" -map \"[outa]\" -c:v libx264 -c:a aac -shortest \"$outputPath\"";
+
+//     exec($syncCommand, $outputSync, $resultCodeSync);
+
+//     if ($resultCodeSync !== 0) {
+//         throw new \Exception('Failed to synchronize audio and video: ' . implode("\n", $outputSync));
+//     }
+
+//     return $outputPath;
+
+// }
 
 
 public static function replaceAudioFromVideo($audioPath, $videoPath, $outputPath = null)
@@ -634,6 +786,11 @@ public static function extractAudioRandomStart($filePath, $duration = 10)
 //     }
 
 
+
+
+
+
+
 public static function checkAudioInfo($filePath)
 {
 
@@ -665,14 +822,14 @@ public static function checkAudioInfo($filePath)
 
 
 
-public static function checkVideoInfo($filePath)
+public static function checkVideoInfo($filePath, $disk = 'public')
 {
     try {
         // Use LaravelFFMpeg to get FFProbe
         $ffprobe = LaravelFFMpeg::getFFProbe();
 
         // Get the video stream information using the full file path
-        $videoStream = $ffprobe->streams(Storage::disk('public')->path($filePath))->videos()->first();
+        $videoStream = $ffprobe->streams(Storage::disk($disk)->path($filePath))->videos()->first();
 
         if (!$videoStream) {
             throw new \Exception("No video stream found in file: $filePath");

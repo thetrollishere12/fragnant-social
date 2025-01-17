@@ -21,7 +21,7 @@ return new class extends Migration
             $table->longText('music_genre_id')->nullable(); // Foreign key to music_genres
             $table->integer('frequency')->nullable(); // How often (1,2,3)
             $table->string('frequency_type')->nullable(); // How often (e.g., daily, weekly)
-            $table->integer('quantity')->default(1); // How many
+            $table->integer('quantity')->default(1)->nullable(); // How many
 
             $table->boolean('user_audio')->nullable(); // How many
 

@@ -220,20 +220,20 @@
         </div>
 
 
-        @if($subscription['subscription'])
         <div id="subscription-footer" class="p-8 pt-0">
 
 
 
-                @if(\App\Helper\SubscriptionHelper::user_is_onGracePeriod($subscription['subscription_product']['name'])->count() > 0)
+                @if($subscription['subscription'] && \App\Helper\SubscriptionHelper::user_is_onGracePeriod($subscription['subscription_product']['name'])->count() > 0)
                 <x-button wire:click="resume_subscription('{{ $subscription['subscription_product']['name'] }}')" class="w-full text-white" green spinner="resume_subscription" label="Resume Subscription" />
-                @elseif(\App\Helper\SubscriptionHelper::user_is_onGracePeriod($subscription['subscription_product']['name'])->count() == 0)
+                @elseif($subscription['subscription'] && \App\Helper\SubscriptionHelper::user_is_onGracePeriod($subscription['subscription_product']['name'])->count() == 0)
                 <x-button wire:click="cancel_subscription('{{ $subscription['subscription_product']['name'] }}')" class="mt-2 w-full" spinner="cancel_subscription" light negative label="Cancel Subscription" />
+                @else
+                <a href="{{ asset('subscription-pricing') }}"><button class="w-full main-bg-c text-sm text px-4 py-2 text-white rounded">Upgrade Plan</button></a>
                 @endif
 
 
         </div>
-        @endif
         
 
     </div>

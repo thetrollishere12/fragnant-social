@@ -15,6 +15,14 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Storage;
 
+
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Media\MailMediaLink;
+
+use App\Models\PublishedDetail;
+
+
 class GenerateShortForm extends Command
 {
     /**
@@ -38,16 +46,19 @@ class GenerateShortForm extends Command
     {
 
 
+        $media = PublishedDetail::find(25);
 
-
-
-
-
+try{
+         Mail::to('brandonsanghuynh123@gmail.com')->send(new MailMediaLink($media));
+dd(31);
+}catch(\Exception $e){
+    dd(1111);
+}
          // dd(EssentiaHelper::processAudio(storage_path('app/public/assets/music/67603f450b03a5.64014798.mp3')));
 
 
 
-        dd(ShortFormGeneratorHelper::clipTemplatePair(2));
+        dd(ShortFormGeneratorHelper::textOverlayVideo(2));
 
 
 

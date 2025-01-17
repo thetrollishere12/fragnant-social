@@ -172,7 +172,7 @@ class ShortFormGeneratorHelper
     }
 
 
-    public static function textOverlayVideo($digital_asset_id,$textColor = "white", $topText = "This is the top text" ,$topTextPosition = 250, $bottomText = "This is the bottom text" ,$bottomTextPosition = 350){
+    public static function textOverlayVideo($digital_asset_id){
 
     	try {
 
@@ -182,34 +182,20 @@ class ShortFormGeneratorHelper
             ->where('type', 'video')
             ->get()->random(1)->first();
 
-            $inputVideo = $userMedia->folder.'/'.$userMedia->filename;
+            $inputVideoPath = Storage::disk($userMedia->storage)->path("{$userMedia->folder}/{$userMedia->filename}");
 
-            $outputPath = self::outputDirection($digital_asset_id,'folder');
+            $outputPath = self::outputDirection($digital_asset_id,'storage_path');
 
-            $fontPath = str_replace('C:', 'C\:', str_replace('\\', '\\\\',Storage::disk('public')->path('assets/fonts/Funnel_Sans/FunnelSans-Italic-VariableFont_wght.ttf')));
-
-            // Generate video with text overlays and resizing
-            FFMpeg::fromDisk('public')
-                ->open($inputVideo)
-                ->addFilter([
-                    '-vf',
-                    "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2," .
-                    "drawtext=fontfile='$fontPath':text='".$topText."':fontcolor=".$textColor.":fontsize=60:x=(w-text_w)/2:y=".$topTextPosition."," .
-                    "drawtext=fontfile='$fontPath':text='".$bottomText."':fontcolor=".$textColor.":fontsize=60:x=(w-text_w)/2:y=h-".$bottomTextPosition.""
-                ])
-                ->export()
-                // ->inFormat(new \FFMpeg\Format\Video\X264)
-                ->toDisk('public')
-                ->save($outputPath);
-
+            FFmpegHelper::textOverlay(inputPath:$inputVideoPath,outputPath:$outputPath);
 
 
             return self::recordPublished(digitalAssetId:$digital_asset_id, outputPath:$outputPath, type:'One Frame Text');
 
 
-
         } catch (\Exception $e) {
+
             return('Error generating daily donation reel: ' . $e->getMessage());
+
         }
 
     }
@@ -263,16 +249,23 @@ public static function clipTemplatePair($digital_asset_id, $template_id = null, 
     $readsplitFrame = FFmpegHelper::readFrameChanges($splitByFrame);
 
     // Step 1: Process the intro clip (5-second snippet for video only)
-    $introClipPath = FFmpegHelper::splitMedia(
+    $introClipPath = FFmpegHelper::cutMedia(
         inputPath: $firstClipPath,
         seconds: reset($readsplitFrame),
         frame:30
     );
 
     // Step 2: Normalize the second clip
-    $tempInputVideoPath = FFmpegHelper::splitMedia(
+    $extract = AppHelper::extractFileDetails($firstClipPath);
+
+
+    $length = FFmpegHelper::checkVideoInfo($extract['relative_path'], $extract['storage_disk']);
+
+
+
+    $tempInputVideoPath = FFmpegHelper::cutMedia(
         inputPath: $inputVideoPath,
-        seconds:end($readsplitFrame)-reset($readsplitFrame),
+        seconds:$length->get('duration')-reset($readsplitFrame),
         frame:30
     );
 
@@ -290,7 +283,7 @@ public static function clipTemplatePair($digital_asset_id, $template_id = null, 
 
 
     // Step 5: Concatenate the videos
-    $mergedVideoPath = FFmpegHelper::mergeFromConcatList($concatListPath);
+    $mergedVideoPath = FFmpegHelper::mergeFromConcatListWithFade($concatListPath);
 
 
 
@@ -349,7 +342,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
     $readsplitFrame = FFmpegHelper::readFrameChanges($splitByFrame);
 
     // Step 1: Process the intro clip (5-second snippet for video only)
-    $introClipPath = FFmpegHelper::splitMedia(
+    $introClipPath = FFmpegHelper::cutMedia(
         inputPath: $firstClipPath,
         seconds: reset($readsplitFrame),
         frame:30
@@ -382,8 +375,23 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
 
         $slidePath = Storage::disk("local")->path("assets/clips/slide_{$index}.mp4");
 
-        if($slideDuration == null){
-            $slideDuration = $readsplitFrame[$index+2] - $readsplitFrame[$index+1];
+        if ($index < count($userMedia) - 1) {
+            // For all but the last media
+            if ($slideDuration === null) {
+                $slideDuration = $readsplitFrame[$index + 2] - $readsplitFrame[$index + 1];
+            }
+        } else {
+            // For the last media
+
+            // Step 2: Normalize the second clip
+            $extract = AppHelper::extractFileDetails($firstClipPath);
+
+
+            $length = FFmpegHelper::checkVideoInfo($extract['relative_path'], $extract['storage_disk']);
+
+
+
+            $slideDuration = $length->get('duration') - end($readsplitFrame);
         }
 
         if ($media->type === 'image') {
@@ -396,7 +404,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
         } else {
 
             // Trim and resize video
-            $slidePath = FFmpegHelper::splitMedia(
+            $slidePath = FFmpegHelper::cutMedia(
                 inputPath: $inputPath,
                 seconds: $slideDuration,
                 frame:30
@@ -414,7 +422,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
 
 
     // Step 5: Concatenate all videos
-    $mergedVideoPath = FFmpegHelper::mergeFromConcatList($concatListPath);
+    $mergedVideoPath = FFmpegHelper::mergeFromConcatListWithFade($concatListPath);
 
     // Step 6: Add audio and synchronize duration
     FFmpegHelper::replaceAudioFromVideo($audioPath, $mergedVideoPath, $outputPath);
@@ -517,7 +525,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
         } else {
 
             // Trim and resize video
-            $slidePath = FFmpegHelper::splitMedia(
+            $slidePath = FFmpegHelper::cutMedia(
                 inputPath: $inputPath,
                 seconds: $slideDuration,
                 frame:30
@@ -618,7 +626,7 @@ public static function clipTemplateSlideshow($digital_asset_id, $template_id = n
             } else {
 
                 // Trim and resize video
-                $slidePath = FFmpegHelper::splitMedia(
+                $slidePath = FFmpegHelper::cutMedia(
                     inputPath: $inputPath,
                     seconds: $slideDuration,
                     frame:30

@@ -175,8 +175,7 @@
 <script type="text/javascript">
 
 var stripe = Stripe("{{ env('STRIPE_KEY') }}");
-var data = {'plan_id':'price_1P5B7uL0y3BaIHedBpvb6pda'};
-var country = "{{ url('storage/json/country.json') }}";
+
 
 </script>
 <script type="text/javascript">

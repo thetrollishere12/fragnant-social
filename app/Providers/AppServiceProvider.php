@@ -15,6 +15,8 @@ use App\Helper\AppHelper;
 
 use Illuminate\Support\Facades\View;
 
+use Illuminate\Support\Facades\Event;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -35,6 +37,13 @@ class AppServiceProvider extends ServiceProvider
 
         // Register view composer
         $this->registerViewComposers();
+
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('tiktok', \SocialiteProviders\TikTok\Provider::class);
+            $event->extendSocialite('facebook', \SocialiteProviders\Facebook\Provider::class);
+            $event->extendSocialite('instagram', \SocialiteProviders\Instagram\Provider::class);
+            $event->extendSocialite('youtube', \SocialiteProviders\YouTube\Provider::class);
+        });
 
     }
 

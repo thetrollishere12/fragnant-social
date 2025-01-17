@@ -1,0 +1,1434 @@
+ffmpeg started on 2024-12-29 at 03:09:07
+Report written to "ffmpeg-20241229-030907.log"
+Log level: 48
+Command line:
+c:/xampp/htdocs/fragnant-social/ffmpeg/bin/ffmpeg.exe -i "C:\\xampp\\htdocs\\fragnant-social\\storage\\app/private\\temp/splitted_67712c0ad1926.mp4" -i "C:\\xampp\\htdocs\\fragnant-social\\storage\\app/private\\temp/splitted_67712c0bd099e.mp4" -filter_complex "[0:v]scale=1280:720,fps=30[v0];[1:v]scale=1280:720,fps=30[v1];[v0][v1]xfade=transition=fade:duration=1:offset=4[outv]" -map "[outv]" -c:v libx264 -preset fast -crf 23 -an "C:\\xampp\\htdocs\\fragnant-social\\storage\\app/private/temp/merged_with_transition.mp4" -report
+ffmpeg version 2024-11-06-git-4047b887fc-full_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers
+  built with gcc 14.2.0 (Rev1, Built by MSYS2 project)
+  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-fontconfig --enable-iconv --enable-gnutls --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-sdl2 --enable-libaribb24 --enable-libaribcaption --enable-libdav1d --enable-libdavs2 --enable-libopenjpeg --enable-libquirc --enable-libuavs3d --enable-libxevd --enable-libzvbi --enable-libqrencode --enable-librav1e --enable-libsvtav1 --enable-libvvenc --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxeve --enable-libxvid --enable-libaom --enable-libjxl --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libharfbuzz --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --  libavutil      59. 46.100 / 59. 46.100
+  libavcodec     61. 24.100 / 61. 24.100
+  libavformat    61.  9.100 / 61.  9.100
+  libavdevice    61.  4.100 / 61.  4.100
+  libavfilter    10.  6.101 / 10.  6.101
+  libswscale      8.  9.101 /  8.  9.101
+  libswresample   5.  4.100 /  5.  4.100
+  libpostproc    58.  4.100 / 58.  4.100
+Splitting the commandline.
+Reading option '-i' ... matched as input url with argument 'C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0ad1926.mp4'.
+Reading option '-i' ... matched as input url with argument 'C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0bd099e.mp4'.
+Reading option '-filter_complex' ... matched as option 'filter_complex' (create a complex filtergraph) with argument '[0:v]scale=1280:720,fps=30[v0];[1:v]scale=1280:720,fps=30[v1];[v0][v1]xfade=transition=fade:duration=1:offset=4[outv]'.
+Reading option '-map' ... matched as option 'map' (set input stream mapping) with argument '[outv]'.
+Reading option '-c:v' ... matched as option 'c' (select encoder/decoder ('copy' to copy stream without reencoding)) with argument 'libx264'.
+Reading option '-preset' ... matched as AVOption 'preset' with argument 'fast'.
+Reading option '-crf' ... matched as AVOption 'crf' with argument '23'.
+Reading option '-an' ... matched as option 'an' (disable audio) with argument '1'.
+Reading option 'C:\xampp\htdocs\fragnant-social\storage\app/private/temp/merged_with_transition.mp4' ... matched as output url.
+Reading option '-report' ... matched as option 'report' (generate a report) with argument '1'.
+Finished splitting the commandline.
+Parsing a group of options: global .
+Applying option filter_complex (create a complex filtergraph) with argument [0:v]scale=1280:720,fps=30[v0];[1:v]scale=1280:720,fps=30[v1];[v0][v1]xfade=transition=fade:duration=1:offset=4[outv].
+Applying option report (generate a report) with argument 1.
+Successfully parsed a group of options.
+[AVFilterGraph @ 000002943b46ed80] Setting 'w' to value '1280'
+[AVFilterGraph @ 000002943b46ed80] Setting 'h' to value '720'
+[AVFilterGraph @ 000002943b46ed80] Setting 'fps' to value '30'
+[AVFilterGraph @ 000002943b46ed80] Setting 'w' to value '1280'
+[AVFilterGraph @ 000002943b46ed80] Setting 'h' to value '720'
+[AVFilterGraph @ 000002943b46ed80] Setting 'fps' to value '30'
+[AVFilterGraph @ 000002943b46ed80] Setting 'transition' to value 'fade'
+[AVFilterGraph @ 000002943b46ed80] Setting 'duration' to value '1'
+[AVFilterGraph @ 000002943b46ed80] Setting 'offset' to value '4'
+[Parsed_scale_0 @ 000002943b48ce00] w:1280 h:720 flags:'' interl:0
+[Parsed_scale_2 @ 000002943b49a540] w:1280 h:720 flags:'' interl:0
+[Parsed_fps_3 @ 000002943b4a7a00] 0 frames in, 0 frames out; 0 frames dropped, 0 frames duplicated.
+[Parsed_fps_1 @ 000002943b49a2c0] 0 frames in, 0 frames out; 0 frames dropped, 0 frames duplicated.
+Parsing a group of options: input url C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0ad1926.mp4.
+Successfully parsed a group of options.
+Opening an input file: C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0ad1926.mp4.
+[AVFormatContext @ 000002943b4a9680] Opening 'C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0ad1926.mp4' for reading
+[file @ 000002943b4a9ac0] Setting default whitelist 'file,crypto,data'
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] Format mov,mp4,m4a,3gp,3g2,mj2 probed with size=2048 and score=100
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] ISO: File Type Major Brand: isom
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] Unknown dref type 0x206c7275 size 12
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] Processing st: 0, edit list 0 - media time: 1024, duration: 83466
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] Offset DTS by 1024 to make first pts zero.
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] Setting codecpar->delay to 2 for stream st: 0
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] Before avformat_find_stream_info() pos: 273491 bytes read:35483 seeks:1 nb_streams:1
+[h264 @ 000002943b48d340] nal_unit_type: 7(SPS), nal_ref_idc: 3
+[h264 @ 000002943b48d340] Decoding VUI
+[h264 @ 000002943b48d340] nal_unit_type: 8(PPS), nal_ref_idc: 3
+[h264 @ 000002943b48d340] nal_unit_type: 7(SPS), nal_ref_idc: 3
+[h264 @ 000002943b48d340] Decoding VUI
+[h264 @ 000002943b48d340] nal_unit_type: 8(PPS), nal_ref_idc: 3
+[h264 @ 000002943b48d340] nal_unit_type: 6(SEI), nal_ref_idc: 0
+[h264 @ 000002943b48d340] nal_unit_type: 5(IDR), nal_ref_idc: 3
+[h264 @ 000002943b48d340] Format yuv420p chosen by get_format().
+[h264 @ 000002943b48d340] Reinit context to 272x480, pix_fmt: yuv420p
+[h264 @ 000002943b48d340] no picture 
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] All info found
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9680] After avformat_find_stream_info() pos: 30081 bytes read:68251 seeks:2 frames:1
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0ad1926.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf61.9.100
+  Duration: 00:00:05.43, start: 0.000000, bitrate: 402 kb/s
+  Stream #0:0[0x1](und), 1, 1/15360: Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 270x480, 398 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc61.24.100 libx264
+Successfully opened the file.
+Parsing a group of options: input url C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0bd099e.mp4.
+Successfully parsed a group of options.
+Opening an input file: C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0bd099e.mp4.
+[AVFormatContext @ 000002943b494b00] Opening 'C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0bd099e.mp4' for reading
+[file @ 000002943b4a8600] Setting default whitelist 'file,crypto,data'
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] Format mov,mp4,m4a,3gp,3g2,mj2 probed with size=2048 and score=100
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] ISO: File Type Major Brand: isom
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] Unknown dref type 0x206c7275 size 12
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] Processing st: 0, edit list 0 - media time: 1024, duration: 74757
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] Offset DTS by 1024 to make first pts zero.
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] Setting codecpar->delay to 2 for stream st: 0
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] Before avformat_find_stream_info() pos: 118268 bytes read:35412 seeks:1 nb_streams:1
+[h264 @ 000002943b4c12c0] nal_unit_type: 7(SPS), nal_ref_idc: 3
+[h264 @ 000002943b4c12c0] Decoding VUI
+[h264 @ 000002943b4c12c0] nal_unit_type: 8(PPS), nal_ref_idc: 3
+[h264 @ 000002943b4c12c0] nal_unit_type: 7(SPS), nal_ref_idc: 3
+[h264 @ 000002943b4c12c0] Decoding VUI
+[h264 @ 000002943b4c12c0] nal_unit_type: 8(PPS), nal_ref_idc: 3
+[h264 @ 000002943b4c12c0] nal_unit_type: 6(SEI), nal_ref_idc: 0
+[h264 @ 000002943b4c12c0] nal_unit_type: 5(IDR), nal_ref_idc: 3
+[h264 @ 000002943b4c12c0] Format yuv420p chosen by get_format().
+[h264 @ 000002943b4c12c0] Reinit context to 272x480, pix_fmt: yuv420p
+[h264 @ 000002943b4c12c0] no picture 
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] All info found
+[mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b494b00] After avformat_find_stream_info() pos: 5005 bytes read:68180 seeks:2 frames:1
+Input #1, mov,mp4,m4a,3gp,3g2,mj2, from 'C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0bd099e.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf61.9.100
+    location-eng    : +03.1089+101.5812+25.979996/
+    location        : +03.1089+101.5812+25.979996/
+  Duration: 00:00:04.87, start: 0.000000, bitrate: 194 kb/s
+  Stream #1:0[0x1](und), 1, 1/15360: Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 270x480, 189 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc61.24.100 libx264
+Successfully opened the file.
+Parsing a group of options: output url C:\xampp\htdocs\fragnant-social\storage\app/private/temp/merged_with_transition.mp4.
+Applying option map (set input stream mapping) with argument [outv].
+Applying option c:v (select encoder/decoder ('copy' to copy stream without reencoding)) with argument libx264.
+Applying option an (disable audio) with argument 1.
+Successfully parsed a group of options.
+Opening an output file: C:\xampp\htdocs\fragnant-social\storage\app/private/temp/merged_with_transition.mp4.
+[out#0/mp4 @ 000002943b52b7c0] Adding streams from explicit maps...
+[out#0/mp4 @ 000002943b52b7c0] Creating output stream from an explicitly mapped complex filtergraph 0, output [outv]
+[vost#0:0/libx264 @ 000002943d133d00] Created video stream from complex filtergraph 0:[xfade:default]
+[vost#0:0/libx264 @ 000002943d133d00] 
+[file @ 000002943b52ed80] Setting default whitelist 'file,crypto,data'
+Successfully opened the file.
+[fc#0 @ 000002943b46e880] Binding input with label '0:v' to input stream 0:0
+detected 8 logical cores
+[h264 @ 000002943b491f80] nal_unit_type: 7(SPS), nal_ref_idc: 3
+[h264 @ 000002943b491f80] Decoding VUI
+[h264 @ 000002943b491f80] nal_unit_type: 8(PPS), nal_ref_idc: 3
+[fc#0 @ 000002943b46e880] Binding input with label '1:v' to input stream 1:0
+[h264 @ 000002943d0b52c0] nal_unit_type: 7(SPS), nal_ref_idc: 3
+[h264 @ 000002943d0b52c0] Decoding VUI
+[h264 @ 000002943d0b52c0] nal_unit_type: 8(PPS), nal_ref_idc: 3
+Stream mapping:
+  Stream #0:0 (h264) -> scale:default
+  Stream #1:0 (h264) -> scale:default
+  xfade:default -> Stream #0:0 (libx264)
+[vost#0:0/libx264 @ 000002943d133d00] Starting thread...
+[fc#0 @ 000002943b46e880] Starting thread...
+[vist#0:0/h264 @ 000002943b48d340] [dec:h264 @ 000002943b528f80] Starting thread...
+[vist#1:0/h264 @ 000002943b4a8bc0] [dec:h264 @ 000002943d0e19c0] Starting thread...
+[in#0/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9540] Starting thread...
+[in#1/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b48d5c0] Starting thread...
+Press [q] to stop, [?] for help
+[h264 @ 000002943b491f80] nal_unit_type: 6(SEI), nal_ref_idc: 0
+[h264 @ 000002943b491f80] nal_unit_type: 5(IDR), nal_ref_idc: 3
+[h264 @ 000002943b491f80] Format yuv420p chosen by get_format().
+[h264 @ 000002943b491f80] Reinit context to 272x480, pix_fmt: yuv420p
+[h264 @ 000002943b491f80] no picture 
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943b4a78c0] no picture 
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0b52c0] nal_unit_type: 6(SEI), nal_ref_idc: 0
+[h264 @ 000002943d0b52c0] nal_unit_type: 5(IDR), nal_ref_idc: 3
+[h264 @ 000002943d0b52c0] Format yuv420p chosen by get_format().
+[h264 @ 000002943d0b52c0] Reinit context to 272x480, pix_fmt: yuv420p
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d0b52c0] no picture 
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d25a880] no picture 
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'w' to value '1280'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'h' to value '720'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'fps' to value '30'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'w' to value '1280'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'h' to value '720'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'fps' to value '30'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'transition' to value 'fade'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'duration' to value '1'
+[AVFilterGraph @ 000002943dd9cbc0] Setting 'offset' to value '4'
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_scale_0 @ 000002943b537080] w:1280 h:720 flags:'' interl:0
+[Parsed_scale_2 @ 000002943d5de340] w:1280 h:720 flags:'' interl:0
+[graph 0 input from stream 0:0 @ 000002943e829680] w:270 h:480 pixfmt:yuv420p tb:1/15360 fr:30/1 sar:0/1 csp:bt709 range:tv
+[graph 0 input from stream 1:0 @ 000002943e829f00] w:270 h:480 pixfmt:yuv420p tb:1/15360 fr:30/1 sar:0/1 csp:bt709 range:tv
+[format @ 000002943e8299c0] Setting 'pix_fmts' to value 'yuv420p|yuvj420p|yuv422p|yuvj422p|yuv444p|yuvj444p|nv12|nv16|nv21|yuv420p10le|yuv422p10le|yuv444p10le|nv20le|gray|gray10le'
+[format @ 000002943e8299c0] Setting 'color_ranges' to value 'tv|pc'
+[AVFilterGraph @ 000002943dd9cbc0] query_formats: 9 queried, 24 merged, 0 already done, 0 delayed
+[Parsed_scale_0 @ 000002943b537080] picking yuv444p out of 5 ref:yuv420p alpha:0
+[Parsed_scale_0 @ 000002943b537080] w:270 h:480 fmt:yuv420p csp:bt709 range:tv sar:0/1 -> w:1280 h:720 fmt:yuv444p csp:bt709 range:tv sar:0/1 flags:0x00000004
+[Parsed_scale_0 @ 000002943b537080] [framesync @ 000002943e7c3528] Selected 1/15360 time base
+[Parsed_scale_0 @ 000002943b537080] [framesync @ 000002943e7c3528] Sync level 1
+[Parsed_fps_1 @ 000002943d62eec0] fps=30/1
+[Parsed_scale_2 @ 000002943d5de340] w:270 h:480 fmt:yuv420p csp:bt709 range:tv sar:0/1 -> w:1280 h:720 fmt:yuv444p csp:bt709 range:tv sar:0/1 flags:0x00000004
+[Parsed_scale_2 @ 000002943d5de340] [framesync @ 000002943e7c10a8] Selected 1/15360 time base
+[Parsed_scale_2 @ 000002943d5de340] [framesync @ 000002943e7c10a8] Sync level 1
+[Parsed_fps_3 @ 000002943d227cc0] fps=30/1
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 0, out pts 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 0, out pts 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 512, out pts 1
+[Parsed_fps_1 @ 000002943d62eec0] Set first pts to 0
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 0 to pts 0
+[libx264 @ 000002943b52e340] using mv_range_thread = 24
+[libx264 @ 000002943b52e340] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+[libx264 @ 000002943b52e340] profile High 4:4:4 Predictive, level 3.1, 4:4:4, 8-bit
+[libx264 @ 000002943b52e340] 264 - core 164 r3198 da14df5 - H.264/MPEG-4 AVC codec - Copyleft 2003-2024 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=6 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=4 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=1 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=30 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to 'C:\xampp\htdocs\fragnant-social\storage\app/private/temp/merged_with_transition.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf61.9.100
+  Stream #0:0, 0, 1/15360: Video: h264 (avc1 / 0x31637661), yuv444p(tv, bt709, progressive), 1280x720, q=2-31, 30 fps, 15360 tbn
+    Metadata:
+      encoder         : Lavc61.24.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+[out#0/mp4 @ 000002943b52b7c0] Starting thread...
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 1024, out pts 2
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 1 to pts 1
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 1536, out pts 3
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 2 to pts 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 2048, out pts 4
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 3 to pts 3
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 2560, out pts 5
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 4 to pts 4
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 3072, out pts 6
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 5 to pts 5
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 3584, out pts 7
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 6 to pts 6
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 4096, out pts 8
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 7 to pts 7
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 4608, out pts 9
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 8 to pts 8
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 5120, out pts 10
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 9 to pts 9
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 512, out pts 1
+[Parsed_fps_3 @ 000002943d227cc0] Set first pts to 0
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 0 to pts 0
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 1024, out pts 2
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 1 to pts 1
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 1536, out pts 3
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 2 to pts 2
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 2048, out pts 4
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 3 to pts 3
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 2560, out pts 5
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 4 to pts 4
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 3072, out pts 6
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 5 to pts 5
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 3584, out pts 7
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 6 to pts 6
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 4096, out pts 8
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 7 to pts 7
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 4608, out pts 9
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 8 to pts 8
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 5120, out pts 10
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 9 to pts 9
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 5632, out pts 11
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 10 to pts 10
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 6144, out pts 12
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 11 to pts 11
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 6656, out pts 13
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 12 to pts 12
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 7168, out pts 14
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 13 to pts 13
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 7680, out pts 15
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 14 to pts 14
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 8192, out pts 16
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 15 to pts 15
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 8704, out pts 17
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 16 to pts 16
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 9216, out pts 18
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 17 to pts 17
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 5632, out pts 11
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 10 to pts 10
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 6144, out pts 12
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 11 to pts 11
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 6656, out pts 13
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 12 to pts 12
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 7168, out pts 14
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 13 to pts 13
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 7680, out pts 15
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 14 to pts 14
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 8192, out pts 16
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 15 to pts 15
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 8704, out pts 17
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 16 to pts 16
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 9216, out pts 18
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 17 to pts 17
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 9728, out pts 19
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 18 to pts 18
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 10240, out pts 20
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 19 to pts 19
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 10752, out pts 21
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 20 to pts 20
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 11264, out pts 22
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 21 to pts 21
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 11776, out pts 23
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 22 to pts 22
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 12288, out pts 24
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 23 to pts 23
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 12800, out pts 25
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 24 to pts 24
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 13312, out pts 26
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 25 to pts 25
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 13824, out pts 27
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 26 to pts 26
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 14336, out pts 28
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 27 to pts 27
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 14848, out pts 29
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 28 to pts 28
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 15360, out pts 30
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 29 to pts 29
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 15872, out pts 31
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 30 to pts 30
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 16384, out pts 32
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 31 to pts 31
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 16896, out pts 33
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 32 to pts 32
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 17408, out pts 34
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 33 to pts 33
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 17920, out pts 35
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 34 to pts 34
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 18432, out pts 36
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 35 to pts 35
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 18944, out pts 37
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 36 to pts 36
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 19456, out pts 38
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 37 to pts 37
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 19968, out pts 39
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 38 to pts 38
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 20480, out pts 40
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 39 to pts 39
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 20992, out pts 41
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 40 to pts 40
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 21504, out pts 42
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 41 to pts 41
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 22016, out pts 43
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 42 to pts 42
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 22528, out pts 44
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 43 to pts 43
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 23040, out pts 45
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 44 to pts 44
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 23552, out pts 46
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 45 to pts 45
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 24064, out pts 47
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 46 to pts 46
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 24576, out pts 48
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 47 to pts 47
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 25088, out pts 49
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 48 to pts 48
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 25600, out pts 50
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 49 to pts 49
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 26112, out pts 51
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 50 to pts 50
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 26624, out pts 52
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 51 to pts 51
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 27136, out pts 53
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 52 to pts 52
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 27648, out pts 54
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 53 to pts 53
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 28160, out pts 55
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 54 to pts 54
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 28672, out pts 56
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 55 to pts 55
+[libx264 @ 000002943b52e340] frame=   0 QP=22.98 NAL=3 Slice:I Poc:0   I:3600 P:0    SKIP:0    size=75504 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 29184, out pts 57
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 56 to pts 56
+[libx264 @ 000002943b52e340] frame=   1 QP=23.07 NAL=2 Slice:P Poc:8   I:37   P:1961 SKIP:1602 size=10466 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 29696, out pts 58
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 57 to pts 57
+[libx264 @ 000002943b52e340] frame=   2 QP=28.78 NAL=2 Slice:B Poc:4   I:5    P:1220 SKIP:2375 size=2409 bytes
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 30208, out pts 59
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 58 to pts 58
+[libx264 @ 000002943b52e340] frame=   3 QP=30.39 NAL=0 Slice:B Poc:2   I:1    P:289  SKIP:3310 size=512 bytes
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 30720, out pts 60
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 59 to pts 59
+[libx264 @ 000002943b52e340] frame=   4 QP=30.66 NAL=0 Slice:B Poc:6   I:2    P:682  SKIP:2916 size=1128 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 31232, out pts 61
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 60 to pts 60
+[libx264 @ 000002943b52e340] frame=   5 QP=22.77 NAL=2 Slice:P Poc:10  I:1    P:913  SKIP:2686 size=3649 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 31744, out pts 62
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 61 to pts 61
+[libx264 @ 000002943b52e340] frame=   6 QP=23.68 NAL=2 Slice:P Poc:18  I:29   P:2435 SKIP:1136 size=12379 bytes
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 32256, out pts 63
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 62 to pts 62
+[libx264 @ 000002943b52e340] frame=   7 QP=28.81 NAL=2 Slice:B Poc:14  I:2    P:930  SKIP:2668 size=1689 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame=   8 QP=31.56 NAL=0 Slice:B Poc:12  I:0    P:209  SKIP:3391 size=237 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 32768, out pts 64
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 63 to pts 63
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 33280, out pts 65
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 64 to pts 64
+[libx264 @ 000002943b52e340] frame=   9 QP=28.53 NAL=0 Slice:B Poc:16  I:2    P:404  SKIP:3194 size=735 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 33792, out pts 66
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 65 to pts 65
+[libx264 @ 000002943b52e340] frame=  10 QP=23.17 NAL=2 Slice:P Poc:22  I:28   P:2746 SKIP:826  size=16363 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 34304, out pts 67
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 66 to pts 66
+[libx264 @ 000002943b52e340] frame=  11 QP=30.77 NAL=0 Slice:B Poc:20  I:4    P:485  SKIP:3111 size=1089 bytes
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 34816, out pts 68
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 67 to pts 67
+[libx264 @ 000002943b52e340] frame=  12 QP=23.06 NAL=2 Slice:P Poc:26  I:25   P:1912 SKIP:1663 size=9925 bytes
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 35328, out pts 69
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 68 to pts 68
+[libx264 @ 000002943b52e340] frame=  13 QP=30.09 NAL=0 Slice:B Poc:24  I:7    P:265  SKIP:3328 size=614 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 35840, out pts 70
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 69 to pts 69
+[libx264 @ 000002943b52e340] frame=  14 QP=23.18 NAL=2 Slice:P Poc:30  I:10   P:1386 SKIP:2204 size=6678 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 36352, out pts 71
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 70 to pts 70
+[libx264 @ 000002943b52e340] frame=  15 QP=29.70 NAL=0 Slice:B Poc:28  I:2    P:167  SKIP:3431 size=191 bytes
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 36864, out pts 72
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 71 to pts 71
+[libx264 @ 000002943b52e340] frame=  16 QP=23.24 NAL=2 Slice:P Poc:38  I:35   P:2630 SKIP:935  size=15112 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 37376, out pts 73
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 72 to pts 72
+[libx264 @ 000002943b52e340] frame=  17 QP=28.38 NAL=2 Slice:B Poc:34  I:8    P:1233 SKIP:2359 size=2369 bytes
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 37888, out pts 74
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 73 to pts 73
+[libx264 @ 000002943b52e340] frame=  18 QP=29.79 NAL=0 Slice:B Poc:32  I:8    P:613  SKIP:2979 size=1035 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 38400, out pts 75
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 74 to pts 74
+[libx264 @ 000002943b52e340] frame=  19 QP=30.54 NAL=0 Slice:B Poc:36  I:0    P:558  SKIP:3042 size=770 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 38912, out pts 76
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 75 to pts 75
+[libx264 @ 000002943b52e340] frame=  20 QP=22.70 NAL=2 Slice:P Poc:40  I:0    P:861  SKIP:2739 size=4164 bytes
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 39424, out pts 77
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 76 to pts 76
+[libx264 @ 000002943b52e340] frame=  21 QP=23.34 NAL=2 Slice:P Poc:48  I:102  P:2486 SKIP:1012 size=15657 bytes
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 39936, out pts 78
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 77 to pts 77
+[libx264 @ 000002943b52e340] frame=  22 QP=28.40 NAL=2 Slice:B Poc:44  I:19   P:1148 SKIP:2433 size=2615 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 40448, out pts 79
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 78 to pts 78
+[libx264 @ 000002943b52e340] frame=  23 QP=27.93 NAL=0 Slice:B Poc:42  I:3    P:358  SKIP:3239 size=718 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 40960, out pts 80
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 79 to pts 79
+[libx264 @ 000002943b52e340] frame=  24 QP=30.47 NAL=0 Slice:B Poc:46  I:11   P:509  SKIP:3080 size=1132 bytes
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 41472, out pts 81
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 80 to pts 80
+[libx264 @ 000002943b52e340] frame=  25 QP=23.78 NAL=2 Slice:P Poc:52  I:15   P:1295 SKIP:2290 size=6199 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame=  26 QP=29.00 NAL=0 Slice:B Poc:50  I:1    P:122  SKIP:3477 size=150 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 41984, out pts 82
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 81 to pts 81
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 42496, out pts 83
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 82 to pts 82
+frame=   27 fps=0.0 q=29.0 size=       0KiB time=00:00:00.83 bitrate=   0.5kbits/s speed=1.63x    [libx264 @ 000002943b52e340] frame=  27 QP=23.60 NAL=2 Slice:P Poc:60  I:210  P:2852 SKIP:538  size=18576 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 43008, out pts 84
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 83 to pts 83
+[libx264 @ 000002943b52e340] frame=  28 QP=28.14 NAL=2 Slice:B Poc:56  I:77   P:944  SKIP:2579 size=2993 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame=  29 QP=29.90 NAL=0 Slice:B Poc:54  I:33   P:650  SKIP:2917 size=1523 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 43520, out pts 85
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 84 to pts 84
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 44032, out pts 86
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 85 to pts 85
+[libx264 @ 000002943b52e340] frame=  30 QP=29.13 NAL=0 Slice:B Poc:58  I:25   P:697  SKIP:2878 size=1673 bytes
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 44544, out pts 87
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 86 to pts 86
+[libx264 @ 000002943b52e340] frame=  31 QP=23.27 NAL=2 Slice:P Poc:64  I:75   P:2383 SKIP:1142 size=13272 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 45056, out pts 88
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 87 to pts 87
+[libx264 @ 000002943b52e340] frame=  32 QP=29.65 NAL=0 Slice:B Poc:62  I:20   P:590  SKIP:2990 size=1418 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 45568, out pts 89
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 88 to pts 88
+[libx264 @ 000002943b52e340] frame=  33 QP=23.25 NAL=2 Slice:P Poc:70  I:169  P:2629 SKIP:802  size=16777 bytes
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 46080, out pts 90
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 89 to pts 89
+[libx264 @ 000002943b52e340] frame=  34 QP=27.70 NAL=2 Slice:B Poc:66  I:5    P:519  SKIP:3076 size=665 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 46592, out pts 91
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 90 to pts 90
+[libx264 @ 000002943b52e340] frame=  35 QP=29.90 NAL=0 Slice:B Poc:68  I:46   P:762  SKIP:2792 size=1985 bytes
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 47104, out pts 92
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 91 to pts 91
+[libx264 @ 000002943b52e340] frame=  36 QP=23.61 NAL=2 Slice:P Poc:78  I:141  P:2490 SKIP:969  size=14432 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 47616, out pts 93
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 92 to pts 92
+[libx264 @ 000002943b52e340] frame=  37 QP=28.00 NAL=2 Slice:B Poc:74  I:75   P:727  SKIP:2798 size=1945 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 48128, out pts 94
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 93 to pts 93
+[libx264 @ 000002943b52e340] frame=  38 QP=29.06 NAL=0 Slice:B Poc:72  I:1    P:478  SKIP:3121 size=522 bytes
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 48640, out pts 95
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 94 to pts 94
+[libx264 @ 000002943b52e340] frame=  39 QP=27.07 NAL=0 Slice:B Poc:76  I:54   P:478  SKIP:3068 size=1660 bytes
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 49152, out pts 96
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 95 to pts 95
+[libx264 @ 000002943b52e340] frame=  40 QP=23.44 NAL=2 Slice:P Poc:86  I:344  P:2297 SKIP:959  size=15487 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 49664, out pts 97
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 96 to pts 96
+[libx264 @ 000002943b52e340] frame=  41 QP=29.00 NAL=2 Slice:B Poc:82  I:165  P:878  SKIP:2557 size=4152 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 50176, out pts 98
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 97 to pts 97
+[libx264 @ 000002943b52e340] frame=  42 QP=30.53 NAL=0 Slice:B Poc:80  I:58   P:1009 SKIP:2533 size=2330 bytes
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 50688, out pts 99
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 98 to pts 98
+[libx264 @ 000002943b52e340] frame=  43 QP=29.01 NAL=0 Slice:B Poc:84  I:67   P:884  SKIP:2649 size=2794 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 51200, out pts 100
+[libx264 @ 000002943b52e340] frame=  44 QP=23.87 NAL=2 Slice:P Poc:94  I:236  P:2154 SKIP:1210 size=12195 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 99 to pts 99
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 51712, out pts 101
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 100 to pts 100
+[libx264 @ 000002943b52e340] frame=  45 QP=26.86 NAL=2 Slice:B Poc:90  I:119  P:1173 SKIP:2308 size=4856 bytes
+[libx264 @ 000002943b52e340] frame=  46 QP=25.68 NAL=0 Slice:B Poc:88  I:0    P:332  SKIP:3268 size=271 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame=  47 QP=27.79 NAL=0 Slice:B Poc:92  I:1    P:327  SKIP:3272 size=269 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 52224, out pts 102
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 101 to pts 101
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 52736, out pts 103
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 102 to pts 102
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 53248, out pts 104
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 103 to pts 103
+[libx264 @ 000002943b52e340] frame=  48 QP=23.78 NAL=2 Slice:P Poc:102 I:649  P:2099 SKIP:852  size=19378 bytes
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 53760, out pts 105
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 104 to pts 104
+[libx264 @ 000002943b52e340] frame=  49 QP=28.77 NAL=2 Slice:B Poc:98  I:383  P:1079 SKIP:2138 size=7027 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 54272, out pts 106
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 105 to pts 105
+[libx264 @ 000002943b52e340] frame=  50 QP=31.30 NAL=0 Slice:B Poc:96  I:167  P:998  SKIP:2435 size=4282 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 54784, out pts 107
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 106 to pts 106
+[libx264 @ 000002943b52e340] frame=  51 QP=31.43 NAL=0 Slice:B Poc:100 I:182  P:878  SKIP:2540 size=4533 bytes
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 55296, out pts 108
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 107 to pts 107
+[libx264 @ 000002943b52e340] frame=  52 QP=23.35 NAL=2 Slice:P Poc:110 I:473  P:1743 SKIP:1384 size=14806 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 55808, out pts 109
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 108 to pts 108
+[libx264 @ 000002943b52e340] frame=  53 QP=28.09 NAL=2 Slice:B Poc:106 I:261  P:739  SKIP:2600 size=3927 bytes
+[libx264 @ 000002943b52e340] frame=  54 QP=28.94 NAL=0 Slice:B Poc:104 I:252  P:639  SKIP:2709 size=4227 bytes
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 56320, out pts 110
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 109 to pts 109
+[libx264 @ 000002943b52e340] frame=  55 QP=28.12 NAL=0 Slice:B Poc:108 I:117  P:535  SKIP:2948 size=2397 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame=  56 QP=23.80 NAL=2 Slice:P Poc:118 I:188  P:1698 SKIP:1714 size=9018 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 56832, out pts 111
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 110 to pts 110
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame=  57 QP=26.71 NAL=2 Slice:B Poc:114 I:92   P:408  SKIP:3100 size=1648 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 57344, out pts 112
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 111 to pts 111
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 57856, out pts 113
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 112 to pts 112
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 58368, out pts 114
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 113 to pts 113
+[libx264 @ 000002943b52e340] frame=  58 QP=27.78 NAL=0 Slice:B Poc:112 I:2    P:148  SKIP:3450 size=208 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 58880, out pts 115
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 114 to pts 114
+[libx264 @ 000002943b52e340] frame=  59 QP=28.98 NAL=0 Slice:B Poc:116 I:2    P:310  SKIP:3288 size=424 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 59392, out pts 116
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 115 to pts 115
+[libx264 @ 000002943b52e340] frame=  60 QP=23.94 NAL=2 Slice:P Poc:126 I:247  P:2474 SKIP:879  size=15249 bytes
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 59904, out pts 117
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 116 to pts 116
+[libx264 @ 000002943b52e340] frame=  61 QP=27.99 NAL=2 Slice:B Poc:122 I:152  P:1357 SKIP:2091 size=3745 bytes
+[libx264 @ 000002943b52e340] frame=  62 QP=29.85 NAL=0 Slice:B Poc:120 I:97   P:1266 SKIP:2237 size=2736 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame=  63 QP=30.44 NAL=0 Slice:B Poc:124 I:48   P:903  SKIP:2649 size=1993 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 60416, out pts 118
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 117 to pts 117
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 60928, out pts 119
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 118 to pts 118
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 61440, out pts 120
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 119 to pts 119
+[libx264 @ 000002943b52e340] frame=  64 QP=23.64 NAL=2 Slice:P Poc:130 I:206  P:2140 SKIP:1254 size=11712 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 61952, out pts 121
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 120 to pts 120
+[libx264 @ 000002943b52e340] frame=  65 QP=30.12 NAL=0 Slice:B Poc:128 I:52   P:739  SKIP:2809 size=1518 bytes
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 62464, out pts 122
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 121 to pts 121
+[libx264 @ 000002943b52e340] frame=  66 QP=23.44 NAL=2 Slice:P Poc:132 I:1    P:807  SKIP:2792 size=3169 bytes
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 62976, out pts 123
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 122 to pts 122
+[libx264 @ 000002943b52e340] frame=  67 QP=24.00 NAL=2 Slice:P Poc:136 I:166  P:2385 SKIP:1049 size=11979 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame=  68 QP=29.56 NAL=0 Slice:B Poc:134 I:35   P:866  SKIP:2699 size=1557 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 63488, out pts 124
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 123 to pts 123
+[libx264 @ 000002943b52e340] frame=  69 QP=23.83 NAL=2 Slice:P Poc:138 I:342  P:1533 SKIP:1725 size=8561 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 64000, out pts 125
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 124 to pts 124
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 64512, out pts 126
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 125 to pts 125
+[libx264 @ 000002943b52e340] frame=  70 QP=23.45 NAL=2 Slice:P Poc:142 I:345  P:2104 SKIP:1151 size=13829 bytes
+[h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 65024, out pts 127
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 126 to pts 126
+[libx264 @ 000002943b52e340] frame=  71 QP=29.69 NAL=0 Slice:B Poc:140 I:122  P:670  SKIP:2808 size=2175 bytes
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 65536, out pts 128
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 127 to pts 127
+[libx264 @ 000002943b52e340] frame=  72 QP=23.52 NAL=2 Slice:P Poc:150 I:257  P:2282 SKIP:1061 size=12853 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 66048, out pts 129
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 128 to pts 128
+[libx264 @ 000002943b52e340] frame=  73 QP=28.84 NAL=2 Slice:B Poc:146 I:138  P:864  SKIP:2598 size=2617 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 66560, out pts 130
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 129 to pts 129
+[libx264 @ 000002943b52e340] frame=  74 QP=25.99 NAL=0 Slice:B Poc:144 I:2    P:517  SKIP:3081 size=487 bytes
+[libx264 @ 000002943b52e340] frame=  75 QP=29.96 NAL=0 Slice:B Poc:148 I:104  P:556  SKIP:2940 size=1896 bytes
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 67072, out pts 131
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 130 to pts 130
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 67584, out pts 132
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 131 to pts 131
+[libx264 @ 000002943b52e340] frame=  76 QP=23.87 NAL=2 Slice:P Poc:158 I:185  P:2791 SKIP:624  size=17249 bytes
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 68096, out pts 133
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 132 to pts 132
+[libx264 @ 000002943b52e340] frame=  77 QP=28.28 NAL=2 Slice:B Poc:154 I:107  P:1295 SKIP:2198 size=3353 bytes
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 68608, out pts 134
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 133 to pts 133
+[libx264 @ 000002943b52e340] frame=  78 QP=28.11 NAL=0 Slice:B Poc:152 I:0    P:668  SKIP:2932 size=738 bytes
+[in#0/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9540] EOF while reading input
+[in#0/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9540] Terminating thread with return code 0 (success)
+[h264 @ 000002943b4a78c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame=  79 QP=29.94 NAL=0 Slice:B Poc:156 I:43   P:789  SKIP:2768 size=1520 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 69120, out pts 135
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 134 to pts 134
+frame=   79 fps= 77 q=29.0 size=     256KiB time=00:00:02.56 bitrate= 817.2kbits/s speed=2.49x    [h264 @ 000002943b4bb680] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 69632, out pts 136
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 135 to pts 135
+[libx264 @ 000002943b52e340] frame=  80 QP=24.12 NAL=2 Slice:P Poc:166 I:302  P:2458 SKIP:840  size=14036 bytes
+[h264 @ 000002943d0e1600] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 70144, out pts 137
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 136 to pts 136
+[libx264 @ 000002943b52e340] frame=  81 QP=28.30 NAL=2 Slice:B Poc:162 I:135  P:1321 SKIP:2144 size=3278 bytes
+[h264 @ 000002943d13c4c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 70656, out pts 138
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 137 to pts 137
+[libx264 @ 000002943b52e340] frame=  82 QP=29.83 NAL=0 Slice:B Poc:160 I:50   P:676  SKIP:2874 size=1440 bytes
+[h264 @ 000002943d0e1c80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 71168, out pts 139
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 138 to pts 138
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0e2880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame=  83 QP=30.35 NAL=0 Slice:B Poc:164 I:108  P:1236 SKIP:2256 size=2900 bytes
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 71680, out pts 140
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 139 to pts 139
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 72192, out pts 141
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 140 to pts 140
+[h264 @ 000002943d0e3240] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 72704, out pts 142
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 141 to pts 141
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 73216, out pts 143
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 142 to pts 142
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 73728, out pts 144
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 143 to pts 143
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 74240, out pts 145
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 144 to pts 144
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 74752, out pts 146
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 145 to pts 145
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 75264, out pts 147
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 146 to pts 146
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 75776, out pts 148
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 147 to pts 147
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 9728, out pts 19
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 18 to pts 18
+[h264 @ 000002943d0b3dc0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 76288, out pts 149
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 148 to pts 148
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 10240, out pts 20
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 19 to pts 19
+[libx264 @ 000002943b52e340] frame=  84 QP=23.91 NAL=2 Slice:P Poc:172 I:368  P:2271 SKIP:961  size=13531 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 10752, out pts 21
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 20 to pts 20
+[libx264 @ 000002943b52e340] frame=  85 QP=28.53 NAL=2 Slice:B Poc:168 I:151  P:1293 SKIP:2156 size=4119 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame=  86 QP=29.64 NAL=0 Slice:B Poc:170 I:3    P:411  SKIP:3186 size=574 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 11264, out pts 22
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 21 to pts 21
+[h264 @ 000002943b491f80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 11776, out pts 23
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 22 to pts 22
+[libx264 @ 000002943b52e340] frame=  87 QP=24.16 NAL=2 Slice:P Poc:180 I:502  P:2588 SKIP:510  size=19007 bytes
+[vist#0:0/h264 @ 000002943b48d340] [dec:h264 @ 000002943b528f80] Decoder thread received EOF packet
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 12288, out pts 24
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 23 to pts 23
+[libx264 @ 000002943b52e340] frame=  88 QP=29.04 NAL=2 Slice:B Poc:176 I:361  P:1405 SKIP:1834 size=5975 bytes
+[libx264 @ 000002943b52e340] frame=  89 QP=30.23 NAL=0 Slice:B Poc:174 I:1    P:363  SKIP:3236 size=428 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 12800, out pts 25
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 24 to pts 24
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 13312, out pts 26
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 25 to pts 25
+[libx264 @ 000002943b52e340] frame=  90 QP=30.27 NAL=0 Slice:B Poc:178 I:234  P:1701 SKIP:1665 size=5709 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 76800, out pts 150
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 149 to pts 149
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 13824, out pts 27
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 26 to pts 26
+[libx264 @ 000002943b52e340] frame=  91 QP=23.98 NAL=2 Slice:P Poc:188 I:462  P:2675 SKIP:463  size=20011 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 14336, out pts 28
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 27 to pts 27
+[libx264 @ 000002943b52e340] frame=  92 QP=28.34 NAL=2 Slice:B Poc:184 I:372  P:1831 SKIP:1397 size=7337 bytes
+[libx264 @ 000002943b52e340] frame=  93 QP=29.70 NAL=0 Slice:B Poc:182 I:166  P:1420 SKIP:2014 size=4363 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 14848, out pts 29
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 28 to pts 28
+[libx264 @ 000002943b52e340] frame=  94 QP=30.01 NAL=0 Slice:B Poc:186 I:196  P:1409 SKIP:1995 size=4461 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 77312, out pts 151
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 150 to pts 150
+[Parsed_fps_1 @ 000002943d62eec0] Read frame with in pts 77824, out pts 152
+[Parsed_fps_1 @ 000002943d62eec0] Writing frame with pts 151 to pts 151
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 15360, out pts 30
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 29 to pts 29
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 15872, out pts 31
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 30 to pts 30
+[libx264 @ 000002943b52e340] frame=  95 QP=24.05 NAL=2 Slice:P Poc:196 I:418  P:2499 SKIP:683  size=16794 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 16384, out pts 32
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 31 to pts 31
+[libx264 @ 000002943b52e340] frame=  96 QP=28.02 NAL=2 Slice:B Poc:192 I:207  P:1623 SKIP:1770 size=6109 bytes
+[libx264 @ 000002943b52e340] frame=  97 QP=29.55 NAL=0 Slice:B Poc:190 I:3    P:576  SKIP:3021 size=695 bytes
+[libx264 @ 000002943b52e340] frame=  98 QP=28.57 NAL=0 Slice:B Poc:194 I:2    P:434  SKIP:3164 size=480 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 16896, out pts 33
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 32 to pts 32
+[fc#0 @ 000002943b46e880] Input 0 no longer accepts new data
+[vist#0:0/h264 @ 000002943b48d340] [dec:h264 @ 000002943b528f80] Decoder returned EOF, finishing
+[vist#0:0/h264 @ 000002943b48d340] [dec:h264 @ 000002943b528f80] Terminating thread with return code 0 (success)
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 17408, out pts 34
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 33 to pts 33
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 17920, out pts 35
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 34 to pts 34
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame=  99 QP=24.04 NAL=2 Slice:P Poc:204 I:554  P:2271 SKIP:775  size=17154 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 18432, out pts 36
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 35 to pts 35
+[libx264 @ 000002943b52e340] frame= 100 QP=28.56 NAL=2 Slice:B Poc:200 I:380  P:1740 SKIP:1480 size=6805 bytes
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 18944, out pts 37
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 36 to pts 36
+[libx264 @ 000002943b52e340] frame= 101 QP=29.74 NAL=0 Slice:B Poc:198 I:204  P:823  SKIP:2573 size=3640 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 19456, out pts 38
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 37 to pts 37
+[libx264 @ 000002943b52e340] frame= 102 QP=29.84 NAL=0 Slice:B Poc:202 I:217  P:1009 SKIP:2374 size=4082 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 19968, out pts 39
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 38 to pts 38
+[libx264 @ 000002943b52e340] frame= 103 QP=24.01 NAL=2 Slice:P Poc:210 I:456  P:2487 SKIP:657  size=16022 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 20480, out pts 40
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 39 to pts 39
+[libx264 @ 000002943b52e340] frame= 104 QP=28.75 NAL=2 Slice:B Poc:206 I:222  P:831  SKIP:2547 size=4217 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 20992, out pts 41
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 40 to pts 40
+[libx264 @ 000002943b52e340] frame= 105 QP=30.25 NAL=0 Slice:B Poc:208 I:199  P:1242 SKIP:2159 size=4347 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 21504, out pts 42
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 41 to pts 41
+[libx264 @ 000002943b52e340] frame= 106 QP=24.08 NAL=2 Slice:P Poc:218 I:368  P:2547 SKIP:685  size=15801 bytes
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 22016, out pts 43
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 42 to pts 42
+[libx264 @ 000002943b52e340] frame= 107 QP=27.89 NAL=2 Slice:B Poc:214 I:272  P:1490 SKIP:1838 size=6004 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 22528, out pts 44
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 43 to pts 43
+[libx264 @ 000002943b52e340] frame= 108 QP=29.69 NAL=0 Slice:B Poc:212 I:1    P:785  SKIP:2814 size=935 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 23040, out pts 45
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 44 to pts 44
+[libx264 @ 000002943b52e340] frame= 109 QP=29.94 NAL=0 Slice:B Poc:216 I:149  P:1059 SKIP:2392 size=3104 bytes
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 23552, out pts 46
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 45 to pts 45
+[libx264 @ 000002943b52e340] frame= 110 QP=24.41 NAL=2 Slice:P Poc:226 I:299  P:1941 SKIP:1360 size=12164 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 24064, out pts 47
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 46 to pts 46
+[libx264 @ 000002943b52e340] frame= 111 QP=27.20 NAL=2 Slice:B Poc:222 I:187  P:843  SKIP:2570 size=3836 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame= 112 QP=29.26 NAL=0 Slice:B Poc:220 I:0    P:303  SKIP:3297 size=393 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 24576, out pts 48
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 47 to pts 47
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 25088, out pts 49
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 48 to pts 48
+[libx264 @ 000002943b52e340] frame= 113 QP=30.58 NAL=0 Slice:B Poc:224 I:143  P:410  SKIP:3047 size=2470 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame= 114 QP=24.83 NAL=2 Slice:P Poc:230 I:212  P:1506 SKIP:1882 size=9047 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 25600, out pts 50
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 49 to pts 49
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame= 115 QP=27.45 NAL=0 Slice:B Poc:228 I:77   P:424  SKIP:3099 size=1894 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 26112, out pts 51
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 50 to pts 50
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 26624, out pts 52
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 51 to pts 51
+[libx264 @ 000002943b52e340] frame= 116 QP=25.86 NAL=2 Slice:P Poc:238 I:348  P:2074 SKIP:1178 size=11813 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 27136, out pts 53
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 52 to pts 52
+[libx264 @ 000002943b52e340] frame= 117 QP=27.88 NAL=2 Slice:B Poc:234 I:112  P:1465 SKIP:2023 size=4432 bytes
+[libx264 @ 000002943b52e340] frame= 118 QP=29.25 NAL=0 Slice:B Poc:232 I:2    P:309  SKIP:3289 size=396 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 27648, out pts 54
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 53 to pts 53
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame= 119 QP=30.16 NAL=0 Slice:B Poc:236 I:72   P:1032 SKIP:2496 size=2887 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 28160, out pts 55
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 54 to pts 54
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 28672, out pts 56
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 55 to pts 55
+[libx264 @ 000002943b52e340] frame= 120 QP=26.09 NAL=2 Slice:P Poc:240 I:57   P:1558 SKIP:1985 size=5598 bytes
+[libx264 @ 000002943b52e340] frame= 121 QP=26.22 NAL=2 Slice:P Poc:242 I:86   P:1996 SKIP:1518 size=8560 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 29184, out pts 57
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 56 to pts 56
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 29696, out pts 58
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 57 to pts 57
+frame=  122 fps= 79 q=29.0 size=     512KiB time=00:00:04.00 bitrate=1048.7kbits/s speed=2.59x    [libx264 @ 000002943b52e340] frame= 122 QP=26.18 NAL=2 Slice:P Poc:246 I:383  P:2725 SKIP:492  size=15284 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 30208, out pts 59
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 58 to pts 58
+[libx264 @ 000002943b52e340] frame= 123 QP=29.11 NAL=0 Slice:B Poc:244 I:177  P:485  SKIP:2938 size=2534 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 30720, out pts 60
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 59 to pts 59
+[libx264 @ 000002943b52e340] frame= 124 QP=26.31 NAL=2 Slice:P Poc:252 I:897  P:2430 SKIP:273  size=19563 bytes
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 31232, out pts 61
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 60 to pts 60
+[libx264 @ 000002943b52e340] frame= 125 QP=28.71 NAL=2 Slice:B Poc:248 I:214  P:1516 SKIP:1870 size=4812 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 31744, out pts 62
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 61 to pts 61
+[libx264 @ 000002943b52e340] frame= 126 QP=29.37 NAL=0 Slice:B Poc:250 I:381  P:1255 SKIP:1964 size=6098 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 32256, out pts 63
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 62 to pts 62
+[libx264 @ 000002943b52e340] frame= 127 QP=26.59 NAL=2 Slice:P Poc:260 I:1330 P:2053 SKIP:217  size=22802 bytes
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 32768, out pts 64
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 63 to pts 63
+[libx264 @ 000002943b52e340] frame= 128 QP=27.63 NAL=2 Slice:B Poc:256 I:549  P:1906 SKIP:1145 size=9932 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 33280, out pts 65
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 64 to pts 64
+[libx264 @ 000002943b52e340] frame= 129 QP=28.71 NAL=0 Slice:B Poc:254 I:154  P:1135 SKIP:2311 size=3628 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 33792, out pts 66
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 65 to pts 65
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame= 130 QP=29.06 NAL=0 Slice:B Poc:258 I:361  P:989  SKIP:2250 size=5332 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 34304, out pts 67
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 66 to pts 66
+[libx264 @ 000002943b52e340] frame= 131 QP=26.66 NAL=2 Slice:P Poc:268 I:1622 P:1722 SKIP:256  size=22681 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 34816, out pts 68
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 67 to pts 67
+[libx264 @ 000002943b52e340] frame= 132 QP=27.51 NAL=2 Slice:B Poc:264 I:746  P:2115 SKIP:739  size=12159 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 35328, out pts 69
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 68 to pts 68
+[libx264 @ 000002943b52e340] frame= 133 QP=28.99 NAL=0 Slice:B Poc:262 I:464  P:1522 SKIP:1614 size=7525 bytes
+[libx264 @ 000002943b52e340] frame= 134 QP=28.69 NAL=0 Slice:B Poc:266 I:392  P:1289 SKIP:1919 size=6172 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 35840, out pts 70
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 69 to pts 69
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 36352, out pts 71
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 70 to pts 70
+[libx264 @ 000002943b52e340] frame= 135 QP=26.19 NAL=2 Slice:P Poc:276 I:2417 P:1070 SKIP:113  size=24813 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 36864, out pts 72
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 71 to pts 71
+[libx264 @ 000002943b52e340] frame= 136 QP=26.77 NAL=2 Slice:B Poc:272 I:633  P:2258 SKIP:709  size=11470 bytes
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 37376, out pts 73
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 72 to pts 72
+[libx264 @ 000002943b52e340] frame= 137 QP=28.46 NAL=0 Slice:B Poc:270 I:468  P:1052 SKIP:2080 size=5925 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 37888, out pts 74
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 73 to pts 73
+[libx264 @ 000002943b52e340] frame= 138 QP=27.48 NAL=0 Slice:B Poc:274 I:169  P:999  SKIP:2432 size=3642 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 38400, out pts 75
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 74 to pts 74
+[libx264 @ 000002943b52e340] frame= 139 QP=25.65 NAL=2 Slice:P Poc:284 I:3215 P:340  SKIP:45   size=22926 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 38912, out pts 76
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 75 to pts 75
+[libx264 @ 000002943b52e340] frame= 140 QP=25.95 NAL=2 Slice:B Poc:280 I:700  P:1664 SKIP:1236 size=9094 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 39424, out pts 77
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 76 to pts 76
+[libx264 @ 000002943b52e340] frame= 141 QP=27.38 NAL=0 Slice:B Poc:278 I:392  P:1074 SKIP:2134 size=4978 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 39936, out pts 78
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 77 to pts 77
+[libx264 @ 000002943b52e340] frame= 142 QP=26.85 NAL=0 Slice:B Poc:282 I:381  P:1089 SKIP:2130 size=4886 bytes
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 40448, out pts 79
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 78 to pts 78
+[libx264 @ 000002943b52e340] frame= 143 QP=24.52 NAL=2 Slice:P Poc:292 I:3481 P:102  SKIP:17   size=17167 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 40960, out pts 80
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 79 to pts 79
+[libx264 @ 000002943b52e340] frame= 144 QP=25.03 NAL=2 Slice:B Poc:288 I:923  P:1768 SKIP:909  size=9624 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 41472, out pts 81
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 80 to pts 80
+[libx264 @ 000002943b52e340] frame= 145 QP=26.33 NAL=0 Slice:B Poc:286 I:553  P:1157 SKIP:1890 size=5714 bytes
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 41984, out pts 82
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 81 to pts 81
+[libx264 @ 000002943b52e340] frame= 146 QP=25.65 NAL=0 Slice:B Poc:290 I:467  P:1408 SKIP:1725 size=5154 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 42496, out pts 83
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 82 to pts 82
+[libx264 @ 000002943b52e340] frame= 147 QP=21.79 NAL=2 Slice:P Poc:300 I:3418 P:172  SKIP:10   size=10781 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 43008, out pts 84
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 83 to pts 83
+[libx264 @ 000002943b52e340] frame= 148 QP=23.38 NAL=2 Slice:B Poc:296 I:1175 P:1613 SKIP:812  size=8869 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 43520, out pts 85
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 84 to pts 84
+[libx264 @ 000002943b52e340] frame= 149 QP=24.87 NAL=0 Slice:B Poc:294 I:325  P:1359 SKIP:1916 size=4179 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 44032, out pts 86
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 85 to pts 85
+[libx264 @ 000002943b52e340] frame= 150 QP=23.45 NAL=0 Slice:B Poc:298 I:932  P:1211 SKIP:1457 size=6028 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 44544, out pts 87
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 86 to pts 86
+[libx264 @ 000002943b52e340] frame= 151 QP=21.47 NAL=2 Slice:P Poc:304 I:1937 P:884  SKIP:779  size=6954 bytes
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 45056, out pts 88
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 87 to pts 87
+[libx264 @ 000002943b52e340] frame= 152 QP=22.84 NAL=0 Slice:B Poc:302 I:591  P:1357 SKIP:1652 size=4368 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 45568, out pts 89
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 88 to pts 88
+[libx264 @ 000002943b52e340] frame= 153 QP=21.63 NAL=2 Slice:P Poc:312 I:2281 P:828  SKIP:491  size=8923 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 46080, out pts 90
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 89 to pts 89
+[libx264 @ 000002943b52e340] frame= 154 QP=21.68 NAL=2 Slice:B Poc:308 I:964  P:1626 SKIP:1010 size=6807 bytes
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 46592, out pts 91
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 90 to pts 90
+[libx264 @ 000002943b52e340] frame= 155 QP=22.55 NAL=0 Slice:B Poc:306 I:533  P:1351 SKIP:1716 size=4164 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 47104, out pts 92
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 91 to pts 91
+[libx264 @ 000002943b52e340] frame= 156 QP=22.65 NAL=0 Slice:B Poc:310 I:588  P:1440 SKIP:1572 size=4584 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 47616, out pts 93
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 92 to pts 92
+[libx264 @ 000002943b52e340] frame= 157 QP=21.39 NAL=2 Slice:P Poc:316 I:2259 P:822  SKIP:519  size=9057 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 48128, out pts 94
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 93 to pts 93
+[libx264 @ 000002943b52e340] frame= 158 QP=22.44 NAL=0 Slice:B Poc:314 I:427  P:1160 SKIP:2013 size=4127 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 48640, out pts 95
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 94 to pts 94
+[libx264 @ 000002943b52e340] frame= 159 QP=21.38 NAL=2 Slice:P Poc:324 I:1936 P:1027 SKIP:637  size=10770 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 49152, out pts 96
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 95 to pts 95
+[libx264 @ 000002943b52e340] frame= 160 QP=21.15 NAL=2 Slice:B Poc:320 I:803  P:1853 SKIP:944  size=7512 bytes
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 49664, out pts 97
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 96 to pts 96
+[libx264 @ 000002943b52e340] frame= 161 QP=22.22 NAL=0 Slice:B Poc:318 I:249  P:1121 SKIP:2230 size=3162 bytes
+frame=  162 fps= 79 q=29.0 size=    1024KiB time=00:00:05.26 bitrate=1592.8kbits/s speed=2.55x    [h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame= 162 QP=22.60 NAL=0 Slice:B Poc:322 I:305  P:1491 SKIP:1804 size=3797 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 50176, out pts 98
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 97 to pts 97
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[libx264 @ 000002943b52e340] frame= 163 QP=21.10 NAL=2 Slice:P Poc:332 I:1946 P:1082 SKIP:572  size=9262 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 50688, out pts 99
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 98 to pts 98
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 51200, out pts 100
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 99 to pts 99
+[libx264 @ 000002943b52e340] frame= 164 QP=21.19 NAL=2 Slice:B Poc:328 I:747  P:1873 SKIP:980  size=6780 bytes
+[libx264 @ 000002943b52e340] frame= 165 QP=22.31 NAL=0 Slice:B Poc:326 I:280  P:1356 SKIP:1964 size=3372 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 51712, out pts 101
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 100 to pts 100
+[libx264 @ 000002943b52e340] frame= 166 QP=23.05 NAL=0 Slice:B Poc:330 I:201  P:1166 SKIP:2233 size=2735 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 52224, out pts 102
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 101 to pts 101
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 52736, out pts 103
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 102 to pts 102
+[libx264 @ 000002943b52e340] frame= 167 QP=21.27 NAL=2 Slice:P Poc:340 I:1649 P:1162 SKIP:789  size=8151 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 53248, out pts 104
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 103 to pts 103
+[libx264 @ 000002943b52e340] frame= 168 QP=21.42 NAL=2 Slice:B Poc:336 I:667  P:1771 SKIP:1162 size=5820 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame= 169 QP=23.06 NAL=0 Slice:B Poc:334 I:247  P:1125 SKIP:2228 size=2648 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 53760, out pts 105
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 104 to pts 104
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 54272, out pts 106
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 105 to pts 105
+[libx264 @ 000002943b52e340] frame= 170 QP=23.14 NAL=0 Slice:B Poc:338 I:260  P:1110 SKIP:2230 size=2709 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 54784, out pts 107
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 106 to pts 106
+[libx264 @ 000002943b52e340] frame= 171 QP=20.94 NAL=2 Slice:P Poc:348 I:1676 P:1112 SKIP:812  size=8771 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 55296, out pts 108
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 107 to pts 107
+[libx264 @ 000002943b52e340] frame= 172 QP=20.99 NAL=2 Slice:B Poc:344 I:674  P:1881 SKIP:1045 size=6295 bytes
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 55808, out pts 109
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 108 to pts 108
+[libx264 @ 000002943b52e340] frame= 173 QP=22.77 NAL=0 Slice:B Poc:342 I:242  P:1211 SKIP:2147 size=2801 bytes
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame= 174 QP=22.40 NAL=0 Slice:B Poc:346 I:191  P:1035 SKIP:2374 size=2267 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 56320, out pts 110
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 109 to pts 109
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 56832, out pts 111
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 110 to pts 110
+[libx264 @ 000002943b52e340] frame= 175 QP=21.05 NAL=2 Slice:P Poc:356 I:1623 P:1227 SKIP:750  size=8307 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 57344, out pts 112
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 111 to pts 111
+[libx264 @ 000002943b52e340] frame= 176 QP=21.06 NAL=2 Slice:B Poc:352 I:664  P:1780 SKIP:1156 size=5895 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 57856, out pts 113
+[libx264 @ 000002943b52e340] frame= 177 QP=21.91 NAL=0 Slice:B Poc:350 I:208  P:1094 SKIP:2298 size=2494 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 112 to pts 112
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 58368, out pts 114
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 113 to pts 113
+[libx264 @ 000002943b52e340] frame= 178 QP=22.37 NAL=0 Slice:B Poc:354 I:257  P:1054 SKIP:2289 size=2459 bytes
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 58880, out pts 115
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 114 to pts 114
+[libx264 @ 000002943b52e340] frame= 179 QP=21.02 NAL=2 Slice:P Poc:364 I:1924 P:1027 SKIP:649  size=9229 bytes
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 59392, out pts 116
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 115 to pts 115
+[libx264 @ 000002943b52e340] frame= 180 QP=21.16 NAL=2 Slice:B Poc:360 I:795  P:1693 SKIP:1112 size=6329 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 59904, out pts 117
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 116 to pts 116
+[libx264 @ 000002943b52e340] frame= 181 QP=22.44 NAL=0 Slice:B Poc:358 I:263  P:1089 SKIP:2248 size=2624 bytes
+[in#1/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b48d5c0] EOF while reading input
+[h264 @ 000002943d263780] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[in#1/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b48d5c0] Terminating thread with return code 0 (success)
+[libx264 @ 000002943b52e340] frame= 182 QP=22.67 NAL=0 Slice:B Poc:362 I:161  P:1101 SKIP:2338 size=2371 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 60416, out pts 118
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 117 to pts 117
+[h264 @ 000002943d28b580] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 60928, out pts 119
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 118 to pts 118
+[libx264 @ 000002943b52e340] frame= 183 QP=21.35 NAL=2 Slice:P Poc:372 I:1541 P:1231 SKIP:828  size=8691 bytes
+[h264 @ 000002943d28b940] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 61440, out pts 120
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 119 to pts 119
+[libx264 @ 000002943b52e340] frame= 184 QP=21.32 NAL=2 Slice:B Poc:368 I:738  P:1784 SKIP:1078 size=6109 bytes
+[h264 @ 000002943d28bd00] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 61952, out pts 121
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 120 to pts 120
+[libx264 @ 000002943b52e340] frame= 185 QP=23.16 NAL=0 Slice:B Poc:366 I:196  P:1200 SKIP:2204 size=2511 bytes
+[h264 @ 000002943d28c0c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[libx264 @ 000002943b52e340] frame= 186 QP=22.98 NAL=0 Slice:B Poc:370 I:267  P:1221 SKIP:2112 size=2924 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 62464, out pts 122
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 121 to pts 121
+[libx264 @ 000002943b52e340] frame= 187 QP=20.61 NAL=2 Slice:P Poc:376 I:1512 P:1340 SKIP:748  size=8626 bytes
+[libx264 @ 000002943b52e340] frame= 188 QP=22.50 NAL=0 Slice:B Poc:374 I:350  P:1188 SKIP:2062 size=3057 bytes
+[h264 @ 000002943d28c440] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 62976, out pts 123
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 122 to pts 122
+[h264 @ 000002943d28aa80] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 2
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 63488, out pts 124
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 123 to pts 123
+[h264 @ 000002943d0b52c0] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 64000, out pts 125
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 124 to pts 124
+[libx264 @ 000002943b52e340] frame= 189 QP=21.02 NAL=2 Slice:P Poc:384 I:1289 P:1344 SKIP:967  size=8877 bytes
+[h264 @ 000002943d25a880] nal_unit_type: 1(Coded slice of a non-IDR picture), nal_ref_idc: 0
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 64512, out pts 126
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 125 to pts 125
+[libx264 @ 000002943b52e340] frame= 190 QP=21.67 NAL=2 Slice:B Poc:380 I:452  P:1588 SKIP:1560 size=4544 bytes
+[vist#1:0/h264 @ 000002943b4a8bc0] [dec:h264 @ 000002943d0e19c0] Decoder thread received EOF packet
+[libx264 @ 000002943b52e340] frame= 191 QP=23.76 NAL=0 Slice:B Poc:378 I:174  P:1026 SKIP:2400 size=2309 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 65024, out pts 127
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 126 to pts 126
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 65536, out pts 128
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 127 to pts 127
+[libx264 @ 000002943b52e340] frame= 192 QP=23.50 NAL=0 Slice:B Poc:382 I:174  P:1038 SKIP:2388 size=2173 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 66048, out pts 129
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 128 to pts 128
+[libx264 @ 000002943b52e340] frame= 193 QP=20.47 NAL=2 Slice:P Poc:392 I:1805 P:1167 SKIP:628  size=9488 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 66560, out pts 130
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 129 to pts 129
+[libx264 @ 000002943b52e340] frame= 194 QP=21.66 NAL=2 Slice:B Poc:388 I:357  P:1506 SKIP:1737 size=4267 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 67072, out pts 131
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 130 to pts 130
+[libx264 @ 000002943b52e340] frame= 195 QP=23.13 NAL=0 Slice:B Poc:386 I:270  P:1169 SKIP:2161 size=2880 bytes
+[libx264 @ 000002943b52e340] frame= 196 QP=23.56 NAL=0 Slice:B Poc:390 I:143  P:1054 SKIP:2403 size=1948 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 67584, out pts 132
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 131 to pts 131
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 68096, out pts 133
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 132 to pts 132
+[libx264 @ 000002943b52e340] frame= 197 QP=20.27 NAL=2 Slice:P Poc:400 I:1031 P:1518 SKIP:1051 size=7562 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 68608, out pts 134
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 133 to pts 133
+[libx264 @ 000002943b52e340] frame= 198 QP=21.66 NAL=2 Slice:B Poc:396 I:229  P:1374 SKIP:1997 size=3306 bytes
+[libx264 @ 000002943b52e340] frame= 199 QP=23.91 NAL=0 Slice:B Poc:394 I:64   P:939  SKIP:2597 size=1482 bytes
+[libx264 @ 000002943b52e340] frame= 200 QP=23.06 NAL=0 Slice:B Poc:398 I:54   P:669  SKIP:2877 size=1054 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 69120, out pts 135
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 134 to pts 134
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 69632, out pts 136
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 135 to pts 135
+[libx264 @ 000002943b52e340] frame= 201 QP=20.50 NAL=2 Slice:P Poc:408 I:577  P:1684 SKIP:1339 size=7137 bytes
+[vist#1:0/h264 @ 000002943b4a8bc0] [dec:h264 @ 000002943d0e19c0] Decoder returned EOF, finishing
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 70144, out pts 137
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 136 to pts 136
+[vist#1:0/h264 @ 000002943b4a8bc0] [dec:h264 @ 000002943d0e19c0] Terminating thread with return code 0 (success)
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 70656, out pts 138
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 137 to pts 137
+[libx264 @ 000002943b52e340] frame= 202 QP=21.70 NAL=2 Slice:B Poc:404 I:359  P:1613 SKIP:1628 size=4006 bytes
+[libx264 @ 000002943b52e340] frame= 203 QP=24.69 NAL=0 Slice:B Poc:402 I:87   P:905  SKIP:2608 size=1683 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 71168, out pts 139
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 138 to pts 138
+[libx264 @ 000002943b52e340] frame= 204 QP=23.78 NAL=0 Slice:B Poc:406 I:106  P:1024 SKIP:2470 size=1823 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 71680, out pts 140
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 139 to pts 139
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 72192, out pts 141
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 140 to pts 140
+[libx264 @ 000002943b52e340] frame= 205 QP=20.36 NAL=2 Slice:P Poc:416 I:1039 P:1491 SKIP:1070 size=7981 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 72704, out pts 142
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 141 to pts 141
+[libx264 @ 000002943b52e340] frame= 206 QP=21.54 NAL=2 Slice:B Poc:412 I:423  P:1412 SKIP:1765 size=3960 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 73216, out pts 143
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 142 to pts 142
+[libx264 @ 000002943b52e340] frame= 207 QP=22.48 NAL=0 Slice:B Poc:410 I:165  P:1091 SKIP:2344 size=2077 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 73728, out pts 144
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 143 to pts 143
+[libx264 @ 000002943b52e340] frame= 208 QP=22.61 NAL=0 Slice:B Poc:414 I:169  P:960  SKIP:2471 size=2013 bytes
+[Parsed_fps_3 @ 000002943d227cc0] Read frame with in pts 74240, out pts 145
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 144 to pts 144
+[libx264 @ 000002943b52e340] frame= 209 QP=19.65 NAL=2 Slice:P Poc:424 I:1238 P:1582 SKIP:780  size=9754 bytes
+[Parsed_scale_2 @ 000002943d5de340] [framesync @ 000002943e7c10a8] Sync level 0
+[Parsed_fps_3 @ 000002943d227cc0] EOF is at pts 146
+[Parsed_fps_3 @ 000002943d227cc0] Writing frame with pts 145 to pts 145
+[libx264 @ 000002943b52e340] frame= 210 QP=21.52 NAL=2 Slice:B Poc:420 I:331  P:1362 SKIP:1907 size=3583 bytes
+[out_#0:0 @ 000002943e829ac0] EOF on sink link out_#0:0:default.
+[fc#0 @ 000002943b46e880] Filtergraph returned EOF, finishing
+[fc#0 @ 000002943b46e880] All consumers returned EOF
+[libx264 @ 000002943b52e340] frame= 211 QP=23.33 NAL=0 Slice:B Poc:418 I:188  P:1150 SKIP:2262 size=2399 bytes
+[libx264 @ 000002943b52e340] frame= 212 QP=24.38 NAL=0 Slice:B Poc:422 I:77   P:836  SKIP:2687 size=1590 bytes
+[libx264 @ 000002943b52e340] frame= 213 QP=19.68 NAL=2 Slice:P Poc:432 I:575  P:1584 SKIP:1441 size=6841 bytes
+[Parsed_fps_3 @ 000002943d227cc0] 146 frames in, 146 frames out; 0 frames dropped, 0 frames duplicated.
+[Parsed_fps_1 @ 000002943d62eec0] Dropping frame with pts 152
+[Parsed_fps_1 @ 000002943d62eec0] 153 frames in, 152 frames out; 1 frames dropped, 0 frames duplicated.
+[fc#0 @ 000002943b46e880] Terminating thread with return code 0 (success)
+[libx264 @ 000002943b52e340] frame= 214 QP=21.59 NAL=2 Slice:B Poc:428 I:123  P:1129 SKIP:2348 size=2362 bytes
+[libx264 @ 000002943b52e340] frame= 215 QP=24.28 NAL=0 Slice:B Poc:426 I:37   P:565  SKIP:2998 size=934 bytes
+[libx264 @ 000002943b52e340] frame= 216 QP=22.70 NAL=0 Slice:B Poc:430 I:27   P:376  SKIP:3197 size=569 bytes
+[libx264 @ 000002943b52e340] frame= 217 QP=20.06 NAL=2 Slice:P Poc:440 I:593  P:1416 SKIP:1591 size=7579 bytes
+[libx264 @ 000002943b52e340] frame= 218 QP=21.54 NAL=2 Slice:B Poc:436 I:163  P:1058 SKIP:2379 size=2807 bytes
+[libx264 @ 000002943b52e340] frame= 219 QP=24.40 NAL=0 Slice:B Poc:434 I:57   P:502  SKIP:3041 size=1391 bytes
+[vost#0:0/libx264 @ 000002943d133d00] [enc:libx264 @ 000002943b48f800] Encoder thread received EOF
+[libx264 @ 000002943b52e340] frame= 220 QP=23.71 NAL=0 Slice:B Poc:438 I:22   P:433  SKIP:3145 size=724 bytes
+frame=  221 fps= 86 q=29.0 size=    1280KiB time=00:00:07.30 bitrate=1436.5kbits/s speed=2.83x    [libx264 @ 000002943b52e340] frame= 221 QP=20.17 NAL=2 Slice:P Poc:448 I:585  P:1719 SKIP:1296 size=7278 bytes
+[libx264 @ 000002943b52e340] frame= 222 QP=21.38 NAL=2 Slice:B Poc:444 I:309  P:1559 SKIP:1732 size=3461 bytes
+[libx264 @ 000002943b52e340] frame= 223 QP=23.19 NAL=0 Slice:B Poc:442 I:84   P:863  SKIP:2653 size=1505 bytes
+[libx264 @ 000002943b52e340] frame= 224 QP=22.44 NAL=0 Slice:B Poc:446 I:90   P:760  SKIP:2750 size=1470 bytes
+[libx264 @ 000002943b52e340] frame= 225 QP=19.92 NAL=2 Slice:P Poc:456 I:802  P:1694 SKIP:1104 size=8204 bytes
+[libx264 @ 000002943b52e340] frame= 226 QP=21.16 NAL=2 Slice:B Poc:452 I:419  P:1523 SKIP:1658 size=3975 bytes
+[libx264 @ 000002943b52e340] frame= 227 QP=22.82 NAL=0 Slice:B Poc:450 I:116  P:783  SKIP:2701 size=1475 bytes
+[libx264 @ 000002943b52e340] frame= 228 QP=22.39 NAL=0 Slice:B Poc:454 I:169  P:999  SKIP:2432 size=1865 bytes
+[libx264 @ 000002943b52e340] frame= 229 QP=20.12 NAL=2 Slice:P Poc:464 I:902  P:1488 SKIP:1210 size=7244 bytes
+[libx264 @ 000002943b52e340] frame= 230 QP=21.69 NAL=2 Slice:B Poc:460 I:243  P:1206 SKIP:2151 size=2926 bytes
+[libx264 @ 000002943b52e340] frame= 231 QP=22.49 NAL=0 Slice:B Poc:458 I:80   P:749  SKIP:2771 size=1193 bytes
+[libx264 @ 000002943b52e340] frame= 232 QP=22.90 NAL=0 Slice:B Poc:462 I:57   P:403  SKIP:3140 size=801 bytes
+[libx264 @ 000002943b52e340] frame= 233 QP=19.73 NAL=2 Slice:P Poc:472 I:705  P:1667 SKIP:1228 size=7552 bytes
+[libx264 @ 000002943b52e340] frame= 234 QP=20.58 NAL=2 Slice:B Poc:468 I:240  P:1170 SKIP:2190 size=2785 bytes
+[libx264 @ 000002943b52e340] frame= 235 QP=20.24 NAL=0 Slice:B Poc:466 I:58   P:773  SKIP:2769 size=1087 bytes
+[libx264 @ 000002943b52e340] frame= 236 QP=23.09 NAL=0 Slice:B Poc:470 I:49   P:512  SKIP:3039 size=810 bytes
+[libx264 @ 000002943b52e340] frame= 237 QP=19.44 NAL=2 Slice:P Poc:480 I:795  P:1639 SKIP:1166 size=7604 bytes
+[libx264 @ 000002943b52e340] frame= 238 QP=20.64 NAL=2 Slice:B Poc:476 I:262  P:1610 SKIP:1728 size=3478 bytes
+[libx264 @ 000002943b52e340] frame= 239 QP=22.31 NAL=0 Slice:B Poc:474 I:89   P:827  SKIP:2684 size=1279 bytes
+[libx264 @ 000002943b52e340] frame= 240 QP=23.67 NAL=0 Slice:B Poc:478 I:51   P:921  SKIP:2628 size=1257 bytes
+[libx264 @ 000002943b52e340] frame= 241 QP=19.82 NAL=2 Slice:P Poc:488 I:482  P:1451 SKIP:1667 size=5939 bytes
+[libx264 @ 000002943b52e340] frame= 242 QP=22.57 NAL=2 Slice:B Poc:484 I:83   P:876  SKIP:2641 size=1756 bytes
+[libx264 @ 000002943b52e340] frame= 243 QP=23.69 NAL=0 Slice:B Poc:482 I:74   P:848  SKIP:2678 size=1310 bytes
+[libx264 @ 000002943b52e340] frame= 244 QP=24.92 NAL=0 Slice:B Poc:486 I:19   P:388  SKIP:3193 size=644 bytes
+[libx264 @ 000002943b52e340] frame= 245 QP=20.28 NAL=2 Slice:P Poc:496 I:556  P:1477 SKIP:1567 size=5421 bytes
+[libx264 @ 000002943b52e340] frame= 246 QP=21.48 NAL=2 Slice:B Poc:492 I:132  P:1022 SKIP:2446 size=2057 bytes
+[libx264 @ 000002943b52e340] frame= 247 QP=22.26 NAL=0 Slice:B Poc:490 I:65   P:759  SKIP:2776 size=1077 bytes
+[libx264 @ 000002943b52e340] frame= 248 QP=23.10 NAL=0 Slice:B Poc:494 I:46   P:464  SKIP:3090 size=785 bytes
+[libx264 @ 000002943b52e340] frame= 249 QP=22.72 NAL=2 Slice:P Poc:498 I:168  P:1013 SKIP:2419 size=2074 bytes
+[libx264 @ 000002943b52e340] frame= 250 QP=17.56 NAL=3 Slice:I Poc:0   I:3600 P:0    SKIP:0    size=18909 bytes
+[libx264 @ 000002943b52e340] frame= 251 QP=20.19 NAL=2 Slice:P Poc:8   I:680  P:1483 SKIP:1437 size=5329 bytes
+[libx264 @ 000002943b52e340] frame= 252 QP=21.56 NAL=2 Slice:B Poc:4   I:155  P:1345 SKIP:2100 size=2452 bytes
+[libx264 @ 000002943b52e340] frame= 253 QP=23.76 NAL=0 Slice:B Poc:2   I:49   P:1080 SKIP:2471 size=1450 bytes
+[libx264 @ 000002943b52e340] frame= 254 QP=24.02 NAL=0 Slice:B Poc:6   I:51   P:899  SKIP:2650 size=1288 bytes
+[libx264 @ 000002943b52e340] frame= 255 QP=20.60 NAL=2 Slice:P Poc:16  I:494  P:1624 SKIP:1482 size=5628 bytes
+[libx264 @ 000002943b52e340] frame= 256 QP=22.27 NAL=2 Slice:B Poc:12  I:153  P:1379 SKIP:2068 size=2535 bytes
+[libx264 @ 000002943b52e340] frame= 257 QP=24.11 NAL=0 Slice:B Poc:10  I:41   P:769  SKIP:2790 size=1148 bytes
+[libx264 @ 000002943b52e340] frame= 258 QP=23.41 NAL=0 Slice:B Poc:14  I:99   P:1142 SKIP:2359 size=1815 bytes
+[libx264 @ 000002943b52e340] frame= 259 QP=21.25 NAL=2 Slice:P Poc:24  I:426  P:1591 SKIP:1583 size=4730 bytes
+[libx264 @ 000002943b52e340] frame= 260 QP=21.83 NAL=2 Slice:B Poc:20  I:197  P:1448 SKIP:1955 size=2990 bytes
+[libx264 @ 000002943b52e340] frame= 261 QP=24.09 NAL=0 Slice:B Poc:18  I:55   P:847  SKIP:2698 size=1334 bytes
+[libx264 @ 000002943b52e340] frame= 262 QP=24.27 NAL=0 Slice:B Poc:22  I:84   P:1187 SKIP:2329 size=1818 bytes
+[libx264 @ 000002943b52e340] frame= 263 QP=22.97 NAL=2 Slice:P Poc:30  I:260  P:1341 SKIP:1999 size=2835 bytes
+[libx264 @ 000002943b52e340] frame= 264 QP=21.91 NAL=2 Slice:B Poc:26  I:137  P:1228 SKIP:2235 size=2430 bytes
+[libx264 @ 000002943b52e340] frame= 265 QP=23.50 NAL=0 Slice:B Poc:28  I:94   P:743  SKIP:2763 size=1316 bytes
+[vost#0:0/libx264 @ 000002943d133d00] Terminating thread with return code 0 (success)
+[out#0/mp4 @ 000002943b52b7c0] All streams finished
+[out#0/mp4 @ 000002943b52b7c0] Terminating thread with return code 0 (success)
+[AVIOContext @ 000002943b52ee80] Statistics: 1554330 bytes written, 2 seeks, 9 writeouts
+[out#0/mp4 @ 000002943b52b7c0] Output file #0 (C:\xampp\htdocs\fragnant-social\storage\app/private/temp/merged_with_transition.mp4):
+[out#0/mp4 @ 000002943b52b7c0]   Output stream #0:0 (video): 266 frames encoded; 266 packets muxed (1550288 bytes); 
+[out#0/mp4 @ 000002943b52b7c0]   Total: 266 packets (1550288 bytes) muxed
+[out#0/mp4 @ 000002943b52b7c0] video:1514KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.260468%
+frame=  266 fps= 92 q=-1.0 Lsize=    1518KiB time=00:00:08.80 bitrate=1413.0kbits/s speed=3.04x    
+[libx264 @ 000002943b52e340] frame I:2     Avg QP:20.27  size: 47206
+[libx264 @ 000002943b52e340] frame P:79    Avg QP:22.78  size: 11348
+[libx264 @ 000002943b52e340] frame B:185   Avg QP:25.95  size:  3020
+[libx264 @ 000002943b52e340] consecutive B-frames:  3.4%  9.8%  5.6% 81.2%
+[libx264 @ 000002943b52e340] mb I  I16..4: 18.2% 74.8%  7.1%
+[libx264 @ 000002943b52e340] mb P  I16..4:  9.0% 12.0%  0.5%  P16..4: 30.6% 13.1%  4.4%  0.0%  0.0%    skip:30.5%
+[libx264 @ 000002943b52e340] mb B  I16..4:  3.0%  2.6%  0.1%  B16..8: 18.8%  2.9%  0.1%  direct: 6.4%  skip:66.2%  L0:46.7% L1:47.1% BI: 6.2%
+[libx264 @ 000002943b52e340] 8x8 transform intra:53.6% inter:77.9%
+[libx264 @ 000002943b52e340] coded y,u,v intra: 30.9% 9.1% 6.3% inter: 9.3% 1.9% 1.2%
+[libx264 @ 000002943b52e340] i16 v,h,dc,p: 20% 54%  9% 17%
+[libx264 @ 000002943b52e340] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 10% 46% 22%  3%  3%  2%  7%  2%  6%
+[libx264 @ 000002943b52e340] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu:  6% 60%  8%  2%  4%  2% 10%  1%  6%
+[libx264 @ 000002943b52e340] Weighted P-Frames: Y:15.2% UV:8.9%
+[libx264 @ 000002943b52e340] ref P L0: 69.6% 30.4%
+[libx264 @ 000002943b52e340] ref B L0: 81.7% 18.3%
+[libx264 @ 000002943b52e340] ref B L1: 95.0%  5.0%
+[libx264 @ 000002943b52e340] kb/s:1398.13
+[in#0/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9540] Input file #0 (C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0ad1926.mp4):
+[in#0/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9540]   Input stream #0:0 (video): 163 packets read (270728 bytes); 162 frames decoded; 0 decode errors; 
+[in#0/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b4a9540]   Total: 163 packets (270728 bytes) demuxed
+[AVIOContext @ 000002943b4a9c40] Statistics: 308926 bytes read, 2 seeks
+[in#1/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b48d5c0] Input file #1 (C:\xampp\htdocs\fragnant-social\storage\app/private\temp/splitted_67712c0bd099e.mp4):
+[in#1/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b48d5c0]   Input stream #1:0 (video): 146 packets read (115576 bytes); 146 frames decoded; 0 decode errors; 
+[in#1/mov,mp4,m4a,3gp,3g2,mj2 @ 000002943b48d5c0]   Total: 146 packets (115576 bytes) demuxed
+[AVIOContext @ 000002943b4a8700] Statistics: 153632 bytes read, 2 seeks

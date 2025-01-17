@@ -8,31 +8,31 @@
         </div>
     </div> -->
 
-    <div class="flex flex-wrap gap-2 py-4">
+    <div class="flex flex-wrap gap-3 py-4">
     @foreach($userMedia as $i)
 
     <div>
         <div class="media-container rounded-lg overflow-hidden
-                shadow relative @if(in_array($i->code_id, $selectedMedia)) bg-blue-200 @endif">
+                relative @if(in_array($i->code_id, $selectedMedia)) bg-blue-200 @endif">
 
              @if($role != 'View')
 
-             <span wire:click="select_media('{{ $i->code_id }}')"  class="media-container icon-checkmark absolute cursor-pointer top-1 left-1 z-20 rounded-full text-xs py-1 px-1.5 @if(in_array($i->code_id, $selectedMedia)) text-white bg-blue-500 block @else hidden bg-gray-100 text-gray-500 opacity-50 @endif"></span>
+             <span wire:click="select_media('{{ $i->code_id }}')"  class="media-container icon-checkmark absolute cursor-pointer top-1 left-1 z-20 rounded-full text-xs py-1 px-1.5 @if(in_array($i->code_id, $selectedMedia)) text-white bg-blue-500 block @else hidden bg-pink-100 text-gray-500 opacity-50 @endif"></span>
 
              @endif
 
              @if($i->type != "pending")
 
-             <span class="span-icon cursor-pointer icon icon-pencil absolute bottom-1 left-1 z-20 rounded-full text-xs py-1 px-1.5 bg-gray-100 text-gray-500  opacity-50 hover:text-white hover:bg-blue-500 hidden" wire:click="edit('{{ $i->code_id }}')"></span>
+             <span class="span-icon cursor-pointer icon icon-pencil absolute bottom-1 left-1 z-20 rounded-full text-xs py-1 px-1.5 bg-pink-100 text-gray-500  opacity-50 hover:text-white hover:bg-blue-500 hidden" wire:click="edit('{{ $i->code_id }}')"></span>
 
-             <span class="span-icon cursor-pointer icon icon-search absolute bottom-1 right-1 z-20 rounded-full text-xs py-1 px-1.5 bg-gray-100 text-gray-500  opacity-50 hover:text-white hover:bg-blue-500 hidden" wire:click="preview('{{ $i->code_id }}')"></span>
+             <span class="span-icon cursor-pointer icon icon-search absolute bottom-1 right-1 z-20 rounded-full text-xs py-1 px-1.5 bg-pink-100 text-gray-500  opacity-50 hover:text-white hover:bg-blue-500 hidden" wire:click="preview('{{ $i->code_id }}')"></span>
 
              @endif
 
         @if($i->type == "image")
             <img class="
-                w-40
-                h-40
+                w-48
+                h-48
                 cursor-pointer
                 transition duration-150 ease-in-out
                 object-cover
@@ -42,8 +42,8 @@
             />
         @elseif($i->type == "video")
             <img class="
-                w-40
-                h-40
+                w-48
+                h-48
                 cursor-pointer
                 transition duration-150 ease-in-out
                 object-cover
@@ -52,23 +52,23 @@
                 src="{{ $i->thumbnail_url }}" 
             />
         @elseif($i->type == "audio")
-            <div class="w-40 h-40 cursor-pointer rounded-lg bg-gray-200 shadow-sm flex justify-center items-center"
+            <div class="w-48 h-48 cursor-pointer rounded-lg bg-gray-200 flex justify-center items-center"
                 @if($role != 'View') wire:click="select_media('{{ $i->code_id }}')" @endif
             >
                 <span class="icon text-4xl icon-music"></span>
             </div>
         @elseif($i->type == "file")
-            <div class="w-40 h-40 cursor-pointer rounded-lg bg-gray-200 shadow-sm flex justify-center items-center"
+            <div class="w-48 h-48 cursor-pointer rounded-lg bg-gray-200 flex justify-center items-center"
                 @if($role != 'View') wire:click="select_media('{{ $i->code_id }}')" @endif
             >
                 <span class="icon text-4xl icon-folder-download"></span>
             </div>
         @elseif($i->type == "pending")
             <!-- Gray box for pending media -->
-            <div class="w-40 h-40 cursor-pointer flex justify-center items-center bg-gray-200 shadow-sm rounded-lg"
+            <div class="w-48 h-48 cursor-pointer flex justify-center items-center bg-gray-200 rounded-lg"
             @if($role != 'View') wire:click="select_media('{{ $i->code_id }}')" @endif
             >
-                <div class="loader w-10 h-10 border-4 border-t-gray-400 border-gray-200 rounded-full animate-spin"></div>
+                <div class="loader w-10 h-10 border-4 border-t-gray-480 border-gray-200 rounded-full animate-spin"></div>
             </div>
         @endif
         </div>

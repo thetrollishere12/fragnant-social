@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "adaiasmagdiel/meta-ai-api": "^1.1",
         "barryvdh/laravel-snappy": "^1.0",
         "google/apiclient": "^2.18",
         "guzzlehttp/guzzle": "^7.9",
@@ -25,7 +26,9 @@
         "orchid/platform": "^14.44",
         "pbmedia/laravel-ffmpeg": "^8.6",
         "predis/predis": "^2.3",
+        "socialiteproviders/facebook": "^4.1",
         "socialiteproviders/instagram": "^5.0",
+        "socialiteproviders/tiktok": "^5.2",
         "socialiteproviders/youtube": "^4.1",
         "spatie/laravel-image-optimizer": "^1.8",
         "twilio/sdk": "^8.3",

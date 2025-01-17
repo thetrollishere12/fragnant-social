@@ -154,7 +154,8 @@ public static function extractFileDetails($input)
 
     // Define storage paths for public and local disks
     $publicRoot = str_replace('\\', '/', storage_path('app/public/'));
-    $localRoot = str_replace('\\', '/', storage_path('app/'));
+    $localRoot = str_replace('\\', '/', storage_path('app/private/'));
+
 
     // Helper function to extract relative path
     $extractRelativePath = function ($path, $root) {

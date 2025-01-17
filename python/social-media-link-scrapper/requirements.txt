@@ -1,0 +1,17 @@
+instaloader
+pathlib
+python-dotenv
+google-api-python-client
+pytube
+playwright
+pyppeteer
+pillow
+fpdf
+moviepy
+websockets
+nest_asyncio
+playwright-stealth
+selenium
+selenium_stealth
+snscrape
+yt_dlp

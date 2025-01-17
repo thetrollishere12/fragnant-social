@@ -95,13 +95,13 @@
 
 
     <div class="px-2 py-1">
-        <div class="rounded transition p-3 text-sm">ASSETS</div>
+        <div class="rounded transition p-3 text-sm">PROJECTS</div>
     </div>
 
 
 
     <div class="px-3 py-1">
-        <a href="{{ url('user/digital-assets') }}"><div class="@if(isset($url) && $url == 'digital-assets') main-bg-c text-white @else hover:bg-gray-100 @endif rounded transition p-3 text-sm"><span class="icon-pencil pr-3"></span> My Digital Assets</div></a>
+        <a href="{{ url('user/digital-assets') }}"><div class="@if(isset($url) && $url == 'digital-assets') main-bg-c text-white @else hover:bg-gray-100 @endif rounded transition p-3 text-sm"><span class="icon-pencil pr-3"></span> My Projects</div></a>
     </div>
 
 

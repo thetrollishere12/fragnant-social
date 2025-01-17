@@ -1,61 +1,58 @@
 <div>
 
 
-    <!-- Header Section -->
-    <div class="flex justify-between items-center mb-4">
-        <div></div>
-        <x-button primary label="Add New Asset" wire:click="$set('showModal', true)" />
-    </div>
+
 
 <!-- Enhanced Asset Table -->
-<div class="overflow-x-auto bg-white shadow-md rounded-lg">
-    <table class="min-w-full border-collapse border border-gray-200">
-        <thead class="bg-gray-200 text-gray-700">
-            <tr>
-                <th class="border border-gray-300 px-6 py-3 text-left font-medium">Name</th>
-                <th class="border border-gray-300 px-6 py-3 text-left font-medium">Description</th>
-                <th class="border border-gray-300 px-6 py-3 text-left font-medium">Image</th>
-                <th class="border border-gray-300 px-6 py-3 text-right font-medium">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+
+        <div class="grid grid-cols-1 gap-3">
             @forelse ($assets as $asset)
-                <tr class="hover:bg-gray-100 odd:bg-gray-50">
-                    <td class="border border-gray-300 px-6 py-4">{{ $asset->name }}</td>
-                    <td class="border border-gray-300 px-6 py-4 text-gray-600">{{ $asset->description }}</td>
-                    <td class="border border-gray-300 px-6 py-4">
-                        @if ($asset->image)
-                            <div>
-                                <img src="{{ asset('storage/' . $asset->image) }}" 
-                                     alt="Asset Image" 
-                                     class="w-16 h-16">
-                            </div>
-                        @else
-                            <span class="text-gray-500 italic">No Image</span>
-                        @endif
-                    </td>
-                    <td class="border border-gray-300 px-6 py-4 text-right">
-                        <div class="flex justify-end space-x-2">
-                            <x-button flat label="Edit" wire:click="editAsset({{ $asset->id }})" class="text-blue-600 hover:bg-blue-100" />
-                            
-                            <a href="{{ url('user/digital-assets/'.$asset->id) }}" class="inline-flex">
-                                <x-button primary label="Show" class="text-green-600 hover:bg-green-100" />
-                            </a>
+                <div class="hover:bg-gray-100 bg-white rounded flex items-center justify-between">
 
-                            <x-button negative label="Delete" wire:click="deleteAsset({{ $asset->id }})" class="text-red-600 hover:bg-red-100" />
+                    <a class="w-full cursor-pointer hover:bg-pink-100 duration-150 ease-out" href="{{ url('user/digital-assets/'.$asset->id) }}">
+                        <div class="p-3 flex gap-4 items-center">
                             
+                            @if ($asset->image)
+                                <div>
+                                    <img src="{{ asset('storage/' . $asset->image) }}" 
+                                         alt="Asset Image" 
+                                         class="w-8 h-8">
+                                </div>
+                            @endif
+
+                            <div class="font-bold text-lg">{{ $asset->name }}</div>
+
                         </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center py-8 text-gray-500 italic">No digital assets found.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+                    </a>
 
+
+                    <div class="p-3">
+
+      
+                        <x-dropdown>
+                            
+                                <a href="{{ url('user/digital-assets/'.$asset->id) }}">
+                                    <x-dropdown.item icon="eye" label="Show" />
+                                </a>
+
+
+                                <x-dropdown.item icon="pencil" wire:click="editAsset({{ $asset->id }})"  label="Edit" />
+
+                                <x-dropdown.item icon="trash" wire:click="deleteAsset({{ $asset->id }})" label="Delete" />
+
+         
+                        </x-dropdown>
+
+                    </div>
+                </div>
+            @empty
+                <div>
+                    <div colspan="4" class="text-center py-8 text-gray-500 italic">No digital assets found.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <x-button class="w-full mt-3 py-2 text-lg" primary label="Add New Asset" wire:click="$set('showModal', true)" />
 
     <!-- Pagination -->
     <div class="mt-4">

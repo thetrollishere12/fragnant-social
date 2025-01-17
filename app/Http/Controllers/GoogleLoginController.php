@@ -9,8 +9,6 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\GoogleToken;
-use App\Providers\RouteServiceProvider;
-
 
 class GoogleLoginController extends Controller
 {
@@ -46,7 +44,7 @@ class GoogleLoginController extends Controller
             $platformUser = Socialite::driver('google')->user();
             
         } catch (Exception $e) {
-            dd($e);
+   
             return redirect('/register');
         }
 

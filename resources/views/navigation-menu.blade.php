@@ -46,7 +46,7 @@
                 
 
                 <x-nav-link href="{{ url('user/digital-assets') }}">
-                    {{ __('Digital Assets') }}
+                    {{ __('Projects') }}
                 </x-nav-link>
 
 

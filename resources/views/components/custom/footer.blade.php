@@ -26,30 +26,61 @@
             <!-- Social Media Links -->
             <b class="py-2 italic">FOLLOW US</b>
             <div class="social-media-box flex text-md pt-2" style="color: #E0B0AB;">
-                @if(!empty($blocks['SOCIAL_MEDIA_FACEBOOK']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_FACEBOOK'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-facebook"></span></div></a>
+                @if(!empty($blocks["SOCIAL_MEDIA_FACEBOOK"]))
+                    <a href='{{ $blocks["SOCIAL_MEDIA_FACEBOOK"] }}'>
+                        <div class="icon-facebook-box rounded-md p-2 mr-1" style="background: #3b5998;">
+                            <span class="icon-facebook"></span>
+                        </div>
+                    </a>
                 @endif
-                @if(!empty($blocks['SOCIAL_MEDIA_PINTEREST']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_PINTEREST'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-pinterest"></span></div></a>
+
+                @if(!empty($blocks["SOCIAL_MEDIA_PINTEREST"]))
+                    <a href='{{ $blocks["SOCIAL_MEDIA_PINTEREST"] }}'>
+                        <div class="icon-pinterest-box rounded-md p-2 mr-1" style="background: #cb2027;">
+                            <span class="icon-pinterest"></span>
+                        </div>
+                    </a>
                 @endif
-                @if(!empty($blocks['SOCIAL_MEDIA_YOUTUBE']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_YOUTUBE'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-youtube"></span></div></a>
+
+                @if(!empty($blocks["SOCIAL_MEDIA_YOUTUBE"]))
+                    <a href='{{ $blocks["SOCIAL_MEDIA_YOUTUBE"] }}'>
+                        <div class="icon-youtube-box rounded-md p-2 mr-1" style="background: #b00;">
+                            <span class="icon-youtube"></span>
+                        </div>
+                    </a>
                 @endif
-                @if(!empty($blocks['SOCIAL_MEDIA_WHATSAPP']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_WHATSAPP'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-whatsapp"></span></div></a>
+
+                @if(!empty($blocks["SOCIAL_MEDIA_WHATSAPP"]))
+                    <a href='{{ $blocks["SOCIAL_MEDIA_WHATSAPP"] }}'>
+                        <div class="icon-whatsapp-box rounded-md p-2 mr-1" style="background: #00e676;">
+                            <span class="icon-whatsapp"></span>
+                        </div>
+                    </a>
                 @endif
-                @if(!empty($blocks['SOCIAL_MEDIA_INSTAGRAM']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_INSTAGRAM'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-instagram"></span></div></a>
-                @endif  
-                @if(!empty($blocks['SOCIAL_MEDIA_TIKTOK']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_TIKTOK'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-tiktok"></span></div></a>
+
+                @if(!empty($blocks["SOCIAL_MEDIA_INSTAGRAM"]))
+                    <a href='{{ $blocks["SOCIAL_MEDIA_INSTAGRAM"] }}'>
+                        <div class="icon-instagram-box rounded-md p-2 mr-1" style="background: #c32aa3;">
+                            <span class="icon-instagram"></span>
+                        </div>
+                    </a>
                 @endif
-                @if(!empty($blocks['SOCIAL_MEDIA_DISCORD']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_DISCORD'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-discord"></span></div></a>
-                @endif            
-                @if(!empty($blocks['SOCIAL_MEDIA_SHOPEE']))
-                    <a href='{{ $blocks['SOCIAL_MEDIA_SHOPEE'] }}'><div class="rounded-md p-2 mr-1"><span class="icon-shopee"></span></div></a>
+
+                @if(!empty($blocks["SOCIAL_MEDIA_TIKTOK"]))
+                    <a href='{{ $blocks["SOCIAL_MEDIA_TIKTOK"] }}'>
+                        <div class="icon-tiktok-box rounded-md p-2 mr-1" style="background: black;">
+                            <span class="icon-tiktok"></span>
+                        </div>
+                    </a>
                 @endif
+
+                @if(!empty($blocks["SOCIAL_MEDIA_DISCORD"]))
+                    <a href='{{ $blocks["SOCIAL_MEDIA_DISCORD"] }}'>
+                        <div class="icon-discord-box rounded-md p-2 mr-1" style="background: #5865f2;">
+                            <span class="icon-discord"></span>
+                        </div>
+                    </a>
+                @endif 
             </div>
         </div>
 

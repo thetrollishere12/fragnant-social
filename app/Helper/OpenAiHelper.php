@@ -28,7 +28,7 @@ public static function AiGenerateText($string, $array = []) {
     ])->post('https://api.openai.com/v1/chat/completions', [
         'model' => (isset($array['model']) ? $array['model'] : "gpt-4o"),
         'messages' => [
-            ["role" => "system", "content" => "You are a helpful assistant."],
+            ["role" => "system", "content" => "You are a helpful social media content assistant."],
             ["role" => "user", "content" => $string]
         ],
         'temperature' => (isset($array['temperature']) ? $array['temperature'] : 1),

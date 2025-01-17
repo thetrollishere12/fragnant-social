@@ -5,17 +5,6 @@
         <x-validation-errors class="text-red-500 text-sm" />
     </div>
 
-    <!-- Media List Header -->
-    <div class="flex justify-between items-center mb-4">
-        <div>
-            <h3 class="text-xl font-semibold text-gray-800">Media List</h3>
-            <p class="text-sm text-gray-600">Manage your uploaded media files.</p>
-        </div>
-        <div>
-            <!-- Placeholder for action buttons or filters -->
-        </div>
-    </div>
-
 
 @if($isProcessing || $stageStatus == 'Completed' || $stageStatus == 'Failed')
 <div class="mb-4 p-4 border rounded shadow 
@@ -78,7 +67,7 @@
 
 
     <!-- Media Table -->
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="bg-white shadow-md rounded-lg overflow-scroll">
 
 
 
@@ -91,7 +80,8 @@
             <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Preview</th>
             <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Published</th>
             <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Type</th>
-            <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Actions</th>
+            <th class="px-4 py-3 text-left text-sm font-medium text-gray-600"></th>
+            <th class="px-4 py-3 text-left text-sm font-medium text-gray-600"></th>
         </tr>
     </thead>
     <tbody>
@@ -116,15 +106,23 @@
                     {{ $item->created_at->diffForHumans() }}
                 </td>
                 <td class="px-4 py-3 text-sm text-gray-600 capitalize">{{ $item->details->type }}</td>
-                <td class="px-4 py-3 text-sm space-y-2">
+                <td>
                     <a href="{{ route('download.published-media', $item->id) }}"
                        class="text-indigo-500 hover:underline">Download</a>
-                    <div wire:click="preview('{{ $item->id }}')" 
-                         class="cursor-pointer text-indigo-500 hover:underline">Preview</div>
-                    <button onclick="toggleDetails('{{ $item->id }}')"
-                            class="text-blue-500 hover:underline focus:outline-none">
-                        Details
-                    </button>
+                </td>
+                <td class="px-4 py-3 text-sm space-y-2">
+
+
+
+                    <x-dropdown>
+
+
+                        <x-dropdown.item icon="eye" wire:click="preview('{{ $item->id }}')" label="Preview" />
+                        <x-dropdown.item icon="document-magnifying-glass" onclick="toggleDetails('{{ $item->id }}')" label="Details" />
+                    </x-dropdown>
+
+
+
                 </td>
             </tr>
 
@@ -200,6 +198,8 @@
     </tbody>
 </table>
 
+
+
 <script>
     function toggleDetails(itemId) {
         const detailsRow = document.getElementById(`details-${itemId}`);
@@ -215,6 +215,11 @@
 
 
     </div>
+
+
+<div class="mt-4">
+    {{ $published->links() }}
+</div>
 
 
 <!-- Preview Modal -->

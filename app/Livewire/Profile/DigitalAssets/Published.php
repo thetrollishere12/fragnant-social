@@ -10,10 +10,15 @@ use Auth;
 use Livewire\WithFileUploads;
 use WireUi\Traits\WireUiActions;
 use App\Models\DigitalAsset;
+use Livewire\WithPagination;
+
+
+
+
 class Published extends Component
 {
 
-    use WireUiActions;
+    use WireUiActions, WithPagination;
 
     public $digital_asset_id;
     public $showPreviewModal = false;
@@ -102,7 +107,7 @@ public function updateStageStatus($stage, $message, $progress)
     public function render()
     {
         return view('livewire.profile.digital-assets.published',[
-            'published' => PublishedMedia::where('digital_asset_id',$this->digital_asset_id)->latest()->get()
+            'published' => PublishedMedia::where('digital_asset_id',$this->digital_asset_id)->latest()->paginate(15)
         ]);
     }
 }

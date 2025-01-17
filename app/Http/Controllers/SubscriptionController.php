@@ -32,7 +32,7 @@ class SubscriptionController extends Controller
 
 
 
-public function pricing(){
+    public function pricing(){
         return view('subscription.pricing',[
             'products'=>SubscriptionProduct::where('status', 1)->get()
         ]);
@@ -44,7 +44,7 @@ public function pricing(){
 
         try{
 
-            $plan = SubscriptionPlan::find($subscription_id);
+            $plan = SubscriptionPlan::where('id', $subscription_id)->where('status', 1)->first();
 
             if (SubscriptionHelper::subscribed_to_plan(Auth::user()->id, $plan->name)->count() > 0) {
                 return redirect('subscription-pricing');

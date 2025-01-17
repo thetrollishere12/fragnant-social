@@ -189,8 +189,11 @@ class GenerateShortFormJob implements ShouldQueue
 
             // Send Email
             if (!empty($user->email)) {
-                $this->sendEmail($user->email, $media->url);
+
+                $this->sendEmail($user->email, $media);
+
             }
+
         } catch (\Exception $e) {
             // Log the exception and trigger failure event
             Log::error("Media processing failed for User - ".$digitalAsset->user_id);
@@ -209,6 +212,7 @@ class GenerateShortFormJob implements ShouldQueue
     private function triggerFailureEvent($userId, $errorMessage)
     {
         if ($userId) {
+
             event(new PublishProcessing(
                 $userId,
                 'Failed',
@@ -222,10 +226,14 @@ class GenerateShortFormJob implements ShouldQueue
 
 
 
-    private function sendEmail($email, $outputPath)
+    private function sendEmail($email, $media)
     {
         try {
-            Mail::to($email)->send(new MailMediaLink($outputPath));
+            
+            Mail::to($email)->send(new MailMediaLink($media));
+
+            Log::info("Sent email to {$email} for Media: {$media->id}");
+
         } catch (\Exception $e) {
             logger()->error("Failed to send email: " . $e->getMessage());
         }
@@ -259,7 +267,7 @@ class GenerateShortFormJob implements ShouldQueue
                 'filename' => 'frame_000000.jpg',
             ]);
 
-            Log::info("Thumbnail generated successfully for video: {$filePath}/{$fileName}");
+            Log::info("Thumbnail generated successfully for published_media_id : {$media->id}");
 
         } catch (\Exception $e) {
 
