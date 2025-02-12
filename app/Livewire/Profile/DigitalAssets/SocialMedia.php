@@ -3,8 +3,8 @@
 namespace App\Livewire\Profile\DigitalAssets;
 
 use Livewire\Component;
-use App\Models\SocialMedia\YoutubeChannel;
-use App\Models\SocialMedia\TiktokAccount;
+use App\Models\Platform\Account\YoutubeChannel;
+use App\Models\Platform\Account\TiktokAccount;
 
 class SocialMedia extends Component
 {   

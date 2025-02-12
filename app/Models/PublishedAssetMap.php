@@ -23,7 +23,7 @@ class PublishedAssetMap extends Model
      */
     protected $fillable = [
         'published_id',
-        'user_media_id',
+        'product_media_id',
         'attributes',
         'weight',
     ];
@@ -48,8 +48,8 @@ class PublishedAssetMap extends Model
     /**
      * Get the user media associated with this asset map.
      */
-    public function userMedia()
+    public function productMedia()
     {
-        return $this->belongsTo(UserMedia::class, 'user_media_id');
+        return $this->belongsTo(ProductMedia::class, 'product_media_id');
     }
 }

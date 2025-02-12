@@ -11,17 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('published_asset_maps', function (Blueprint $table) {
+        Schema::create('product_import_feed_details', function (Blueprint $table) {
             $table->id();
-
-            $table->integer('published_id');
-
-            $table->integer('product_media_id');
-
-            $table->longText('attributes')->nullable()->default('[]');
-
-            $table->integer('weight')->nullable();
-            
             $table->timestamps();
         });
     }
@@ -31,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('published_asset_maps');
+        Schema::dropIfExists('product_import_feed_details');
     }
 };

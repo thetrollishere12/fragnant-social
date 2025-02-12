@@ -11,17 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('published_asset_maps', function (Blueprint $table) {
+        Schema::create('product_media', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('published_id');
+            $table->integer('product_id');
 
-            $table->integer('product_media_id');
+            // $table->string('storage');
 
-            $table->longText('attributes')->nullable()->default('[]');
+            // $table->string('folder');
 
-            $table->integer('weight')->nullable();
-            
+            // $table->text('filename');
+
+            $table->text('url');
+
+            $table->boolean('transparent')->nullable();
+
             $table->timestamps();
         });
     }
@@ -31,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('published_asset_maps');
+        Schema::dropIfExists('product_media');
     }
 };

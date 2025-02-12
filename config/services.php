@@ -84,5 +84,15 @@ return [
       'client_secret' => env('YOUTUBE_CLIENT_SECRET'),  
       'redirect' => env('YOUTUBE_REDIRECT_URI') 
     ],
+    'etsy' => [    
+      'client_id' => env('ETSY_CLIENT_ID'),  
+      'client_secret' => env('ETSY_CLIENT_SECRET'),  
+      'redirect' => env('ETSY_REDIRECT_URI') 
+    ],
+    'shopify' => [    
+      'client_id' => env('SHOPIFY_CLIENT_ID'),  
+      'client_secret' => env('SHOPIFY_CLIENT_SECRET'),  
+      'redirect' => env('SHOPIFY_REDIRECT_URI') 
+    ],
 
 ];

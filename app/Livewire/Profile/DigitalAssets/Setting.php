@@ -8,7 +8,7 @@ use App\Models\MusicGenre;
 
 use App\Models\UserMediaSetting;
 use Illuminate\Support\Facades\Auth;
-use App\Models\UserMedia;
+use App\Models\Product\Product;
 use App\Models\DigitalAsset;
 class Setting extends Component
 {
@@ -45,9 +45,6 @@ class Setting extends Component
             $this->user_audio = $settings->user_audio;
         }
 
-        if (UserMedia::where('digital_asset_id',$this->digital_asset_id)->where('type','audio')->count() > 0) {
-            $this->own_music = true;
-        }
 
     }
 

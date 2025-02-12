@@ -21,16 +21,16 @@
     <!-- Grid Section -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-        <!-- Social Media -->
-        <a href="{{ url('user/digital-assets/'.$digitalAsset->id.'/social-media') }}" 
+        <!-- Media -->
+        <a href="{{ url('user/digital-assets/'.$digitalAsset->id.'/products') }}" 
            class="flex items-center justify-center p-2 text-sm font-bold bg-white rounded-md text-gray-800 shadow-sm hover:bg-gray-100 transition">
-            Social Media
+            Products
         </a>
 
-        <!-- Media -->
-        <a href="{{ url('user/digital-assets/'.$digitalAsset->id.'/media') }}" 
+        <!-- Connected Account -->
+        <a href="{{ url('user/digital-assets/'.$digitalAsset->id.'/connected-platforms') }}" 
            class="flex items-center justify-center p-2 text-sm font-bold bg-white rounded-md text-gray-800 shadow-sm hover:bg-gray-100 transition">
-            Media
+            Connected Platforms
         </a>
 
         <!-- Publish -->
@@ -39,6 +39,11 @@
             Published
         </a>
 
+        <!-- Social Media -->
+        <!-- <a href="{{ url('user/digital-assets/'.$digitalAsset->id.'/social-media') }}" 
+           class="flex items-center justify-center p-2 text-sm font-bold bg-white rounded-md text-gray-800 shadow-sm hover:bg-gray-100 transition">
+            Social Media
+        </a> -->
 
     </div>
 

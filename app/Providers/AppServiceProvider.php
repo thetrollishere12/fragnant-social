@@ -4,8 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use App\Models\UserMedia;
-use App\Observers\UserMediaObserver;
 
 use Laravel\Cashier\Cashier;
 
@@ -32,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        UserMedia::observe(UserMediaObserver::class);
+
         Cashier::calculateTaxes();
 
         // Register view composer
@@ -43,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
             $event->extendSocialite('facebook', \SocialiteProviders\Facebook\Provider::class);
             $event->extendSocialite('instagram', \SocialiteProviders\Instagram\Provider::class);
             $event->extendSocialite('youtube', \SocialiteProviders\YouTube\Provider::class);
+            $event->extendSocialite('etsy', \SocialiteProviders\Etsy\Provider::class);
+            $event->extendSocialite('shopify', \SocialiteProviders\Shopify\Provider::class);
         });
 
     }

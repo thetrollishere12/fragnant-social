@@ -18,6 +18,10 @@ use App\Helper\AppHelper;
 
 use App\Helper\OpenAiHelper;
 
+use FFMpeg\Format\Video\X264;
+use FFMpeg\Format\Video\WebM;
+use FFMpeg\Format\Video\Ogg;
+
 class FFmpegHelper
 {
 
@@ -868,10 +872,6 @@ public static function convertVideoFormat($inputPath, $outputPath, $format = 'mp
 
 
 
-
-
-
-
 /**
 * Generate a thumbnail from a video at a specific time.
 *
@@ -975,6 +975,10 @@ public static function generateThumbnail($inputPath, $outputPath, $timeInSeconds
             throw $e;
         }
     }
+
+
+
+
 
 
 

@@ -3,16 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 
-use App\Http\Controllers\GoogleLoginController;
-use App\Http\Controllers\GoogleServiceController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\DigitalAssetController;
 
-use App\Http\Controllers\InstagramController;
 
-use App\Http\Controllers\TiktokController;
 
-use App\Http\Controllers\FacebookController;
 
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -27,6 +22,20 @@ use AdaiasMagdiel\MetaAI\Client;
 
 
 
+
+
+
+use App\Http\Controllers\Platform\GoogleLoginController;
+use App\Http\Controllers\Platform\GoogleServiceController;
+use App\Http\Controllers\Platform\InstagramController;
+use App\Http\Controllers\Platform\TiktokController;
+use App\Http\Controllers\Platform\FacebookController;
+use App\Http\Controllers\Platform\EbayController;
+use App\Http\Controllers\Platform\EtsyController;
+
+
+
+
 Route::get('/dispatch-test-job', function () {
     TestJob::dispatch();
     return 'Test job dispatched!';
@@ -37,6 +46,8 @@ Route::get('/dispatch-failing-job', function () {
     FailingJob::dispatch();
     return 'Failing job dispatched!';
 });
+
+
 
 
 Route::get('/image-test', function () {
@@ -55,7 +66,21 @@ Route::get('/image-test', function () {
 });
 
 
+use App\Helper\Editor\StructureHelper;
+use App\Helper\ShortFormGeneratorHelper;
 
+
+Route::get('structure', function(){
+
+$test = StructureHelper::init();
+
+$test = ShortFormGeneratorHelper::clipTemplatePairStructure($test);
+
+    return view('structure',[
+        'project' => $test['project']
+    ]);
+
+});
 
 Route::get('/meta-test', function () {
 
@@ -128,9 +153,15 @@ Route::middleware([
             ]);
         });
 
+        Route::get('user/digital-assets/{id}/connected-platforms', function($id){
+            return view('profile.digital-assets.connected-platforms',[
+                'digital_asset_id'=>$id
+            ]);
+        });
 
-        Route::get('user/digital-assets/{id}/media', function($id){
-            return view('profile.digital-assets.media',[
+
+        Route::get('user/digital-assets/{id}/products', function($id){
+            return view('profile.digital-assets.product',[
                 'digital_asset_id'=>$id
             ]);
         });
@@ -230,6 +261,30 @@ Route::middleware([
 
 
 
+        // Platform Connect
+
+        Route::get('connect-platform-ebay-login',[EbayController::class, 'redirect']);
+
+        Route::get('connect-platform-ebay-callback',[EbayController::class, 'success']);
+
+
+        Route::get('connect-platform-etsy-login',[EtsyController::class, 'redirect']);
+
+        Route::get('connect-platform-etsy-callback',[EtsyController::class, 'success']);
+
+        Route::get('connect-platform-amazon-login',[AmazonController::class, 'redirect']);
+
+        Route::get('connect-platform-amazon-callback',[AmazonController::class, 'success']);
+
+
+        Route::get('connect-platform-shopify-login',[ShopifyController::class, 'redirect']);
+
+        Route::get('connect-platform-shopify-callback',[ShopifyController::class, 'success']);
+
+
+        Route::get('connect-platform-amazon-login',[AmazonController::class, 'redirect']);
+
+        Route::get('connect-platform-amazon-callback',[AmazonController::class, 'success']);
 
 
     });

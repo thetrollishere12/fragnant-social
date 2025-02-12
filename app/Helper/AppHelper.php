@@ -172,10 +172,16 @@ public static function extractFileDetails($input)
         $details['storage_disk'] = 'public';
         $details['relative_path'] = $extractRelativePath($input, $publicRoot);
         $details['full_path'] = storage_path('app/public/' . $details['relative_path']);
+
+    // Generate the storage URL
+    $details['url'] = Storage::disk($details['storage_disk'])->url($details['relative_path']);
+
     } elseif (strpos($input, $localRoot) === 0 || Storage::disk('local')->exists($extractRelativePath($input, $localRoot))) {
         $details['storage_disk'] = 'local';
         $details['relative_path'] = $extractRelativePath($input, $localRoot);
-        $details['full_path'] = storage_path('app/' . $details['relative_path']);
+        $details['full_path'] = storage_path('app/private/' . $details['relative_path']);
+
+
     } else {
         throw new \InvalidArgumentException('File not found on either public or local disk.');
     }
@@ -189,8 +195,7 @@ public static function extractFileDetails($input)
         $details['file_extension'] = $pathInfo['extension'] ?? null;
     }
 
-    // Generate the storage URL
-    $details['url'] = Storage::disk($details['storage_disk'])->url($details['relative_path']);
+    
 
     return $details;
 
@@ -207,92 +212,6 @@ public static function extractFileDetails($input)
 // )
     
 }
-
-
-
-
-
-public static function generateRedditPost($body = "Reddit Body", $username = "Reddit User") {
-    $badges = Storage::disk('public')->files('image/reddit-reward-badge');
-
-    $badges = array_map(function ($badge) {
-        return Storage::disk('public')->path($badge); // Convert to local path
-    }, $badges);
-
-    // Encode badge paths as a JSON string with properly escaped double quotes
-    $badgesJson = json_encode($badges, JSON_UNESCAPED_SLASHES);
-
-    // Output path for the screenshot
-    $output = Storage::disk('public')->path('screenshot/reddit_' . AppHelper::random_id('sc') . '.png');
-
-    // Command to execute the Node.js script with the parameters
-    $command = '"C:\\Program Files\\nodejs\\node.exe" "C:\\xampp\\htdocs\\contentplanner\\resources\\js\\media-post-template\\reddit.js" '
-        . escapeshellarg($badgesJson) . " "
-        . escapeshellarg($output) . " "
-        . escapeshellarg($body) . " "
-        . escapeshellarg($username);
-
-    // Execute the command
-    exec($command, $ffmpeg_output, $return_var);
-
-    // Check if the process ran successfully
-    if ($return_var !== 0) {
-        throw new ProcessFailedException($command);
-    }
-
-    // Path to the generated image
-  
-    if (!file_exists($output)) {
-        return response()->json(['error' => 'Image not generated'], 500);
-    }
-
-    // Return the image as a response
-    return $output;
-    
-}
-
-
-
-
-
-
-
-
-
-
-    public static function generateDiscordPost(){
-
-        // output
-        $output = storage::disk('public')->path('screenshot/discord_'.AppHelper::random_id('sc').'.png');
-
-
-        $command = '"C:\\Program Files\\nodejs\\node.exe" "C:\\xampp\\htdocs\\contentplanner\\resources\\js\\media-post-template\\discord.js" '
-        .escapeshellarg("[]")." "
-        .escapeshellarg($output);
-
-        // Output the command to check formatting
-
-        exec($command, $output_val, $return_var);
-
-
-        // Check if the process ran successfully
-        if ($return_var !== 0) {
-            throw new ProcessFailedException($command);
-        }
-
-        // Path to the generated image
-        $imagePath = $output;
-        if (!file_exists($imagePath)) {
-            return response()->json(['error' => 'Image not generated'], 500);
-        }
-
-        // Return the image as a response
-        return response()->file($imagePath);
-
-    }
-
-
-
 
 
 

@@ -1,5 +1,5 @@
 .main-bg-c,.bg-main-c{
-  background: #ec4899 !important;
+  background: #f97316 !important;
 }
 
 .dark\:main-bg-c {
@@ -7,19 +7,19 @@
 }
 
 .hover\:main-bg-c:hover,.hover\:bg-main-c:hover {
-  background: #ec4899 !important;
+  background: #f97316 !important;
 }
 
 .hover\:main-text-c:hover,.hover\:main-t-c:hover {
-  color: #ec4899 !important;
+  color: #f97316 !important;
 }
 
 .main-text-c,.main-t-c{
-  color: #ec4899 !important;
+  color: #f97316 !important;
 }
 
 .main-border-c{
-  border-color: #ec4899 !important;
+  border-color: #f97316 !important;
 }
 
 .secondary-bg-c,.bg-secondary-c{
